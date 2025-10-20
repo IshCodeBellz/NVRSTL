@@ -1,0 +1,138 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    # Warm-up phase
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm-up"
+    # Load test phase
+    - duration: 300
+      arrivalRate: 20
+      name: "Load test"
+    # Stress test phase
+    - duration: 120
+      arrivalRate: 50
+      name: "Stress test"
+    # Spike test phase
+    - duration: 60
+      arrivalRate: 100
+      name: "Spike test"
+  payload:
+    path: "./data/test-users.csv"
+    fields:
+      - "email"
+      - "password"
+  processor: "./processors/auth.js"
+
+scenarios:
+  # Homepage and browsing scenario (70% of traffic)
+  - name: "Browse products"
+    weight: 70
+    flow:
+      - get:
+          url: "/"
+          expect:
+            - statusCode: 200
+      - think: 3
+      - get:
+          url: "/api/products"
+          qs:
+            page: 1
+            pageSize: 12
+          expect:
+            - statusCode: 200
+            - contentType: json
+      - think: 5
+      - get:
+          url: "/api/products/{{ $randomInt(1, 50) }}"
+          expect:
+            - statusCode: 200
+      - think: 2
+
+  # Search scenario (15% of traffic)
+  - name: "Search products"
+    weight: 15
+    flow:
+      - get:
+          url: "/api/search"
+          qs:
+            q: "{{ $randomString() }}"
+            page: 1
+            pageSize: 12
+          expect:
+            - statusCode: 200
+      - think: 3
+      - get:
+          url: "/api/search/suggestions"
+          qs:
+            q: "dress"
+          expect:
+            - statusCode: 200
+
+  # User authentication and cart scenario (10% of traffic)
+  - name: "User journey with cart"
+    weight: 10
+    flow:
+      - post:
+          url: "/api/auth/signin"
+          json:
+            email: "{{ email }}"
+            password: "{{ password }}"
+          capture:
+            - json: "$.user.id"
+              as: "userId"
+      - think: 2
+      - get:
+          url: "/api/cart"
+          expect:
+            - statusCode: 200
+      - post:
+          url: "/api/cart"
+          json:
+            productId: "{{ $randomInt(1, 50) }}"
+            sizeId: "{{ $randomInt(1, 10) }}"
+            quantity: 1
+      - think: 5
+      - get:
+          url: "/api/cart"
+          expect:
+            - statusCode: 200
+
+  # Admin dashboard scenario (3% of traffic)
+  - name: "Admin operations"
+    weight: 3
+    flow:
+      - post:
+          url: "/api/auth/signin"
+          json:
+            email: "admin@dyofficial.com"
+            password: "admin123"
+      - get:
+          url: "/api/admin/orders"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/api/admin/products"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/api/admin/analytics"
+          expect:
+            - statusCode: 200
+
+  # Health checks and monitoring (2% of traffic)
+  - name: "Health monitoring"
+    weight: 2
+    flow:
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/api/health/database"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/api/health/redis"
+          expect:
+            - statusCode: [200, 503]

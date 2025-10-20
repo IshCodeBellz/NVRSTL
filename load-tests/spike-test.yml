@@ -1,0 +1,83 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    # Spike test - sudden burst
+    - duration: 10
+      arrivalRate: 500
+      name: "Sudden spike"
+    # Cool down
+    - duration: 60
+      arrivalRate: 10
+      name: "Cool down"
+    # Another spike
+    - duration: 10
+      arrivalRate: 800
+      name: "Higher spike"
+    # Extended cool down
+    - duration: 120
+      arrivalRate: 5
+      name: "Recovery"
+
+scenarios:
+  # Most critical user journey - checkout
+  - name: "Critical checkout flow"
+    weight: 50
+    flow:
+      - get:
+          url: "/api/products/{{ $randomInt(1, 20) }}"
+      - post:
+          url: "/api/cart"
+          json:
+            productId: "{{ $randomInt(1, 20) }}"
+            sizeId: "{{ $randomInt(1, 5) }}"
+            quantity: 1
+      - get:
+          url: "/api/cart"
+      - post:
+          url: "/api/checkout"
+          json:
+            shippingAddress:
+              name: "Test User"
+              street: "123 Test St"
+              city: "Test City"
+              postalCode: "12345"
+              country: "UK"
+            paymentMethod: "simulated"
+
+  # High-frequency read operations
+  - name: "High-frequency reads"
+    weight: 30
+    flow:
+      - get:
+          url: "/api/products"
+          qs:
+            page: 1
+            pageSize: 12
+      - get:
+          url: "/api/trending"
+      - get:
+          url: "/api/search/suggestions"
+          qs:
+            q: "test"
+
+  # Admin operations under load
+  - name: "Admin under pressure"
+    weight: 15
+    flow:
+      - get:
+          url: "/api/admin/orders"
+      - get:
+          url: "/api/admin/products"
+      - get:
+          url: "/api/admin/analytics"
+
+  # Health monitoring during spike
+  - name: "Health checks during spike"
+    weight: 5
+    flow:
+      - get:
+          url: "/api/health"
+      - get:
+          url: "/api/health/database"
+      - get:
+          url: "/api/health/redis"

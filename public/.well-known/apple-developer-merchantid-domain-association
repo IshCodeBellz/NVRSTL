@@ -1,0 +1,9 @@
+REPLACE_WITH_YOUR_APPLE_DOMAIN_ASSOCIATION_FILE_CONTENT
+
+# Instructions:
+
+# 1) In the Apple Pay / Stripe Dashboard, generate the domain association file for your merchant.
+
+# 2) Replace the entire contents of this file with the exact content provided (no extra whitespace).
+
+# 3) Commit and deploy; then verify the domain in Stripe/Apple.

@@ -1,0 +1,89 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    # Rapid load increase
+    - duration: 60
+      arrivalRate: 10
+    - duration: 60
+      arrivalRate: 50
+    - duration: 60
+      arrivalRate: 100
+    - duration: 60
+      arrivalRate: 200
+    - duration: 60
+      arrivalRate: 300
+    # Sustained high load
+    - duration: 300
+      arrivalRate: 250
+    # Gradual decrease
+    - duration: 60
+      arrivalRate: 100
+    - duration: 60
+      arrivalRate: 50
+    - duration: 60
+      arrivalRate: 10
+
+scenarios:
+  # Heavy database operations
+  - name: "Database intensive operations"
+    weight: 40
+    flow:
+      - get:
+          url: "/api/products"
+          qs:
+            page: "{{ $randomInt(1, 20) }}"
+            pageSize: 50
+            category: "{{ $pick('men', 'women', 'accessories') }}"
+            minPrice: "{{ $randomInt(10, 50) }}"
+            maxPrice: "{{ $randomInt(100, 200) }}"
+      - get:
+          url: "/api/admin/analytics"
+      - get:
+          url: "/api/admin/orders"
+          qs:
+            page: "{{ $randomInt(1, 10) }}"
+            status: "{{ $pick('PENDING', 'PROCESSING', 'SHIPPED') }}"
+
+  # Redis cache operations
+  - name: "Cache intensive operations"
+    weight: 30
+    flow:
+      - get:
+          url: "/api/products/{{ $randomInt(1, 50) }}"
+      - get:
+          url: "/api/search"
+          qs:
+            q: "{{ $pick('dress', 'shirt', 'shoes', 'jacket', 'bag') }}"
+      - get:
+          url: "/api/trending"
+      - get:
+          url: "/api/products/{{ $randomInt(1, 50) }}/related"
+
+  # Write operations (orders, cart updates)
+  - name: "Write intensive operations"
+    weight: 20
+    flow:
+      - post:
+          url: "/api/events"
+          json:
+            - productId: "{{ $randomInt(1, 50) }}"
+              type: "VIEW"
+            - productId: "{{ $randomInt(1, 50) }}"
+              type: "DETAIL_VIEW"
+      - post:
+          url: "/api/cart"
+          json:
+            productId: "{{ $randomInt(1, 50) }}"
+            sizeId: "{{ $randomInt(1, 10) }}"
+            quantity: "{{ $randomInt(1, 5) }}"
+
+  # Performance monitoring endpoints
+  - name: "Performance monitoring"
+    weight: 10
+    flow:
+      - get:
+          url: "/api/admin/performance"
+      - get:
+          url: "/api/admin/monitoring/shipping"
+      - get:
+          url: "/api/health"

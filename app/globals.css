@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #ffffff;
+
+  .input {
+    @apply w-full border border-neutral-300 dark:border-neutral-600 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-500 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white;
+  }
+
+  --color-fg: #111111;
+}
+
+html,
+body {
+  @apply h-full;
+}
+body {
+  @apply bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 antialiased transition-colors duration-300;
+}
+
+/* Scrollbar minimalist */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c2c2c2;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded px-4 py-2 text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Hero section buttons - maintain same appearance in light/dark mode */
+  .btn-primary {
+    @apply btn bg-black text-white hover:bg-neutral-800;
+  }
+
+  .btn-outline {
+    @apply btn border border-neutral-300 text-neutral-900 hover:bg-neutral-100;
+  }
+
+  /* Header dropdown styles */
+  .header-dropdown {
+    @apply absolute right-0 top-full mt-1 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 min-w-48 z-50;
+  }
+
+  /* Prevent header content overflow */
+  .header-nav {
+    @apply flex items-center gap-2 xl:gap-3;
+    min-width: 0; /* Allow flex items to shrink */
+  }
+
+  .header-nav > * {
+    flex-shrink: 0;
+  }
+
+  .badge {
+    @apply text-xs px-2 py-0.5 rounded bg-neutral-900 text-white;
+  }
+  .container-grid {
+    @apply grid gap-4 sm:gap-6;
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

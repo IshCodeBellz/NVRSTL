@@ -1,0 +1,191 @@
+name: CI
+
+on:
+  push:
+    branches: [main, fix/tests-stability/metrics-health]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  # (Optional) add security-events write if later integrating code scanning
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    env:
+      CI: true
+      NODE_ENV: test
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db"
+      DB_MASKED: "postgresql://postgres:***@localhost:5432/test_db"
+      NEXTAUTH_SECRET: "test-secret-for-ci"
+      NEXTAUTH_URL: "http://localhost:3000"
+      EMAIL_FROM: "test@example.com"
+      RESEND_API_KEY: "fake-key-for-ci"
+      STRIPE_SECRET_KEY: "sk_test_fake_key_for_ci"
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_fake_key_for_ci"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Run Lint Check
+        run: |
+          echo "Running lint checks..."
+          if npm run lint; then
+            echo "✅ Lint checks passed"
+          else
+            echo "❌ Lint checks failed"
+            exit 1
+          fi
+
+      - name: Create test environment file
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/test_db" > .env.local
+          echo "NEXTAUTH_SECRET=test-secret-for-ci" >> .env.local
+          echo "NEXTAUTH_URL=http://localhost:3000" >> .env.local
+          echo "EMAIL_FROM=test@example.com" >> .env.local
+          echo "RESEND_API_KEY=fake-key-for-ci" >> .env.local
+          echo "STRIPE_SECRET_KEY=sk_test_fake_key_for_ci" >> .env.local
+          echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_fake_key_for_ci" >> .env.local
+          echo "NODE_ENV=test" >> .env.local
+          echo "CI=true" >> .env.local
+
+      - name: Wait for PostgreSQL
+        env:
+          PGPASSWORD: postgres
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+
+          # Ensure clean database state
+          echo "Ensuring clean database state..."
+          psql -h localhost -U postgres -d test_db -c "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;" || echo "Database reset completed"
+
+      - name: Run Prisma Migrate (PostgreSQL)
+        env:
+          PGPASSWORD: postgres
+        run: |
+          echo "Attempting to apply migrations..."
+          echo "DATABASE_URL: $DB_MASKED"
+
+          # First check if migration directory exists and has migrations
+          if [ -d "prisma/migrations" ] && [ "$(ls -A prisma/migrations 2>/dev/null)" ]; then
+            echo "Migration files found, attempting migrate deploy..."
+            npx prisma migrate deploy
+          else
+            echo "No migrations found, using db push to create schema..."
+            npx prisma db push --skip-generate
+          fi
+
+          # Verify schema is created
+          echo "Verifying schema creation..."
+          psql -h localhost -U postgres -d test_db -c "\dt" || echo "Could not list tables"
+
+      - name: Seed (optional)
+        run: npm run prisma:seed || echo "Seed script optional – continuing"
+
+      - name: Debug Database Connection
+        env:
+          PGPASSWORD: postgres
+        run: |
+          echo "DATABASE_URL: $DB_MASKED"
+          cat .env.local || echo "No .env.local file"
+          psql -h localhost -U postgres -d test_db -c "SELECT version();" || echo "Direct psql connection failed"
+
+      - name: Test Prisma Connection
+        env:
+          PGPASSWORD: postgres
+        run: |
+          echo "Testing Prisma connection..."
+          # Explicitly provide the database URL so Prisma doesn't require --schema
+          if npx prisma db execute --url "$DATABASE_URL" --stdin <<< "SELECT 1 as test;"; then
+            echo "✅ Prisma connection successful"
+          else
+            echo "❌ Prisma connection test failed"
+            exit 1
+          fi
+
+          # Verify key tables exist
+          echo "Checking if tables exist..."
+          TABLE_COUNT=$(psql -h localhost -U postgres -d test_db -t -c "SELECT COUNT(*) FROM pg_tables WHERE schemaname = 'public';")
+          echo "Found $TABLE_COUNT tables in public schema"
+
+          if [ "$TABLE_COUNT" -gt 0 ]; then
+            echo "✅ Database schema successfully created"
+            psql -h localhost -U postgres -d test_db -c "SELECT tablename FROM pg_tables WHERE schemaname = 'public';" | head -10
+          else
+            echo "❌ No tables found in database"
+            exit 1
+          fi
+
+      - name: Run Tests
+        run: |
+          echo "Starting tests with environment:"
+          echo "DATABASE_URL: $DB_MASKED"
+          echo "NODE_ENV: $NODE_ENV"
+          echo "CI: $CI"
+
+          # DATABASE_URL is already set in job env, no need to validate
+          # The env variable is available throughout the job
+
+          # Run tests with proper error handling
+          if npm test; then
+            echo "✅ All tests passed"
+          else
+            echo "❌ Some tests failed"
+            exit 1
+          fi
+
+      - name: Build
+        run: |
+          echo "Building application..."
+          if npm run build; then
+            echo "✅ Build successful"
+          else
+            echo "❌ Build failed"
+            exit 1
+          fi
+
+      - name: Upload test results (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-or-raw-jest
+          path: |
+            jest-results.json
+            coverage
+          if-no-files-found: ignore

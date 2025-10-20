@@ -1,0 +1,319 @@
+"use client";
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useCart, useWishlist } from "@/components/providers/CartProvider";
+import { lineIdFor } from "@/lib/types";
+import Image from "next/image";
+import { useToast } from "@/components/providers/ToastProvider";
+import { ClientPrice } from "@/components/ui/ClientPrice";
+
+// "New In" shows the latest products by createdAt desc (reuses /api/products ordering)
+// Provides simple client pagination (page param to API) and basic search.
+
+interface Product {
+  id: string;
+  name: string;
+  priceCents: number;
+  price?: number;
+  image: string;
+  images: { url: string }[];
+  category?: { name: string };
+  brand?: { name: string };
+  sizes: string[];
+}
+
+export default function NewInPage() {
+  const { toggle, has } = useWishlist();
+  const { addItem } = useCart();
+  const { push } = useToast();
+  const [items, setItems] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(24);
+  const [total, setTotal] = useState(0);
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    async function load() {
+      setLoading(true);
+      const params = new URLSearchParams();
+      params.set("page", String(page));
+      params.set("pageSize", String(pageSize));
+      if (query) params.set("q", query);
+      try {
+        const res = await fetch(`/api/products?${params.toString()}`, {
+          signal: controller.signal,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setItems(
+            (data.items || []).map((p: Partial<Product>) => ({
+              id: p.id || "",
+              name: p.name || "",
+              priceCents: p.priceCents ?? Math.round((p.price || 0) * 100),
+              price: p.price,
+              image: p.image || "",
+              images: p.images || [],
+              category: p.category,
+              brand: p.brand,
+              sizes: p.sizes || [],
+            }))
+          );
+          setTotal(data.total || 0);
+        }
+      } catch {
+        /* ignore */
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+    return () => controller.abort();
+  }, [page, pageSize, query]);
+
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  return (
+    <div className="container mx-auto px-4 py-10 space-y-10">
+      <header className="flex flex-col md:flex-row md:items-end gap-4">
+        <h1 className="text-3xl font-bold">New In</h1>
+        <div className="flex items-center gap-2">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-neutral-400 border-t-transparent rounded-full animate-spin" />
+                Loading latest products...
+              </span>
+            ) : (
+              `Showing ${items.length} of ${total} latest items`
+            )}
+          </p>
+        </div>
+      </header>
+      <div className="flex flex-wrap gap-4 items-end text-sm">
+        <div className="flex flex-col gap-1">
+          <label className="text-xs uppercase tracking-wide font-semibold">
+            Search
+          </label>
+          <input
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setPage(1);
+            }}
+            placeholder="Filter new arrivals"
+            disabled={loading}
+            className="border border-neutral-300 dark:border-neutral-600 rounded px-2 py-1 bg-white dark:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed"
+          />
+        </div>
+        {(query || page > 1) && (
+          <button
+            onClick={() => {
+              setQuery("");
+              setPage(1);
+            }}
+            disabled={loading}
+            className="btn-outline text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Reset
+          </button>
+        )}
+      </div>
+      {items.length === 0 && !loading && (
+        <div className="text-center py-12">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+            No new products found.
+          </p>
+          {query && (
+            <button
+              onClick={() => {
+                setQuery("");
+                setPage(1);
+              }}
+              className="btn-outline text-xs"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {loading
+          ? // Loading skeleton
+            Array.from({ length: 20 }).map((_, i) => (
+              <div
+                key={`skeleton-${i}`}
+                className="group relative bg-neutral-100 dark:bg-neutral-800 aspect-[3/4] overflow-hidden rounded flex flex-col animate-pulse"
+              >
+                <div className="w-full h-3/4 bg-neutral-200 dark:bg-neutral-700" />
+                <div className="p-2 space-y-2">
+                  <div className="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-3/4" />
+                  <div className="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-1/2" />
+                </div>
+              </div>
+            ))
+          : items.map((p) => {
+              const id = lineIdFor(p.id);
+              const inWish = has(id);
+              const hasSizes = Array.isArray(p.sizes) && p.sizes.length > 0;
+              return (
+                <div
+                  key={p.id}
+                  className="group relative bg-neutral-100 aspect-[3/4] overflow-hidden rounded flex flex-col"
+                >
+                  <Link href={`/product/${p.id}`} className="absolute inset-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <Image
+                      src={p.image}
+                      alt={p.name}
+                      width={400}
+                      height={500}
+                      className="object-cover w-full h-full group-hover:scale-105 transition-transform"
+                    />
+                  </Link>
+                  <div className="absolute top-2 right-2 flex flex-col gap-2">
+                    <button
+                      onClick={() => {
+                        const already = inWish;
+                        toggle({
+                          productId: p.id,
+                          name: p.name,
+                          priceCents: p.priceCents,
+                          image: p.image,
+                        });
+                        push({
+                          type: already ? "info" : "success",
+                          message: already ? "Removed from saved" : "Saved",
+                        });
+                      }}
+                      className={`rounded-full h-8 w-8 text-[11px] font-semibold flex items-center justify-center backdrop-blur bg-white/80 border ${
+                        inWish ? "border-neutral-900" : "border-transparent"
+                      }`}
+                    >
+                      {inWish ? "♥" : "♡"}
+                    </button>
+                    <div className="relative">
+                      <button
+                        onClick={(e) => {
+                          if (hasSizes) {
+                            // Open size chooser popover (toggle) instead of immediate add
+                            const host = (e.currentTarget
+                              .parentElement as HTMLElement)!.querySelector<HTMLElement>(
+                              "[data-size-popover]"
+                            );
+                            if (host) host.toggleAttribute("data-open");
+                            return;
+                          }
+                          addItem(
+                            {
+                              productId: p.id,
+                              name: p.name,
+                              priceCents: p.priceCents,
+                              image: p.image,
+                            },
+                            1
+                          );
+                          push({ type: "success", message: "Added to bag" });
+                        }}
+                        className="rounded-full h-8 w-8 text-[15px] leading-none font-semibold flex items-center justify-center backdrop-blur bg-white/80 border border-transparent"
+                        aria-label={hasSizes ? "Choose size" : "Add to bag"}
+                      >
+                        +
+                      </button>
+                      {hasSizes && (
+                        <div
+                          data-size-popover
+                          className="absolute top-9 right-0 z-20 hidden data-[open]:flex flex-col gap-1 bg-white shadow-lg border border-neutral-200 rounded p-2 min-w-[120px]"
+                        >
+                          <div className="text-[10px] uppercase tracking-wide font-semibold text-neutral-500 pb-1 border-b mb-1">
+                            Select size
+                          </div>
+                          <div className="flex flex-wrap gap-1">
+                            {p.sizes.map((s: string) => (
+                              <button
+                                key={s}
+                                onClick={() => {
+                                  addItem(
+                                    {
+                                      productId: p.id,
+                                      name: p.name,
+                                      priceCents: p.priceCents,
+                                      image: p.image,
+                                      size: s,
+                                    },
+                                    1
+                                  );
+                                  push({
+                                    type: "success",
+                                    message: `Added ${s}`,
+                                  });
+                                  const host =
+                                    (document.querySelector(
+                                      `[data-size-popover][data-open]`
+                                    ) as HTMLElement) || null;
+                                  host?.removeAttribute("data-open");
+                                }}
+                                className="px-2 py-1 text-[11px] rounded border border-neutral-300 hover:bg-neutral-100 active:bg-neutral-200"
+                              >
+                                {s}
+                              </button>
+                            ))}
+                          </div>
+                          <button
+                            onClick={() => {
+                              const host =
+                                (document.querySelector(
+                                  `[data-size-popover][data-open]`
+                                ) as HTMLElement) || null;
+                              host?.removeAttribute("data-open");
+                            }}
+                            className="mt-2 text-[10px] text-neutral-500 hover:text-neutral-700"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/70 to-transparent text-white text-xs">
+                    <div className="font-semibold truncate" title={p.name}>
+                      {p.name}
+                    </div>
+                    <div className="text-white">
+                      <ClientPrice
+                        cents={p.priceCents}
+                        size="sm"
+                        className="text-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+      </div>
+      {totalPages > 1 && (
+        <div className="flex items-center gap-4 justify-center pt-4">
+          <button
+            disabled={page === 1 || loading}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="btn-outline text-xs disabled:opacity-40"
+          >
+            Prev
+          </button>
+          <span className="text-xs">
+            Page {page} / {totalPages}
+          </span>
+          <button
+            disabled={page === totalPages || loading}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            className="btn-outline text-xs disabled:opacity-40"
+          >
+            Next
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}

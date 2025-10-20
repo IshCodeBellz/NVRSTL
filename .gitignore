@@ -1,0 +1,150 @@
+### Dependencies
+node_modules/
+pnpm-lock.yaml.tmp
+
+### Next.js build output
+.next/
+/.next/cache/
+out/
+
+### Vercel / deployment
+.vercel/
+
+### Turbo / build system
+.turbo/
+
+### Env files
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test
+.env.production.local
+.envrc
+.env.backup
+
+### Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+*.log
+debug.log
+debug-*.log
+
+### Profiling / diagnostics
+profile-*.
+heapdump-*.heapsnapshot
+
+### TypeScript incremental build info
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+### Coverage / build artifacts
+coverage/
+dist/
+build/
+reports/
+artifacts/
+tmp/
+temp/
+
+# Keep server reports module tracked
+!lib/server/reports/
+!lib/server/reports/**
+
+### Next.js specific
+.next/
+out/
+.vercel/
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+### Caches
+.cache/
+.eslintcache
+.stylelintcache
+/.parcel-cache
+node_modules/.cache/
+.swc/
+
+### Storybook
+storybook-static/
+
+### OS / Editor
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+
+### Misc
+*.tgz
+*.orig
+*.swp
+node_modules
+
+### Prisma / local databases
+prisma/*.db
+prisma/*.db-journal
+prisma/migrations/**/README.md.bak
+
+### SQLite root-level files
+*.db
+*.db-journal
+
+### Local secrets / keys
+*.key
+*.pem
+*.crt
+*.pfx
+
+### Backup files
+*~
+*.bak
+*.backup
+
+### Lockfile backups
+package-lock.json.*
+yarn.lock.*
+pnpm-lock.yaml.*
+
+### Image optimization caches
+**/.imagemin-cache
+
+### Sass / Less cache
+.sass-cache/
+
+### Node REPL history
+.node_repl_history
+
+### Coverage artifacts (nyc / c8 alt names)
+.nyc_output/
+
+### Test outputs
+jest-cache/
+jest-tmp/
+playwright-report/
+test-results/
+jest-results.json
+
+### Docker compose local volumes
+pgdata/
+
+### Prevent committing generated OpenAPI or similar unless intentional
+openapi.generated.*
+
+### IDE and editor files
+.vscode/settings.json.bak
+.idea/
+*.swp
+*.swo
+
+### Temporary files
+*~
+*.tmp
+*.temp

@@ -19,7 +19,12 @@ type OrderWithRelations = Order & {
   user?: User | null;
   shippingAddress?: Address | null;
   events: OrderEvent[];
-  shipment?: any | null;
+  shipment?: {
+    id: string;
+    trackingNumber: string;
+    carrier: string;
+    status: string;
+  } | null;
   shippedAt?: Date | null;
 };
 
@@ -54,7 +59,16 @@ export interface PackingSlip {
   orderId: string;
   pickingListId: string;
   customerName: string;
-  shippingAddress: any;
+  shippingAddress: {
+    fullName: string;
+    line1: string;
+    line2?: string;
+    city: string;
+    region?: string;
+    postalCode: string;
+    country: string;
+    phone?: string;
+  };
   items: Array<{
     productName: string;
     sku: string;
@@ -249,7 +263,24 @@ export class FulfillmentService {
         customerName: `${order.user?.firstName || ""} ${
           order.user?.lastName || ""
         }`.trim(),
-        shippingAddress: order.shippingAddress,
+        shippingAddress: order.shippingAddress
+          ? {
+              fullName: order.shippingAddress.fullName,
+              line1: order.shippingAddress.line1,
+              line2: order.shippingAddress.line2 || undefined,
+              city: order.shippingAddress.city,
+              region: order.shippingAddress.region || undefined,
+              postalCode: order.shippingAddress.postalCode,
+              country: order.shippingAddress.country,
+              phone: order.shippingAddress.phone || undefined,
+            }
+          : {
+              fullName: "",
+              line1: "",
+              city: "",
+              postalCode: "",
+              country: "",
+            },
         items: order.items.map((item) => ({
           productName: item.product.name,
           sku: item.product.sku,
@@ -309,35 +340,13 @@ export class FulfillmentService {
         throw new Error("Order or shipping address not found");
       }
 
-      // Convert address to shipping format
-      const shippingAddress = {
-        fullName: order.shippingAddress.fullName,
-        line1: order.shippingAddress.line1,
-        line2: order.shippingAddress.line2 || undefined,
-        city: order.shippingAddress.city,
-        region: order.shippingAddress.region || undefined,
-        postalCode: order.shippingAddress.postalCode,
-        country: order.shippingAddress.country,
-        phone: order.shippingAddress.phone || undefined,
-      };
-
-      // Get warehouse address (mock for now)
-      const warehouseAddress = {
-        fullName: "DY Official Warehouse",
-        line1: "123 Fulfillment Street",
-        city: "London",
-        postalCode: "E1 6AN",
-        country: "GB",
-      };
+      // Addresses are handled internally by the shipping service
 
       // Create shipping label
       const shippingLabel = await ShippingService.createShippingLabel(
         orderId,
         packingDetails.carrier,
-        packingDetails.service,
-        warehouseAddress,
-        shippingAddress,
-        packingDetails.packages
+        packingDetails.service
       );
 
       // Log packing completion
@@ -373,7 +382,12 @@ export class FulfillmentService {
     status: string;
     pickingList?: PickingList;
     packingSlip?: PackingSlip;
-    shipment?: any;
+    shipment?: {
+      id: string;
+      trackingNumber: string;
+      carrier: string;
+      status: string;
+    };
     timeline: Array<{
       stage: string;
       status: "PENDING" | "IN_PROGRESS" | "COMPLETED";
@@ -448,7 +462,7 @@ export class FulfillmentService {
 
       return {
         status: order.status,
-        shipment: order.shipment,
+        shipment: order.shipment || undefined,
         timeline,
       };
     } catch (error) {
@@ -532,7 +546,7 @@ export class FulfillmentService {
    * Calculate order priority based on various factors
    */
   private static calculateOrderPriority(
-    order: any
+    order: OrderWithRelations
   ): "LOW" | "NORMAL" | "HIGH" | "URGENT" {
     const orderValue = order.totalCents;
     const orderAge = Date.now() - new Date(order.createdAt).getTime();

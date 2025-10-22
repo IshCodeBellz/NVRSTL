@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ClientPrice } from "@/components/ui/ClientPrice";
 
-// "New In" shows the latest products by createdAt desc (reuses /api/products ordering)
+// "Drops" shows the latest products by createdAt desc (reuses /api/products ordering)
 // Provides simple client pagination (page param to API) and basic search.
 
 interface Product {
@@ -22,7 +22,7 @@ interface Product {
   sizes: string[];
 }
 
-export default function NewInPage() {
+export default function DropsPage() {
   const { toggle, has } = useWishlist();
   const { addItem } = useCart();
   const { push } = useToast();
@@ -77,7 +77,7 @@ export default function NewInPage() {
   return (
     <div className="container mx-auto px-4 py-10 space-y-10">
       <header className="flex flex-col md:flex-row md:items-end gap-4">
-        <h1 className="text-3xl font-bold">New In</h1>
+        <h1 className="text-3xl font-bold">🔥 JUST DROPPED 🔥</h1>
         <div className="flex items-center gap-2">
           <p className="text-sm text-neutral-600 dark:text-neutral-400">
             {loading ? (

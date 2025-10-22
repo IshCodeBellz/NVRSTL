@@ -8,7 +8,7 @@ This CMS system now supports dynamic image management for your homepage. You can
 
 - **Hero Images**: Two side-by-side images in the main hero section
 - **Category Images**: Background images for each category card (Denim, Shoes, Accessories, etc.)
-- **New In Banner**: Background image for the promotional "New In" section
+- **Drops Banner**: Background image for the promotional "Drops" section
 
 ### How to Use
 
@@ -22,7 +22,7 @@ This CMS system now supports dynamic image management for your homepage. You can
 - **Format**: JPG, PNG, WebP, or other web-compatible formats
 - **Hero Images**: Recommended size 900x1200px for best quality
 - **Category Images**: Recommended size 800x1000px
-- **New In Banner**: Recommended size 1200x600px for wide banner
+- **Drops Banner**: Recommended size 1200x600px for wide banner
 - **URLs**: Must be publicly accessible HTTPS URLs
 
 ### Image Hosting Options

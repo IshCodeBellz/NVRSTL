@@ -35,7 +35,7 @@ Educational fashion e‑commerce demo (formerly "ASOS Clone", now "NVRSTL") show
 ### 2.1 User & Storefront
 
 - Responsive Next.js 14 (RSC) UI with Tailwind
-- Home: Hero, Trending Now (time-decay score), New In, Recently Viewed
+- Home: Hero, Trending Now (time-decay score), Drops, Recently Viewed
 - Category & search pages: client filters (size, price), relevance sorting, plural & synonym expansion
 - Product Detail: multi-image gallery, structured data JSON-LD, size variant enforcement, wishlist toggle
 - Cart & Wishlist: local-first → sync strategy, optimistic updates, enforced size selection

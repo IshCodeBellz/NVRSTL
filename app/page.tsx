@@ -52,11 +52,11 @@ export default async function HomePage() {
         )}
         <div className="relative z-10 text-center px-8 max-w-6xl">
           <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white font-carbon uppercase leading-tight">
-            Discover Fashion From Around The World
+            REP YOUR GRIND. OWN YOUR STYLE.
           </h1>
           <p className="mt-8 text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-            Shop the latest trends in clothing, shoes, accessories and more from
-            over 850 brands worldwide.
+            Global sportswear built for performance and style - made for
+            everyday hustle. Rep your grind. Own your style.
           </p>
           <div className="mt-12 flex flex-wrap justify-center gap-6">
             <Link

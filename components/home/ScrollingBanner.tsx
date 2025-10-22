@@ -12,7 +12,7 @@ const SCROLLING_TEXT = [
 
 export function ScrollingBanner() {
   return (
-    <section className="bg-gray-900 py-16">
+    <section className="bg-gray-900 py-8">
       <div className="relative overflow-hidden">
         {/* Track holds two identical groups */}
         <div className="marquee" role="marquee" aria-label="Scrolling benefits">

@@ -7,9 +7,6 @@ pnpm-lock.yaml.tmp
 /.next/cache/
 out/
 
-### Vercel / deployment
-.vercel/
-
 ### Turbo / build system
 .turbo/
 

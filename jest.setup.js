@@ -195,6 +195,16 @@ global.setImmediate =
 
 global.clearImmediate = global.clearImmediate || clearTimeout;
 
+// Mock fetch for Node.js environment
+global.fetch =
+  global.fetch ||
+  jest.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: jest.fn().mockResolvedValue({}),
+    text: jest.fn().mockResolvedValue(""),
+  });
+
 // Mock NextRequest
 global.NextRequest =
   global.NextRequest ||
@@ -294,6 +304,21 @@ jest.mock("@/lib/server/prisma", () => {
         // For discount codes, search by code field
         for (const record of dataMap.values()) {
           if (record.code === where.code) {
+            return Promise.resolve(record);
+          }
+        }
+        return Promise.resolve(null);
+      }
+      // Default behavior for other fields
+      const key = Object.values(where)[0];
+      return Promise.resolve(dataMap.get(key) || null);
+    }),
+    findFirst: jest.fn().mockImplementation(({ where }) => {
+      // Handle different where clauses
+      if (where.orderId) {
+        // For payment records, search by orderId field
+        for (const record of dataMap.values()) {
+          if (record.orderId === where.orderId) {
             return Promise.resolve(record);
           }
         }

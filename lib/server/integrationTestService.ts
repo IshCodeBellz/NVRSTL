@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from "./prisma";
 import { MFAService } from "./mfa";
 import { SocialWishlistService } from "./socialWishlistService";
@@ -14,11 +13,9 @@ export class IntegrationTestService {
    */
   static async testDatabaseConnectivity(): Promise<{
     success: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     results: Record<string, any>;
     errors: string[];
   }> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const results: Record<string, any> = {};
     const errors: string[] = [];
 

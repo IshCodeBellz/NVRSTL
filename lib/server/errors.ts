@@ -6,7 +6,6 @@ export interface ErrorContext {
   userId?: string;
   route?: string;
   operation?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: Record<string, any>;
 }
 
@@ -192,7 +191,6 @@ export function withErrorHandling<T extends unknown[], R>(
 // Performance monitoring utility
 export function trackPerformance(
   operation: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: Record<string, any>
 ) {
   const span = Sentry.startSpan(
@@ -228,7 +226,6 @@ export function trackPerformance(
 export function reportHealthStatus(
   component: string,
   status: "healthy" | "degraded" | "critical",
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: Record<string, any>
 ) {
   if (status !== "healthy") {

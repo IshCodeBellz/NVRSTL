@@ -1,13 +1,13 @@
 "use client";
 
 const SCROLLING_TEXT = [
-  "Virtually",
-  "Be Healthy and Strong",
-  "Train Our Bodies",
-  "Make Fashion as a Fun Hobby",
-  "Express Your Style",
-  "Discover New Trends",
-  "Shop Global Brands",
+  "REP YOUR CITY",
+  "REP YOUR TEAM",
+  "GAME RECOGNIZE GAME",
+  "STYLE IN MOTION",
+  "BUILT DIFFERENT",
+  "NVRSTL ENERGY",
+  "WEAR THE WIN",
 ];
 
 export function ScrollingBanner() {

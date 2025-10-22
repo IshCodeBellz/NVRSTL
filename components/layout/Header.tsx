@@ -15,6 +15,7 @@ export function Header() {
   const { data: session, status } = useSession();
   const prevAuth = useRef<boolean>(!!session);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [shopDropdownOpen, setShopDropdownOpen] = useState(false);
   const menuOpenedAt = useRef<number>(0);
   const pathname = usePathname();
   const [paidCount, setPaidCount] = useState<number | null>(null);
@@ -278,6 +279,14 @@ export function Header() {
 
             {/* Mobile Controls */}
             <div className="flex md:hidden items-center gap-3 ml-auto">
+              {/* Currency Selector for Mobile */}
+              <div className="text-white [&_button]:text-[#f5f5f5] [&_button]:hover:bg-gray-800 [&_button]:hover:text-[#f5f5f5] [&_button]:currency-selector [&_button]:currency-selector-button [&_button]:border [&_button]:border-gray-600 [&_button]:rounded-lg [&_button]:px-3 [&_button]:py-2 [&_button]:bg-gray-900 [&_button]:hover:border-gray-500 [&_button]:transition-all [&_button]:duration-200 [&_div]:currency-dropdown [&_button]:currency-dropdown-item">
+                <CurrencySelector
+                  variant="minimal"
+                  size="sm"
+                  showLabel={false}
+                />
+              </div>
               <Link
                 href="/saved"
                 className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-600 text-white hover:bg-gray-800 transition-colors"
@@ -337,41 +346,103 @@ export function Header() {
 
           {/* Mobile Search Bar with Currency Selector */}
           <div className="md:hidden pb-6">
-            <div className="flex items-center gap-4 mb-4">
-              {/* Currency Selector for Mobile */}
-              <div className="text-white [&_button]:text-[#f5f5f5] [&_button]:hover:bg-gray-800 [&_button]:hover:text-[#f5f5f5] [&_button]:currency-selector [&_button]:currency-selector-button [&_button]:border [&_button]:border-gray-600 [&_button]:rounded-lg [&_button]:px-3 [&_button]:py-2 [&_button]:bg-gray-900 [&_button]:hover:border-gray-500 [&_button]:transition-all [&_button]:duration-200 [&_div]:currency-dropdown [&_button]:currency-dropdown-item">
-                <CurrencySelector
-                  variant="minimal"
-                  size="sm"
-                  showLabel={false}
-                />
-              </div>
-            </div>
             <EnhancedSearchBar />
           </div>
 
           {/* Navigation Row - Desktop Only */}
           <div className="hidden md:block border-t border-gray-800">
-            <nav className="flex items-center justify-center gap-6 lg:gap-8 xl:gap-10 py-4 overflow-x-auto">
+            <nav className="flex items-center justify-center gap-4 lg:gap-6 xl:gap-8 py-4 flex-wrap">
               <Link
                 href="/new-in"
-                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
+                className="text-sm font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 🔥 Drops
               </Link>
               <Link
                 href="/womens"
-                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
+                className="text-sm font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 Women
               </Link>
               <Link
                 href="/mens"
-                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
+                className="text-sm font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 Men
               </Link>
-              <Link
+              <div className="relative group">
+                <Link
+                  href="/shop"
+                  className="text-sm font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors flex items-center"
+                  onMouseEnter={() => setShopDropdownOpen(true)}
+                  onMouseLeave={() => setShopDropdownOpen(false)}
+                >
+                  Shop
+                  <svg
+                    className={`ml-1 h-4 w-4 transition-transform duration-200 ${
+                      shopDropdownOpen ? "rotate-180" : "rotate-0"
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </Link>
+
+                {/* Dropdown Menu */}
+                <div
+                  className={`absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-[9999] transition-all duration-200 ${
+                    shopDropdownOpen
+                      ? "opacity-100 visible"
+                      : "opacity-0 invisible"
+                  }`}
+                  onMouseEnter={() => setShopDropdownOpen(true)}
+                  onMouseLeave={() => setShopDropdownOpen(false)}
+                >
+                  <Link
+                    href="/shop/football"
+                    className="flex items-center px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors"
+                  >
+                    <span className="text-lg mr-3">⚽</span>
+                    <span className="font-medium">Football</span>
+                  </Link>
+                  <Link
+                    href="/shop/international"
+                    className="flex items-center px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors"
+                  >
+                    <span className="text-lg mr-3">🌍</span>
+                    <span className="font-medium">International</span>
+                  </Link>
+                  <Link
+                    href="/shop/nba"
+                    className="flex items-center px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors"
+                  >
+                    <span className="text-lg mr-3">🏀</span>
+                    <span className="font-medium">NBA</span>
+                  </Link>
+                  <Link
+                    href="/shop/nfl"
+                    className="flex items-center px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors"
+                  >
+                    <span className="text-lg mr-3">🏈</span>
+                    <span className="font-medium">NFL</span>
+                  </Link>
+                  <Link
+                    href="/shop/custom"
+                    className="flex items-center px-4 py-3 text-gray-800 hover:bg-gray-100 transition-colors"
+                  >
+                    <span className="text-lg mr-3">👕</span>
+                    <span className="font-medium">Custom</span>
+                  </Link>
+                </div>
+              </div>
+              {/* <Link
                 href="/shoes"
                 className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
@@ -382,10 +453,10 @@ export function Header() {
                 className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 Accessories
-              </Link>
+              </Link> */}
               <Link
                 href="/brands"
-                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
+                className="text-sm font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 Brands
               </Link>
@@ -542,6 +613,46 @@ export function Header() {
                         {item.label}
                       </Link>
                     ))}
+                  </div>
+
+                  {/* Sports Categories */}
+                  <div className="pt-3 border-t border-gray-800">
+                    <p className="text-[10px] font-bold tracking-wide text-gray-400 uppercase mb-2 font-carbon">
+                      Sports
+                    </p>
+                    <div className="space-y-2">
+                      {[
+                        {
+                          href: "/shop/football",
+                          label: "⚽ Football",
+                          emoji: "⚽",
+                        },
+                        {
+                          href: "/shop/international",
+                          label: "🌍 International",
+                          emoji: "🌍",
+                        },
+                        { href: "/shop/nba", label: "🏀 NBA", emoji: "🏀" },
+                        { href: "/shop/nfl", label: "🏈 NFL", emoji: "🏈" },
+                        {
+                          href: "/shop/custom",
+                          label: "👕 Custom",
+                          emoji: "👕",
+                        },
+                      ].map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center px-2 py-2 rounded hover:bg-gray-800 border border-transparent focus:outline-none focus:ring-2 focus:ring-gray-600 text-gray-400 hover:text-white transition-colors font-carbon uppercase tracking-wider text-sm"
+                        >
+                          <span className="text-lg mr-3">{item.emoji}</span>
+                          <span>
+                            {item.label.replace(item.emoji + " ", "")}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
 
                   {/* Subcategories */}

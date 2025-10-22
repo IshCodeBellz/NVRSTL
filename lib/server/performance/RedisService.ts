@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Redis from "ioredis";
 import { perfMonitor } from "@/lib/server/monitoring/performance";
 import { alerts } from "@/lib/server/monitoring/alerts";

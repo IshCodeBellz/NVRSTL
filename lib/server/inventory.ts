@@ -27,7 +27,6 @@ export async function decrementSizeStock(
   if (isPostgres) {
     // Postgres dialect (RETURNING) — use $executeRawUnsafe, which returns number of rows affected.
     // Using any here is necessary due to Prisma transaction typing limitations with raw SQL
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const affected = await (tx as any).$executeRawUnsafe(
       `UPDATE "SizeVariant" SET "stock" = "stock" - $1 WHERE "id" = $2 AND "stock" >= $1`,
       qty,
@@ -37,7 +36,6 @@ export async function decrementSizeStock(
   }
   // SQLite path — use positional parameters.
   // Using any here is necessary due to Prisma transaction typing limitations with raw SQL
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const affected = await (tx as any).$executeRawUnsafe(
     `UPDATE SizeVariant SET stock = stock - ? WHERE id = ? AND stock >= ?`,
     qty,
@@ -147,7 +145,6 @@ export async function restoreSizeStock(
     dbUrl.startsWith("postgres://") || dbUrl.startsWith("postgresql://");
 
   if (isPostgres) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const affected = await (tx as any).$executeRawUnsafe(
       `UPDATE "SizeVariant" SET "stock" = "stock" + $1 WHERE "id" = $2`,
       qty,
@@ -157,7 +154,6 @@ export async function restoreSizeStock(
   }
 
   // SQLite path
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const affected = await (tx as any).$executeRawUnsafe(
     `UPDATE SizeVariant SET stock = stock + ? WHERE id = ?`,
     qty,

@@ -600,8 +600,9 @@ export function Header() {
                       { href: "/new-in", label: "🔥 Drops" },
                       { href: "/womens", label: "Women" },
                       { href: "/mens", label: "Men" },
-                      { href: "/footwear", label: "Shoes" },
-                      { href: "/accessories", label: "Accessories" },
+                      // { href: "/footwear", label: "Shoes" },
+                      // { href: "/accessories", label: "Accessories" },
+                      { href: "/shop", label: "Shop" },
                       { href: "/brands", label: "Brands" },
                     ].map((item) => (
                       <Link

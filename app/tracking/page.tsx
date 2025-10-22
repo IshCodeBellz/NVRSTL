@@ -133,9 +133,9 @@ function TrackingPageContent() {
 
   useEffect(() => {
     // Check URL parameters for tracking info
-    const tracking = searchParams.get("tracking");
-    const orderId = searchParams.get("order");
-    const email = searchParams.get("email");
+    const tracking = searchParams?.get("tracking");
+    const orderId = searchParams?.get("order");
+    const email = searchParams?.get("email");
 
     if (tracking) {
       setSearchInput(tracking);

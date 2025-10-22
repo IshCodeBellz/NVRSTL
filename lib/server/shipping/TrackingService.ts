@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from "../prisma";
 import { OrderEventService } from "../orderEventService";
 import { OrderNotificationHandler } from "../notifications/OrderNotificationHandler";

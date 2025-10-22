@@ -16,8 +16,8 @@ function MFAVerificationContent() {
   const [resendCooldown, setResendCooldown] = useState(0);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const email = searchParams.get("email") || "";
-  const callbackUrl = searchParams.get("callbackUrl") || "";
+  const email = searchParams?.get("email") || "";
+  const callbackUrl = searchParams?.get("callbackUrl") || "";
 
   useEffect(() => {
     // Focus first input on mount

@@ -120,7 +120,7 @@ export default function SearchFilters({ facets }: { facets?: Facets }) {
     // Parse current filters from URL
     const filters: Record<string, string[]> = {};
     filterGroups.forEach((group) => {
-      const value = searchParams.get(group.id);
+      const value = searchParams?.get(group.id);
       if (value) {
         filters[group.id] = value.split(",");
       }
@@ -149,7 +149,7 @@ export default function SearchFilters({ facets }: { facets?: Facets }) {
     setAppliedFilters(newFilters);
 
     // Update URL
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams || undefined);
 
     Object.keys(newFilters).forEach((key) => {
       if (newFilters[key].length > 0) {
@@ -164,7 +164,7 @@ export default function SearchFilters({ facets }: { facets?: Facets }) {
 
   function clearAllFilters() {
     setAppliedFilters({});
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams || undefined);
     filterGroups.forEach((group) => {
       params.delete(group.id);
     });

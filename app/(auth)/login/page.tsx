@@ -11,7 +11,7 @@ function LoginForm() {
   const router = useRouter();
   const search = useSearchParams();
   const { data: session } = useSession();
-  const callbackUrl = search.get("callbackUrl") || "/";
+  const callbackUrl = search?.get("callbackUrl") || "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -81,7 +81,7 @@ function LoginForm() {
   // If already logged in and admin, auto-redirect away from login
   if ((session as ExtendedSession | null)?.user?.isAdmin) {
     if (typeof window !== "undefined") {
-      const target = search.get("callbackUrl");
+      const target = search?.get("callbackUrl");
       if (!target || target === "/" || target.startsWith("/login")) {
         router.replace("/admin");
       }

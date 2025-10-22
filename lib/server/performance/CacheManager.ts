@@ -258,7 +258,6 @@ export class CacheManager {
         // Identify cache hits and misses
         cachedProducts.forEach((product, index) => {
           if (product !== null) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             results[index] = product as any;
           } else {
             missingIds.push(productIds[index]);
@@ -280,13 +279,11 @@ export class CacheManager {
           });
 
           // Cache the fetched products and update results
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const cacheData: Record<string, any> = {};
 
           missingProducts.forEach((product) => {
             const index = productIds.indexOf(product.id);
             if (index !== -1) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               results[index] = product as any;
               cacheData[`product:${product.id}`] = product;
             }

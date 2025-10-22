@@ -81,12 +81,10 @@ interface ResponseLike {
 }
 
 // Simplified wrapper for Next.js route handlers
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function withRequest<T extends (...args: any[]) => Promise<Response>>(
   handler: T
 ): T {
   // Wrap a Next.js route handler to add a request id & latency logging
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async function wrapped(this: unknown, ...args: any[]) {
     const start = Date.now();
     const req = args[0] as RequestLike;

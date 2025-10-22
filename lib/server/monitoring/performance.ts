@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { performance } from "perf_hooks";
 import { captureException } from "@sentry/nextjs";
 import { alerts } from "./alerts";

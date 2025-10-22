@@ -55,20 +55,14 @@ function LoginForm() {
         }
       } else if (res?.ok) {
         // Successful login without MFA
-        setTimeout(async () => {
-          const { getSession } = await import("next-auth/react");
-          const s = (await getSession()) as ExtendedSession | null;
-          const isAdmin = s?.user?.isAdmin;
-          if (
-            isAdmin &&
-            (callbackUrl === "/" || callbackUrl.startsWith("/login"))
-          ) {
-            router.push("/admin");
+        // Use window.location.href for immediate redirect to ensure session is properly set
+        if (typeof window !== "undefined") {
+          if (callbackUrl === "/" || callbackUrl.startsWith("/login")) {
+            window.location.href = "/admin";
           } else {
-            router.push(callbackUrl);
+            window.location.href = callbackUrl;
           }
-          router.refresh();
-        }, 10);
+        }
       }
     } catch {
       // Error logging handled by form submission, just set user-facing error

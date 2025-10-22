@@ -250,8 +250,8 @@ export const authOptionsEnhanced: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/auth/signin",
-    error: "/auth/error",
+    signIn: "/login",
+    error: "/login",
   },
   events: {
     async signIn({ user, account, profile, isNewUser }) {

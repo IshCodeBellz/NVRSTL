@@ -1,6 +1,9 @@
 {
   "name": "nvrstl",
   "private": true,
+  "npmConfig": {
+    "legacy-peer-deps": true
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

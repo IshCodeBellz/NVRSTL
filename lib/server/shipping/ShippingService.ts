@@ -167,10 +167,7 @@ export class ShippingService {
   static async createShippingLabel(
     orderId: string,
     carrierName: string,
-    serviceType: string,
-    fromAddress: ShippingAddress,
-    toAddress: ShippingAddress,
-    packages: PackageDimensions[]
+    serviceType: string
   ): Promise<ShipmentLabel> {
     try {
       const config = this.CARRIERS[carrierName];
@@ -186,12 +183,7 @@ export class ShippingService {
         label = this.generateMockLabel(carrierName, serviceType);
       } else {
         // Use real carrier API
-        label = await this.createCarrierLabel(
-          config,
-          serviceType,
-          fromAddress,
-          toAddress
-        );
+        label = await this.createCarrierLabel(config, serviceType);
       }
 
       // Store shipment record in database
@@ -249,7 +241,7 @@ export class ShippingService {
       }
 
       // Use real carrier tracking API
-      return await this.getCarrierTracking(config, trackingNumber);
+      return await this.getCarrierTracking();
     } catch (error) {
       console.error(`Error tracking shipment ${trackingNumber}:`, error);
       return [];
@@ -544,18 +536,13 @@ export class ShippingService {
 
   private static async createCarrierLabel(
     config: CarrierConfig,
-    service: string,
-    fromAddress: ShippingAddress,
-    toAddress: ShippingAddress
+    service: string
   ): Promise<ShipmentLabel> {
     // TODO: Implement real carrier API calls
     return this.generateMockLabel(config.name, service);
   }
 
-  private static async getCarrierTracking(
-    config: CarrierConfig,
-    trackingNumber: string
-  ): Promise<TrackingUpdate[]> {
+  private static async getCarrierTracking(): Promise<TrackingUpdate[]> {
     // TODO: Implement real carrier API calls
     return this.getMockTrackingUpdates();
   }

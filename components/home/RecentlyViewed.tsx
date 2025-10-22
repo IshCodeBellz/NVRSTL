@@ -102,7 +102,7 @@ export function RecentlyViewed() {
   if (items === null || items.length < 3) return null;
 
   return (
-    <section className="bg-black py-24 border-t border-gray-800">
+    <section className="bg-black pt-12 border-t border-gray-800">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold tracking-tight font-carbon uppercase text-white">

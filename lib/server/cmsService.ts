@@ -338,9 +338,9 @@ export class CMSService {
         brands:
           (settings.categoryImageBrands as string) ||
           "https://picsum.photos/seed/brands/800/1000",
-        newIn:
-          (settings.categoryImageNewIn as string) ||
-          "https://picsum.photos/seed/newin/1200/600",
+        drops:
+          (settings.categoryImageDrops as string) ||
+          "https://picsum.photos/seed/Drops/1200/600",
       },
       categoryLabels: {
         denim: (settings.categoryLabelDenim as string) || "Denim",
@@ -412,7 +412,7 @@ export class CMSService {
         "sportswear",
         "dresses",
         "brands",
-        "newIn",
+        "drops",
       ];
 
       Object.entries(images.categoryImages).forEach(([category, imageUrl]) => {
@@ -548,7 +548,7 @@ export class CMSService {
         "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&h=1000&fit=crop",
       categoryImageBrands:
         "https://images.unsplash.com/photo-1516762689617-e1cffcef479d?w=800&h=1000&fit=crop",
-      categoryImageNewIn:
+      categoryImageDrops:
         "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1200&h=600&fit=crop",
       categoryLabelDenim: "Denim",
       categoryLabelShoes: "Shoes",

@@ -168,22 +168,22 @@ export function DynamicCategories({
           </Link>
         ))}
 
-        {/* New In banner spanning all columns */}
+        {/* Drops banner spanning all columns */}
         <Link
           href="/new-in"
           className="relative col-span-1 md:col-span-2 lg:col-span-3 h-[200px] md:h-[240px] overflow-hidden rounded-lg group flex items-center justify-center bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl"
-          aria-label="Shop New In arrivals"
+          aria-label="Shop Drops arrivals"
         >
           <div
             className="absolute inset-0 opacity-30 mix-blend-overlay bg-cover bg-center"
-            style={{ backgroundImage: `url('${categoryImages.newIn}')` }}
+            style={{ backgroundImage: `url('${categoryImages.Drops}')` }}
           />
           <div className="relative z-10 text-center px-8">
             <span className="block text-sm tracking-[0.3em] font-bold mb-2 font-carbon uppercase text-gray-300">
               JUST DROPPED
             </span>
             <span className="block text-3xl md:text-4xl font-black tracking-tight font-carbon uppercase text-white mb-4">
-              New In
+              Drops
             </span>
             <span className="inline-flex items-center gap-2 text-sm font-semibold bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20 group-hover:bg-white/20 transition-all font-carbon">
               <span className="inline-block h-2 w-2 rounded-full bg-green-400 animate-pulse" />

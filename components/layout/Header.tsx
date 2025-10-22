@@ -146,13 +146,13 @@ export function Header() {
                 Home
               </Link>
               <Link
-                href="/mens"
+                href="/discover"
                 className="text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors"
               >
                 Discover
               </Link>
               <Link
-                href="/womens"
+                href="/gallery"
                 className="text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors"
               >
                 Gallery
@@ -357,7 +357,7 @@ export function Header() {
                 href="/new-in"
                 className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
-                New In
+                🔥 Drops
               </Link>
               <Link
                 href="/womens"
@@ -389,6 +389,24 @@ export function Header() {
               >
                 Brands
               </Link>
+              {/* <Link
+                href="/discover"
+                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
+              >
+                Discover
+              </Link>
+              <Link
+                href="/gallery"
+                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
+              >
+                Gallery
+              </Link>
+              <Link
+                href="/contact"
+                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
+              >
+                Contact
+              </Link> */}
             </nav>
           </div>
         </div>
@@ -508,7 +526,7 @@ export function Header() {
                   {/* Primary Categories */}
                   <div className="space-y-3">
                     {[
-                      { href: "/new-in", label: "New In" },
+                      { href: "/new-in", label: "🔥 Drops" },
                       { href: "/womens", label: "Women" },
                       { href: "/mens", label: "Men" },
                       { href: "/footwear", label: "Shoes" },

@@ -1,15 +1,15 @@
-# 🎯 New In Page - Size Selection Fix
+# 🎯 Drops Page - Size Selection Fix
 
 ## Problem Identified
 
-The "New In" page was allowing users to add items to cart by clicking the "+" button without requiring size selection for products that have size variants (clothing, shoes, etc.).
+The "Drops" page was allowing users to add items to cart by clicking the "+" button without requiring size selection for products that have size variants (clothing, shoes, etc.).
 
 ## Root Cause Analysis
 
 ### Issue: Missing Size Selection Logic
 
 - **Category Pages**: Had proper size selection with popover UI for products with sizes
-- **New In Page**: Directly called `addItem()` without checking if product requires size selection
+- **Drops Page**: Directly called `addItem()` without checking if product requires size selection
 - **API Data**: Already provided `sizes` array in product response, but frontend wasn't using it
 
 ### Evidence Found
@@ -23,7 +23,7 @@ if (hasSizes) {
   // Add directly to cart
 }
 
-// New In page (before fix)
+// Drops page (before fix)
 onClick={() => {
   addItem({...}, 1);  // Always added directly!
 }}
@@ -179,7 +179,7 @@ addItem(
 
 ## Summary
 
-The New In page now has **identical size selection behavior** to the category pages. Users must select a size for clothing and shoes before adding to cart, while face/body products still add directly. This ensures:
+The Drops page now has **identical size selection behavior** to the category pages. Users must select a size for clothing and shoes before adding to cart, while face/body products still add directly. This ensures:
 
 - **No more accidental cart additions** without size selection
 - **Consistent user experience** across the entire site

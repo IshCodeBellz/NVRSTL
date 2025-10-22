@@ -26,7 +26,7 @@ async function main() {
     { slug: "accessories", name: "Accessories" },
     { slug: "sportswear", name: "Sportswear" },
     { slug: "face-body", name: "Face + Body" },
-    { slug: "new-in", name: "New In" },
+    { slug: "new-in", name: "Drops" },
   ];
 
   const brands = await Promise.all(

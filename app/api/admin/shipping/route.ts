@@ -7,28 +7,6 @@ import { ShippingService } from "@/lib/server/shipping/ShippingService";
 import { prisma } from "@/lib/server/prisma";
 import type { Prisma } from "@prisma/client";
 
-interface ShipmentRecord {
-  id: string;
-  orderId: string;
-  trackingNumber: string;
-  carrier: string;
-  service: string;
-  status: string;
-  cost: number;
-  estimatedDelivery?: Date | null;
-  actualDelivery?: Date | null;
-  createdAt: Date;
-  lastTrackedAt?: Date | null;
-  order?: {
-    id: string;
-    email: string;
-    status: string;
-    total: number;
-    customerName: string;
-    createdAt: Date;
-  };
-}
-
 type ShipmentRow = {
   id: string;
   orderId: string;

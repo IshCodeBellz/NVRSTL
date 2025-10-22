@@ -77,9 +77,9 @@ export class IPSecurityService {
   static async analyzeIP(ip: string): Promise<IPInfo> {
     try {
       const geoLocation = await this.getGeoLocation(ip);
-      const isVPN = await this.detectVPN(ip);
-      const isProxy = await this.detectProxy(ip);
-      const isTor = await this.detectTor(ip);
+      const isVPN = await this.detectVPN();
+      const isProxy = await this.detectProxy();
+      const isTor = await this.detectTor();
 
       const riskScore = this.calculateIPRiskScore({
         ip,
@@ -186,9 +186,9 @@ export class IPSecurityService {
     }
   }
 
-  static async detectVPN(ip: string): Promise<boolean> {
+  static async detectVPN(): Promise<boolean> {
     try {
-      const reverseDNS = await this.getReverseDNS(ip);
+      const reverseDNS = await this.getReverseDNS();
       if (reverseDNS) {
         return this.VPN_INDICATORS.some((d) => reverseDNS.includes(d));
       }
@@ -199,12 +199,12 @@ export class IPSecurityService {
     }
   }
 
-  static async detectProxy(_ip: string): Promise<boolean> {
+  static async detectProxy(): Promise<boolean> {
     // Placeholder for proxy detection
     return false;
   }
 
-  static async detectTor(_ip: string): Promise<boolean> {
+  static async detectTor(): Promise<boolean> {
     // Placeholder for Tor detection
     return false;
   }
@@ -244,7 +244,7 @@ export class IPSecurityService {
     return ranges.some((r) => r.test(ip));
   }
 
-  static async getReverseDNS(_ip: string): Promise<string | null> {
+  static async getReverseDNS(): Promise<string | null> {
     // Stubbed: return null in this environment
     return null;
   }
@@ -328,7 +328,7 @@ export class IPSecurityService {
     };
   }
 
-  static async getIPReputation(_ip: string): Promise<{
+  static async getIPReputation(): Promise<{
     reputation: "good" | "bad" | "unknown";
     sources: string[];
     details: string;

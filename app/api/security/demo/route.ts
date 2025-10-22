@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
         break;
 
       case "ip_analysis":
-        const ipReputation = await IPSecurityService.getIPReputation(ip);
+        const ipReputation = await IPSecurityService.getIPReputation();
         actionResult = {
           ipAnalysis: {
             ...ipInfo,

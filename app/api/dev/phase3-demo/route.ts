@@ -49,9 +49,7 @@ export async function GET() {
       "prod_1",
       "view"
     );
-    const userPreferences = await PersonalizationService.getUserPreferences(
-      "demo_user_123"
-    );
+    const userPreferences = await PersonalizationService.getUserPreferences();
 
     logger.info("✅ User Preferences:", {
       topCategories: userPreferences.categories.slice(0, 3).map((c) => c.name),
@@ -78,14 +76,10 @@ export async function GET() {
       "var_1",
       25,
       "in",
-      "Stock replenishment demo",
-      "admin_demo"
+      "Stock replenishment demo"
     );
 
-    const reservation = await InventoryService.reserveStock(
-      [{ productId: "prod_1", variantId: "var_1", quantity: 2 }],
-      "order_demo_123"
-    );
+    const reservation = await InventoryService.reserveStock();
 
     logger.info("✅ Stock Operations:", {
       stockUpdateSuccess: stockUpdate.success,

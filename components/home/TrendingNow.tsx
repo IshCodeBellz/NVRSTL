@@ -72,22 +72,28 @@ export async function TrendingNow() {
           },
         },
       });
-      items = latest.map((p) => ({
-        id: p.id,
-        name: p.name,
-        priceCents: p.priceCents,
-        image: p.images[0]?.url || "/placeholder.svg",
-        fallback: true,
-      }));
+      items = latest.map(
+        (p: {
+          id: string;
+          name: string;
+          priceCents: number;
+          images: Array<{ url: string }>;
+        }) => ({
+          id: p.id,
+          name: p.name,
+          priceCents: p.priceCents,
+          image: p.images[0]?.url || "/placeholder.svg",
+          fallback: true,
+        })
+      );
     } else {
       items = rawItems.map((item) => ({
         ...item,
         image: item.image || "/placeholder.svg",
       }));
     }
-  } catch (error) {
-    
-    console.log("TrendingNow database error:", error);
+  } catch {
+    // Database error occurred
     // On hard failure also fallback so homepage stays resilient
     try {
       const latest = await prisma.product.findMany({
@@ -105,62 +111,84 @@ export async function TrendingNow() {
           },
         },
       });
-      items = latest.map((p) => ({
-        id: p.id,
-        name: p.name,
-        priceCents: p.priceCents,
-        image: p.images[0]?.url || "/placeholder.svg",
-        fallback: true,
-      }));
-    } catch (fallbackError) {
-      console.log("TrendingNow fallback error:", fallbackError);
+      items = latest.map(
+        (p: {
+          id: string;
+          name: string;
+          priceCents: number;
+          images: Array<{ url: string }>;
+        }) => ({
+          id: p.id,
+          name: p.name,
+          priceCents: p.priceCents,
+          image: p.images[0]?.url || "/placeholder.svg",
+          fallback: true,
+        })
+      );
+    } catch {
+      // Fallback error occurred
     }
   }
 
   if (!items.length) return null;
   return (
-    <section className="container mx-auto px-4">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold tracking-tight">
-          {items[0]?.fallback ? "Latest Products" : "Trending Now"}
-        </h2>
-        {!items[0]?.fallback && (
-          <span className="text-[11px] uppercase tracking-wide text-neutral-500">
-            Live Activity
-          </span>
-        )}
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-        {items.map((p, i: number) => (
-          <Link
-            key={p.id}
-            href={`/product/${p.id}`}
-            className="group relative bg-neutral-100 aspect-[3/4] overflow-hidden rounded"
-          >
-            {!p.fallback && (
-              <div className="absolute top-1 left-1 z-10 text-[11px] font-semibold bg-white/90 backdrop-blur px-1.5 py-0.5 rounded shadow">
-                #{i + 1}
-              </div>
-            )}
-            <Image
-              src={p.image}
-              alt={p.name}
-              fill
-              sizes="(max-width:768px) 50vw, (max-width:1200px) 20vw, 15vw"
-              className="object-cover group-hover:scale-105 transition-transform"
-            />
-            <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/70 to-transparent text-white text-xs">
-              <div className="font-semibold truncate">{p.name}</div>
-              <div className="text-white">
-                <ClientPrice
-                  cents={p.priceCents}
-                  size="sm"
-                  className="text-white"
+    <section className="bg-black py-20">
+      <div className="container mx-auto px-8">
+        <div className="flex items-center justify-between mb-12">
+          <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-white font-carbon">
+            {items[0]?.fallback ? "Latest Products" : "Trending Now"}
+          </h2>
+          {!items[0]?.fallback && (
+            <span className="text-sm uppercase tracking-wider text-gray-400 font-carbon">
+              Live Activity
+            </span>
+          )}
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+          {items.map(
+            (
+              p: {
+                id: string;
+                name: string;
+                priceCents: number;
+                image: string;
+                fallback?: boolean;
+              },
+              i: number
+            ) => (
+              <Link
+                key={p.id}
+                href={`/product/${p.id}`}
+                className="group relative bg-gray-800 aspect-[3/4] overflow-hidden rounded-lg border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl"
+              >
+                {!p.fallback && (
+                  <div className="absolute top-2 left-2 z-10 text-xs font-bold bg-white text-black px-2 py-1 rounded-full shadow font-carbon">
+                    #{i + 1}
+                  </div>
+                )}
+                <Image
+                  src={p.image}
+                  alt={p.name}
+                  fill
+                  sizes="(max-width:768px) 50vw, (max-width:1200px) 20vw, 15vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-              </div>
-            </div>
-          </Link>
-        ))}
+                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+                  <div className="font-bold text-white text-sm truncate font-virtual-modern uppercase tracking-wide mb-1">
+                    {p.name}
+                  </div>
+                  <div className="text-white">
+                    <ClientPrice
+                      cents={p.priceCents}
+                      size="sm"
+                      className="text-white font-bold font-virtual-modern"
+                    />
+                  </div>
+                </div>
+              </Link>
+            )
+          )}
+        </div>
       </div>
     </section>
   );

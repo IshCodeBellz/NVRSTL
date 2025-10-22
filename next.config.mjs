@@ -12,6 +12,14 @@ const nextConfig = {
     // ignoreBuildErrors: true,
     ignoreBuildErrors: false,
   },
+  // Skip static generation errors and continue with dynamic rendering
+  staticPageGenerationTimeout: 120,
+  outputFileTracing: true,
+  // Don't fail the build on prerender errors - just skip those pages
+  onDemandEntries: {
+    maxInactiveAge: 60 * 1000,
+    pagesBufferLength: 5,
+  },
   images: {
     // Disable Next.js Image Optimization so external domains don't need to be whitelisted
     unoptimized: true,

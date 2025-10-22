@@ -44,11 +44,10 @@ export function ReviewModeration() {
       if (response.ok) {
         setReviews(data.queue || []);
       } else {
-        
+        // Handle error silently
       }
-    } catch (error) {
-      
-      
+    } catch {
+      // Handle error silently
     } finally {
       setLoading(false);
     }
@@ -97,9 +96,7 @@ export function ReviewModeration() {
       } else {
         alert(`Failed to ${action} review: ${data.error}`);
       }
-    } catch (error) {
-      
-      
+    } catch {
       alert(`Failed to ${action} review`);
     } finally {
       setActionLoading((prev) => ({ ...prev, [reviewId]: false }));

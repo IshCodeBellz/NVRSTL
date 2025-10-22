@@ -102,50 +102,52 @@ export function RecentlyViewed() {
   if (items === null || items.length < 3) return null;
 
   return (
-    <section className="container mx-auto px-4">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold tracking-tight">
-          Recently Viewed
-        </h2>
-      </div>
-      <div className="flex gap-4 overflow-x-auto snap-x pb-2 -mx-4 px-4 scrollbar-thin">
-        {items.map((p: ProductLite) => {
-          const href = p.slug ? `/product/${p.slug}` : `/product/${p.id}`;
-          return (
-            <Link
-              key={p.id}
-              href={href}
-              className="min-w-[140px] max-w-[140px] snap-start group"
-            >
-              <div className="relative aspect-[3/4] rounded-md overflow-hidden bg-neutral-100 ring-1 ring-neutral-200">
-                <Image
-                  src={p.image}
-                  alt={p.name}
-                  fill
-                  sizes="140px"
-                  className="object-cover transition-transform group-hover:scale-105"
-                />
-              </div>
-              <p className="mt-2 text-[11px] font-medium line-clamp-2 leading-tight">
-                {p.name}
-              </p>
-              <div className="mt-1 text-[12px]">
-                {p.discountPrice ? (
-                  <>
-                    <span className="text-rose-600 font-semibold mr-1">
-                      £{p.discountPrice}
-                    </span>
-                    <span className="line-through text-neutral-400">
-                      £{p.price}
-                    </span>
-                  </>
-                ) : (
-                  <span>£{p.price}</span>
-                )}
-              </div>
-            </Link>
-          );
-        })}
+    <section className="bg-black py-24 border-t border-gray-800">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold tracking-tight font-carbon uppercase text-white">
+            Recently Viewed
+          </h2>
+        </div>
+        <div className="flex gap-4 overflow-x-auto snap-x pb-2 -mx-4 px-4 scrollbar-thin">
+          {items.map((p: ProductLite) => {
+            const href = p.slug ? `/product/${p.slug}` : `/product/${p.id}`;
+            return (
+              <Link
+                key={p.id}
+                href={href}
+                className="min-w-[140px] max-w-[140px] snap-start group"
+              >
+                <div className="relative aspect-[3/4] rounded-md overflow-hidden bg-neutral-100 ring-1 ring-neutral-200">
+                  <Image
+                    src={p.image}
+                    alt={p.name}
+                    fill
+                    sizes="140px"
+                    className="object-cover transition-transform group-hover:scale-105"
+                  />
+                </div>
+                <p className="mt-2 text-[11px] font-medium line-clamp-2 leading-tight font-anxler-tech tracking-wide text-white">
+                  {p.name}
+                </p>
+                <div className="mt-1 text-[12px] font-anxler-tech tracking-wide text-white">
+                  {p.discountPrice ? (
+                    <>
+                      <span className="text-rose-400 font-semibold mr-1">
+                        £{p.discountPrice}
+                      </span>
+                      <span className="line-through text-gray-400">
+                        £{p.price}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-white">£{p.price}</span>
+                  )}
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

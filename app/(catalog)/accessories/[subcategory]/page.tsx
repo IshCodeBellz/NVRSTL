@@ -40,6 +40,7 @@ export default async function AccessoriesSubcategoryPage({
     categoryId: category.id,
     isActive: true,
     deletedAt: null,
+    productType: "accessories",
   };
 
   // Apply filters from search params

@@ -63,6 +63,7 @@ model Product {
   updatedAt         DateTime          @updatedAt
   deletedAt         DateTime?
   gender            String?
+  productType       String?
   analyticsEvents   AnalyticsEvent[]
   cartLines         CartLine[]
   brand             Brand?            @relation(fields: [brandId], references: [id])
@@ -1107,6 +1108,39 @@ model SiteSettings {
   updatedAt   DateTime @updatedAt
 
   @@index([key])
+}
+
+model CategorySection {
+  id          String   @id @default(cuid())
+  title       String   @unique
+  slug        String   @unique
+  description String?
+  displayOrder Int     @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  cards       CategoryCard[]
+
+  @@index([displayOrder])
+  @@index([isActive])
+}
+
+model CategoryCard {
+  id          String   @id @default(cuid())
+  sectionId   String
+  title       String
+  slug        String
+  imageUrl    String?
+  description String?
+  displayOrder Int     @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  section     CategorySection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@index([sectionId])
+  @@index([displayOrder])
+  @@index([isActive])
 }
 
 model Notification {

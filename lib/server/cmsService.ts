@@ -26,6 +26,27 @@ export interface SiteSettingsData {
   [key: string]: string | number | boolean;
 }
 
+export interface CategorySectionData {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  displayOrder: number;
+  isActive: boolean;
+  cards: CategoryCardData[];
+}
+
+export interface CategoryCardData {
+  id: string;
+  sectionId: string;
+  title: string;
+  slug: string;
+  imageUrl?: string | null;
+  description?: string | null;
+  displayOrder: number;
+  isActive: boolean;
+}
+
 export class CMSService {
   /**
    * Get a page by slug with all its sections
@@ -150,7 +171,7 @@ export class CMSService {
         where: { id },
       });
       return true;
-    } catch (_error) {
+    } catch {
       return false;
     }
   }
@@ -279,7 +300,11 @@ export class CMSService {
    */
   static async getHomePageImages(): Promise<{
     heroImages: { left: string; right: string };
+    heroLayout: "two-image" | "single-image";
     categoryImages: Record<string, string>;
+    categoryLabels: Record<string, string>;
+    categorySlugs: Record<string, string>;
+    leagueTitle: string;
   }> {
     const settings = await this.getSiteSettings();
 
@@ -292,6 +317,8 @@ export class CMSService {
           (settings.heroImageRight as string) ||
           "https://picsum.photos/901/1200",
       },
+      heroLayout:
+        (settings.heroLayout as "two-image" | "single-image") || "two-image",
       categoryImages: {
         denim:
           (settings.categoryImageDenim as string) ||
@@ -315,6 +342,26 @@ export class CMSService {
           (settings.categoryImageNewIn as string) ||
           "https://picsum.photos/seed/newin/1200/600",
       },
+      categoryLabels: {
+        denim: (settings.categoryLabelDenim as string) || "Denim",
+        shoes: (settings.categoryLabelShoes as string) || "Shoes",
+        accessories:
+          (settings.categoryLabelAccessories as string) || "Accessories",
+        sportswear:
+          (settings.categoryLabelSportswear as string) || "Sportswear",
+        dresses: (settings.categoryLabelDresses as string) || "Dresses",
+        brands: (settings.categoryLabelBrands as string) || "Brands",
+      },
+      categorySlugs: {
+        denim: (settings.categorySlugDenim as string) || "denim",
+        shoes: (settings.categorySlugShoes as string) || "footwear",
+        accessories:
+          (settings.categorySlugAccessories as string) || "accessories",
+        sportswear: (settings.categorySlugSportswear as string) || "sportswear",
+        dresses: (settings.categorySlugDresses as string) || "dresses",
+        brands: (settings.categorySlugBrands as string) || "brands",
+      },
+      leagueTitle: (settings.leagueTitle as string) || "League",
     };
   }
 
@@ -324,13 +371,17 @@ export class CMSService {
   static async updateHomePageImages(images: {
     heroImageLeft?: string;
     heroImageRight?: string;
+    heroLayout?: "two-image" | "single-image";
     categoryImages?: Record<string, string>;
+    categoryLabels?: Record<string, string>;
+    categorySlugs?: Record<string, string>;
+    leagueTitle?: string;
   }): Promise<void> {
     const updateData: Record<string, string> = {};
 
     // Validate and sanitize image URLs
     const validateImageUrl = (url: string): boolean => {
-      if (!url) return false;
+      if (!url || url.trim() === "") return false;
       try {
         const parsed = new URL(url);
         return parsed.protocol === "https:" || parsed.protocol === "http:";
@@ -383,6 +434,94 @@ export class CMSService {
       });
     }
 
+    // Process category labels
+    if (images.categoryLabels) {
+      const validCategories = [
+        "denim",
+        "shoes",
+        "accessories",
+        "sportswear",
+        "dresses",
+        "brands",
+      ];
+
+      Object.entries(images.categoryLabels).forEach(([category, label]) => {
+        if (!validCategories.includes(category)) {
+          throw new Error(`Invalid category: ${category}`);
+        }
+
+        if (label && label.length > 50) {
+          throw new Error(
+            `Category label for ${category} must be 50 characters or less`
+          );
+        }
+
+        if (label) {
+          updateData[
+            `categoryLabel${
+              category.charAt(0).toUpperCase() + category.slice(1)
+            }`
+          ] = label.trim();
+        }
+      });
+    }
+
+    // Process category slugs
+    if (images.categorySlugs) {
+      const validCategories = [
+        "denim",
+        "shoes",
+        "accessories",
+        "sportswear",
+        "dresses",
+        "brands",
+      ];
+
+      Object.entries(images.categorySlugs).forEach(([category, slug]) => {
+        if (!validCategories.includes(category)) {
+          throw new Error(`Invalid category: ${category}`);
+        }
+
+        if (slug && slug.length > 50) {
+          throw new Error(
+            `Category slug for ${category} must be 50 characters or less`
+          );
+        }
+
+        if (slug) {
+          // Validate slug format (alphanumeric, hyphens, underscores only)
+          const slugRegex = /^[a-z0-9-_]+$/;
+          if (!slugRegex.test(slug)) {
+            throw new Error(
+              `Category slug for ${category} must contain only lowercase letters, numbers, hyphens, and underscores`
+            );
+          }
+
+          updateData[
+            `categorySlug${
+              category.charAt(0).toUpperCase() + category.slice(1)
+            }`
+          ] = slug.trim();
+        }
+      });
+    }
+
+    if (images.leagueTitle) {
+      if (images.leagueTitle.length > 50) {
+        throw new Error("League title must be 50 characters or less");
+      }
+      updateData.leagueTitle = images.leagueTitle.trim();
+    }
+
+    if (images.heroLayout) {
+      if (!["two-image", "single-image"].includes(images.heroLayout)) {
+        throw new Error(
+          "Invalid hero layout. Must be 'two-image' or 'single-image'"
+        );
+      }
+      updateData.heroLayout = images.heroLayout;
+    }
+
     if (Object.keys(updateData).length > 0) {
       await this.updateSiteSettings(updateData);
     }
@@ -411,6 +550,19 @@ export class CMSService {
         "https://images.unsplash.com/photo-1516762689617-e1cffcef479d?w=800&h=1000&fit=crop",
       categoryImageNewIn:
         "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1200&h=600&fit=crop",
+      categoryLabelDenim: "Denim",
+      categoryLabelShoes: "Shoes",
+      categoryLabelAccessories: "Accessories",
+      categoryLabelSportswear: "Sportswear",
+      categoryLabelDresses: "Dresses",
+      categoryLabelBrands: "Brands",
+      categorySlugDenim: "denim",
+      categorySlugShoes: "footwear",
+      categorySlugAccessories: "accessories",
+      categorySlugSportswear: "sportswear",
+      categorySlugDresses: "dresses",
+      categorySlugBrands: "brands",
+      leagueTitle: "League",
     };
 
     await this.updateSiteSettings(defaultImages);
@@ -455,7 +607,7 @@ export class CMSService {
     // Validate and sanitize logo data
     if (logoData.logoImageUrl) {
       const validateImageUrl = (url: string): boolean => {
-        if (!url) return false;
+        if (!url || url.trim() === "") return false;
         try {
           const parsed = new URL(url);
           return parsed.protocol === "https:" || parsed.protocol === "http:";
@@ -540,6 +692,279 @@ export class CMSService {
   ): string {
     const seed = category.toLowerCase();
     return `https://picsum.photos/seed/${seed}/${width}/${height}`;
+  }
+
+  /**
+   * Get all category sections with their cards
+   */
+  static async getCategorySections(): Promise<CategorySectionData[]> {
+    const sections = await prisma.categorySection.findMany({
+      where: { isActive: true },
+      include: {
+        cards: {
+          where: { isActive: true },
+          orderBy: { displayOrder: "asc" },
+        },
+      },
+      orderBy: { displayOrder: "asc" },
+    });
+
+    return sections.map((section) => ({
+      ...section,
+      cards: section.cards,
+    }));
+  }
+
+  /**
+   * Get a single category section by ID
+   */
+  static async getCategorySection(
+    id: string
+  ): Promise<CategorySectionData | null> {
+    const section = await prisma.categorySection.findUnique({
+      where: { id },
+      include: {
+        cards: {
+          where: { isActive: true },
+          orderBy: { displayOrder: "asc" },
+        },
+      },
+    });
+
+    if (!section) return null;
+
+    return {
+      ...section,
+      cards: section.cards,
+    };
+  }
+
+  /**
+   * Create a new category section
+   */
+  static async createCategorySection(data: {
+    title: string;
+    slug: string;
+    description?: string;
+    displayOrder?: number;
+  }): Promise<CategorySectionData> {
+    const section = await prisma.categorySection.create({
+      data: {
+        title: data.title,
+        slug: data.slug,
+        description: data.description,
+        displayOrder: data.displayOrder || 0,
+      },
+      include: {
+        cards: {
+          where: { isActive: true },
+          orderBy: { displayOrder: "asc" },
+        },
+      },
+    });
+
+    return {
+      ...section,
+      cards: section.cards,
+    };
+  }
+
+  /**
+   * Update a category section
+   */
+  static async updateCategorySection(
+    id: string,
+    data: {
+      title?: string;
+      slug?: string;
+      description?: string;
+      displayOrder?: number;
+      isActive?: boolean;
+    }
+  ): Promise<CategorySectionData> {
+    const section = await prisma.categorySection.update({
+      where: { id },
+      data,
+      include: {
+        cards: {
+          where: { isActive: true },
+          orderBy: { displayOrder: "asc" },
+        },
+      },
+    });
+
+    return {
+      ...section,
+      cards: section.cards,
+    };
+  }
+
+  /**
+   * Delete a category section
+   */
+  static async deleteCategorySection(id: string): Promise<void> {
+    await prisma.categorySection.delete({
+      where: { id },
+    });
+  }
+
+  /**
+   * Create a new category card
+   */
+  static async createCategoryCard(data: {
+    sectionId: string;
+    title: string;
+    slug: string;
+    imageUrl?: string;
+    description?: string;
+    displayOrder?: number;
+  }): Promise<CategoryCardData> {
+    const card = await prisma.categoryCard.create({
+      data: {
+        sectionId: data.sectionId,
+        title: data.title,
+        slug: data.slug,
+        imageUrl: data.imageUrl,
+        description: data.description,
+        displayOrder: data.displayOrder || 0,
+      },
+    });
+
+    return card;
+  }
+
+  /**
+   * Update a category card
+   */
+  static async updateCategoryCard(
+    id: string,
+    data: {
+      title?: string;
+      slug?: string;
+      imageUrl?: string;
+      description?: string;
+      displayOrder?: number;
+      isActive?: boolean;
+    }
+  ): Promise<CategoryCardData> {
+    const card = await prisma.categoryCard.update({
+      where: { id },
+      data,
+    });
+
+    return card;
+  }
+
+  /**
+   * Delete a category card
+   */
+  static async deleteCategoryCard(id: string): Promise<void> {
+    await prisma.categoryCard.delete({
+      where: { id },
+    });
+  }
+
+  /**
+   * Initialize default category sections and cards
+   */
+  static async initializeDefaultCategorySections(): Promise<void> {
+    // Check if sections already exist
+    const existingSections = await prisma.categorySection.count();
+    if (existingSections > 0) return;
+
+    // Create default sections
+    const mostPopularSection = await prisma.categorySection.create({
+      data: {
+        title: "Most Popular",
+        slug: "most-popular",
+        description:
+          "Some types of fashion are worn by so many people, that they become very popular and famous styles, these popular trends are part of the global fashion scene.",
+        displayOrder: 0,
+      },
+    });
+
+    const servicesSection = await prisma.categorySection.create({
+      data: {
+        title: "Services",
+        slug: "services",
+        description:
+          "Professional services and specialized offerings for our customers.",
+        displayOrder: 1,
+      },
+    });
+
+    const reasonSection = await prisma.categorySection.create({
+      data: {
+        title: "The Reason",
+        slug: "the-reason",
+        description:
+          "Discover what makes us unique and why customers choose us.",
+        displayOrder: 2,
+      },
+    });
+
+    // Create cards for Most Popular section
+    const mostPopularCards = [
+      { title: "Denim", slug: "denim", displayOrder: 0 },
+      { title: "Shoes", slug: "footwear", displayOrder: 1 },
+      { title: "Accessories", slug: "accessories", displayOrder: 2 },
+      { title: "Sportswear", slug: "sportswear", displayOrder: 3 },
+      { title: "Dresses", slug: "dresses", displayOrder: 4 },
+      { title: "Brands", slug: "brands", displayOrder: 5 },
+    ];
+
+    for (const card of mostPopularCards) {
+      await prisma.categoryCard.create({
+        data: {
+          sectionId: mostPopularSection.id,
+          title: card.title,
+          slug: card.slug,
+          displayOrder: card.displayOrder,
+        },
+      });
+    }
+
+    // Create cards for Services section
+    const servicesCards = [
+      { title: "Jerseys", slug: "jerseys", displayOrder: 0 },
+      { title: "Athletic", slug: "athletic", displayOrder: 1 },
+      { title: "Casual", slug: "casual", displayOrder: 2 },
+      { title: "Formal", slug: "formal", displayOrder: 3 },
+      { title: "Streetwear", slug: "streetwear", displayOrder: 4 },
+      { title: "Vintage", slug: "vintage", displayOrder: 5 },
+    ];
+
+    for (const card of servicesCards) {
+      await prisma.categoryCard.create({
+        data: {
+          sectionId: servicesSection.id,
+          title: card.title,
+          slug: card.slug,
+          displayOrder: card.displayOrder,
+        },
+      });
+    }
+
+    // Create cards for The Reason section
+    const reasonCards = [
+      { title: "Limited Edition", slug: "limited", displayOrder: 0 },
+      { title: "Exclusive", slug: "exclusive", displayOrder: 1 },
+      { title: "Premium", slug: "premium", displayOrder: 2 },
+      { title: "Sustainable", slug: "sustainable", displayOrder: 3 },
+      { title: "Artisan", slug: "artisan", displayOrder: 4 },
+      { title: "Custom", slug: "custom", displayOrder: 5 },
+    ];
+
+    for (const card of reasonCards) {
+      await prisma.categoryCard.create({
+        data: {
+          sectionId: reasonSection.id,
+          title: card.title,
+          slug: card.slug,
+          displayOrder: card.displayOrder,
+        },
+      });
+    }
   }
 }
 

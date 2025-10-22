@@ -50,7 +50,7 @@ class PerformanceMonitor {
     }, 60000); // Every minute
   }
 
-  startTimer(name: string, tags: Record<string, string> = {}): string {
+  startTimer(name: string): string {
     const timerId = `${name}-${Date.now()}-${Math.random()}`;
     this.activeTimers.set(timerId, performance.now());
     return timerId;
@@ -143,7 +143,7 @@ class PerformanceMonitor {
     tags: Record<string, string> = {},
     metadata: Record<string, any> = {}
   ): Promise<T> {
-    const timerId = this.startTimer(name, tags);
+    const timerId = this.startTimer(name);
     let result: T;
     let error: Error | null = null;
 

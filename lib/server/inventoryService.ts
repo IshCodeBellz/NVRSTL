@@ -55,8 +55,7 @@ export class InventoryService {
     variantId: string,
     quantity: number,
     type: "in" | "out" | "set",
-    reason: string,
-    userId?: string
+    reason: string
   ): Promise<{ success: boolean; error?: string; newStock?: number }> {
     try {
       const variant = await prisma.productVariant.findUnique({
@@ -170,10 +169,7 @@ export class InventoryService {
     }));
   }
 
-  static async reserveStock(
-    _items: Array<{ productId: string; variantId: string; quantity: number }>,
-    _orderId: string
-  ) {
+  static async reserveStock() {
     // Placeholder reservation implementation
     return {
       success: true,
@@ -248,7 +244,7 @@ export class InventoryService {
     }
   }
 
-  async getRecentStockMovements(_limit = 20): Promise<
+  async getRecentStockMovements(): Promise<
     Array<{
       createdAt: string;
       productName: string;

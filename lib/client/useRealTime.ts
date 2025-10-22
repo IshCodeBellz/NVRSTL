@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 export interface RealTimeEvent {
   type: string;
@@ -27,7 +27,7 @@ export function useRealTime(options: UseRealTimeOptions = {}) {
   const reconnectAttempts = useRef(0);
   const maxReconnectAttempts = 5;
 
-  const connect = () => {
+  const connect = useCallback(() => {
     if (eventSourceRef.current?.readyState === EventSource.OPEN) {
       return; // Already connected
     }
@@ -78,7 +78,7 @@ export function useRealTime(options: UseRealTimeOptions = {}) {
       console.error("Error creating EventSource:", err);
       setError("Failed to establish connection");
     }
-  };
+  }, [type, onEvent, onError, onReconnect]);
 
   const disconnect = () => {
     if (eventSourceRef.current) {
@@ -120,7 +120,7 @@ export function useRealTime(options: UseRealTimeOptions = {}) {
     return () => {
       disconnect();
     };
-  }, [type]);
+  }, [type, connect]);
 
   // Cleanup on unmount
   useEffect(() => {

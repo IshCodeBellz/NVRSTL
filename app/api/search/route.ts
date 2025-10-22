@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { logger } from "@/lib/server/logger";
 import { prisma } from "@/lib/server/prisma";
+
+export const dynamic = "force-dynamic";
 
 // Type definitions for search functionality
 interface SearchBreakdown {
@@ -36,7 +38,7 @@ const BUILD_SIGNATURE = "search-v3.1"; // bump when changing search logic
 
 const HALF_LIFE_HOURS = 72; // for trending sort scoring
 
-export async function GET(req: NextRequest) {
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const q = (searchParams.get("q") || "").trim();
   const category = searchParams.get("category") || undefined; // category slug

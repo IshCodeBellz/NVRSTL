@@ -89,14 +89,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const mockUserId = session.user.email || "admin_123";
     const result = await InventoryService.updateStock(
       productId,
       variantId,
       quantity,
       type,
-      reason,
-      mockUserId
+      reason
     );
 
     if (!result.success) {

@@ -59,6 +59,9 @@ export function EditProductClient({ product }: { product: Product }) {
   const [categoryId, setCategoryId] = useState<string | "">(
     product.categoryId || ""
   );
+  const [productType, setProductType] = useState<string>(
+    (product as any).productType || ""
+  );
   const [gender, setGender] = useState<string>((product as any).gender || "");
   const [images, setImages] = useState<ImageInput[]>(
     [...product.images].sort((a, b) => a.position - b.position)
@@ -253,6 +256,7 @@ export function EditProductClient({ product }: { product: Product }) {
         brandId: brandId || undefined,
         categoryId: categoryId || undefined,
         gender: gender || undefined,
+        productType: productType || undefined,
         isJersey,
         jerseyConfig: jerseyConfig || undefined,
         images: images
@@ -380,18 +384,51 @@ export function EditProductClient({ product }: { product: Product }) {
           </select>
         </div>
         <div className="space-y-1">
-          <label className="text-sm font-medium">Gender</label>
+          <label className="text-sm font-medium">Product Type</label>
           <select
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
+            value={productType}
+            onChange={(e) => {
+              setProductType(e.target.value);
+              setGender(""); // Reset gender when product type changes
+            }}
             className="w-full border rounded px-3 py-2 text-sm"
           >
-            <option value="">Unspecified</option>
-            <option value="women">Women</option>
-            <option value="men">Men</option>
-            <option value="unisex">Unisex</option>
+            <option value="">Select Product Type</option>
+            <option value="clothing">Clothing</option>
+            <option value="shoes">Shoes</option>
+            <option value="accessories">Accessories</option>
           </select>
         </div>
+        {(productType === "clothing" || productType === "shoes") && (
+          <div className="space-y-1">
+            <label className="text-sm font-medium">Gender</label>
+            <select
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              className="w-full border rounded px-3 py-2 text-sm"
+            >
+              <option value="">Select Gender</option>
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+              <option value="unisex">Unisex</option>
+            </select>
+          </div>
+        )}
+        {productType === "accessories" && (
+          <div className="space-y-1">
+            <label className="text-sm font-medium">Gender</label>
+            <select
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              className="w-full border rounded px-3 py-2 text-sm"
+            >
+              <option value="">Select Gender</option>
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+              <option value="unisex">Unisex</option>
+            </select>
+          </div>
+        )}
         <div className="space-y-1 max-w-xs">
           <label className="text-sm font-medium">Price ({BASE_CURRENCY})</label>
           <div className="relative">

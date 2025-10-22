@@ -90,10 +90,8 @@ export default function Phase3Dashboard() {
       } else {
         setError(result.error || "Failed to load Phase 3 demo");
       }
-    } catch (error) {
-      
+    } catch {
       setError("Network error loading Phase 3 demo");
-      
     } finally {
       setLoading(false);
     }

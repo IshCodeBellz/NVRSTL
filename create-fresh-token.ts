@@ -6,7 +6,7 @@ import path from "path";
 config({ path: path.resolve(process.cwd(), ".env.local") });
 
 // Override with local database URL to match API
-process.env.DATABASE_URL = "postgresql://ishaqbello@localhost:5432/test_db";
+process.env.DATABASE_URL = "postgresql://ishaqbello@localhost:5432/nvrstl_test_db";
 console.log(
   "Token creation DATABASE_URL:",
   process.env.DATABASE_URL?.substring(0, 50) + "..."

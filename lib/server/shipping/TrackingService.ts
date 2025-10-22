@@ -265,10 +265,7 @@ export class TrackingService {
   ): Promise<void> {
     try {
       // Mock tracking data for development
-      const mockUpdate = this.generateMockTrackingUpdate(
-        trackingNumber,
-        carrier
-      );
+      const mockUpdate = this.generateMockTrackingUpdate();
 
       if (mockUpdate) {
         await this.updateTrackingInfo(trackingNumber, mockUpdate);
@@ -298,20 +295,10 @@ export class TrackingService {
   /**
    * Generate mock tracking update for development
    */
-  private static generateMockTrackingUpdate(
-    trackingNumber: string,
-    carrier: string
-  ): TrackingUpdate | null {
-    const statuses = [
-      "LABEL_CREATED",
-      "COLLECTED",
-      "IN_TRANSIT",
-      "OUT_FOR_DELIVERY",
-      "DELIVERED",
-    ];
-
+  private static generateMockTrackingUpdate(): TrackingUpdate | null {
     // Simulate progression through delivery stages
-    const hash = trackingNumber.split("").reduce((a, b) => {
+    const mockTrackingNumber = `MOCK${Date.now()}`;
+    const hash = mockTrackingNumber.split("").reduce((a, b) => {
       a = (a << 5) - a + b.charCodeAt(0);
       return a & a;
     }, 0);

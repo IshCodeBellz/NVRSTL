@@ -179,10 +179,7 @@ export class WebhookService {
   /**
    * Check if webhook is duplicate (idempotency check)
    */
-  static async isDuplicateWebhook(
-    webhookId: string,
-    _paymentRef: string
-  ): Promise<boolean> {
+  static async isDuplicateWebhook(webhookId: string): Promise<boolean> {
     try {
       const existingEvent = await prisma.orderEvent.findFirst({
         where: {

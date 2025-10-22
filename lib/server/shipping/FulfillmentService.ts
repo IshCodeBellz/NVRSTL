@@ -140,20 +140,17 @@ export class FulfillmentService {
         size: item.size || undefined,
         quantity: item.qty,
         picked: false,
-        location: this.getProductLocation(
-          item.productId,
-          item.size || undefined
-        ),
+        location: this.getProductLocation(),
       }));
 
       // Determine priority based on order characteristics
       const priority = this.calculateOrderPriority(order);
 
       // Determine warehouse zone based on products
-      const warehouseZone = this.determineWarehouseZone(fulfillmentItems);
+      const warehouseZone = this.determineWarehouseZone();
 
       // Calculate estimated pick time
-      const estimatedPickTime = this.calculatePickTime(fulfillmentItems);
+      const estimatedPickTime = this.calculatePickTime();
 
       // Create picking list
       const pickingList: PickingList = {
@@ -508,10 +505,7 @@ export class FulfillmentService {
           size: item.size || undefined,
           quantity: item.qty,
           picked: false,
-          location: this.getProductLocation(
-            item.productId,
-            item.size || undefined
-          ),
+          location: this.getProductLocation(),
         }));
 
         return {
@@ -523,7 +517,7 @@ export class FulfillmentService {
           createdAt: fulfillmentEvent?.createdAt || order.createdAt,
           items,
           estimatedPickTime:
-            metadata.estimatedPickTime || this.calculatePickTime(items),
+            metadata.estimatedPickTime || this.calculatePickTime(),
         };
       });
 
@@ -562,7 +556,7 @@ export class FulfillmentService {
   /**
    * Determine warehouse zone based on products
    */
-  private static determineWarehouseZone(items: FulfillmentItem[]): string {
+  private static determineWarehouseZone(): string {
     // Simple zone assignment - in reality this would be based on product categories
     const zones = ["A", "B", "C"];
     return zones[Math.floor(Math.random() * zones.length)];
@@ -571,15 +565,15 @@ export class FulfillmentService {
   /**
    * Calculate estimated pick time for items
    */
-  private static calculatePickTime(items: FulfillmentItem[]): number {
+  private static calculatePickTime(): number {
     // Base time of 5 minutes plus 2 minutes per item
-    return 5 + items.length * 2;
+    return 5 + 2 * 2; // Mock: 2 items
   }
 
   /**
    * Get mock product location
    */
-  private static getProductLocation(productId: string, size?: string): string {
+  private static getProductLocation(): string {
     const zones = ["A1-01", "A1-02", "B2-05", "B2-06", "C3-12"];
     return zones[Math.floor(Math.random() * zones.length)];
   }

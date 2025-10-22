@@ -59,7 +59,7 @@ export default async function WomensPage({
     })) || [];
 
   // Build top-level products query for Women's page
-  const where: any = {
+  const where: Record<string, unknown> = {
     isActive: true,
     deletedAt: null,
     gender: { in: ["women", "unisex"] },
@@ -81,9 +81,9 @@ export default async function WomensPage({
     }
   }
   if (minCents != null || maxCents != null) {
-    where.priceCents = {} as any;
-    if (minCents != null) (where.priceCents as any).gte = minCents;
-    if (maxCents != null) (where.priceCents as any).lte = maxCents;
+    where.priceCents = {};
+    if (minCents != null) (where.priceCents as { gte: number }).gte = minCents;
+    if (maxCents != null) (where.priceCents as { lte: number }).lte = maxCents;
   }
   if (sp.brand) {
     where.brand = { name: { contains: sp.brand, mode: "insensitive" } };
@@ -123,7 +123,7 @@ export default async function WomensPage({
     prisma.category.findMany({ select: { id: true, slug: true, name: true } }),
     prisma.brand.findMany({ select: { id: true, name: true } }),
   ]);
-  const baseFilter: any = { ...where };
+  const baseFilter: Record<string, unknown> = { ...where };
   delete baseFilter.categoryId;
   delete baseFilter.brand;
   const [categoryCounts, brandCounts] = await Promise.all([

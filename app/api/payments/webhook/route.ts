@@ -208,7 +208,7 @@ export async function POST(req: NextRequest) {
         webhookId = evt.id;
         paymentIntentId = evt?.data?.object?.id as string | undefined;
         status = type === "payment_intent.succeeded" ? "succeeded" : "failed";
-      } catch (e) {
+      } catch {
         return NextResponse.json(
           { error: "invalid_json", detail: "Could not parse event" },
           { status: 400 }
@@ -250,10 +250,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Check for duplicate webhook
-  if (
-    webhookId &&
-    (await WebhookService.isDuplicateWebhook(webhookId, paymentIntentId))
-  ) {
+  if (webhookId && (await WebhookService.isDuplicateWebhook(webhookId))) {
     return NextResponse.json({ ok: true, duplicate: true });
   }
 

@@ -1,24 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logger } from "@/lib/server/logger";
-import { getServerSession } from "next-auth";
-import { authOptionsEnhanced } from "@/lib/server/authOptionsEnhanced";
-import { prisma } from "@/lib/server/prisma";
+import { ensureAdmin } from "@/lib/server/auth";
 import { withRequest } from "@/lib/server/logger";
 import { CMSService } from "@/lib/server/cmsService";
 
 export const dynamic = "force-dynamic";
-
-async function ensureAdmin() {
-  const session = await getServerSession(authOptionsEnhanced);
-  if (!session?.user) return null;
-
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-  });
-
-  if (!user?.isAdmin) return null;
-  return user;
-}
 
 // Get current homepage images
 export const GET = withRequest(async function GET() {
@@ -48,10 +34,19 @@ export const POST = withRequest(async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { heroImageLeft, heroImageRight, categoryImages } = body;
+    const {
+      heroImageLeft,
+      heroImageRight,
+      heroLayout,
+      categoryImages,
+      categoryLabels,
+      categorySlugs,
+      leagueTitle,
+    } = body;
 
     // Validate image URLs
     const validateImageUrl = (url: string) => {
+      if (!url || url.trim() === "") return false;
       try {
         new URL(url);
         return true;
@@ -74,6 +69,13 @@ export const POST = withRequest(async function POST(req: NextRequest) {
       );
     }
 
+    if (heroLayout && !["two-image", "single-image"].includes(heroLayout)) {
+      return NextResponse.json(
+        { error: "Invalid hero layout. Must be 'two-image' or 'single-image'" },
+        { status: 400 }
+      );
+    }
+
     if (categoryImages) {
       for (const [category, url] of Object.entries(categoryImages)) {
         if (url && typeof url === "string" && !validateImageUrl(url)) {
@@ -88,7 +90,11 @@ export const POST = withRequest(async function POST(req: NextRequest) {
     await CMSService.updateHomePageImages({
       heroImageLeft,
       heroImageRight,
+      heroLayout,
       categoryImages,
+      categoryLabels,
+      categorySlugs,
+      leagueTitle,
     });
 
     const updatedImages = await CMSService.getHomePageImages();

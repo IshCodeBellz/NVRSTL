@@ -163,7 +163,7 @@ export class SearchService {
       ]);
 
       // Get facets
-      const facets = await this.getFacets(where);
+      const facets = await this.getFacets();
 
       // Get suggestions
       const suggestions = await this.getSuggestions(query);
@@ -221,9 +221,7 @@ export class SearchService {
   }
 
   // Get search facets
-  private static async getFacets(
-    baseWhere: Prisma.ProductWhereInput
-  ): Promise<SearchResult["facets"]> {
+  private static async getFacets(): Promise<SearchResult["facets"]> {
     try {
       // In a full implementation, we'd group products to compute facets. Placeholder returns below.
 

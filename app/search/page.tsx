@@ -58,7 +58,6 @@ async function getData(params: PageSearchParams) {
     if (!res.ok) return { items: [], facets: null, total: 0, totalCount: 0 };
     return res.json();
   } catch (error) {
-    
     // Silent fallback; UI will show empty state
     return {
       items: [],
@@ -130,24 +129,24 @@ export default async function SearchPage({
               {data.items.map((p: SearchProduct) => (
                 <li key={p.id} className="group">
                   <Link href={`/product/${p.id}`} className="block">
-                    <div className="relative aspect-[3/4] bg-neutral-100 rounded overflow-hidden">
+                    <div className="relative aspect-[3/4] bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl">
                       <Image
                         src={p.image}
                         alt={p.name}
                         fill
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        className="object-cover group-hover:scale-105 transition-transform"
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                       {typeof p.score === "number" && sort === "trending" && (
-                        <span className="absolute top-1 left-1 bg-black/60 text-[10px] px-1.5 py-0.5 rounded text-white">
+                        <span className="absolute top-2 left-2 bg-white text-black text-xs px-2 py-1 rounded-full font-bold font-carbon">
                           {(p.score || 0).toFixed(1)}
                         </span>
                       )}
                     </div>
-                    <p className="mt-2 text-[12px] leading-tight line-clamp-2 font-medium min-h-[2.1em]">
+                    <p className="mt-3 text-sm leading-tight line-clamp-2 font-bold min-h-[2.1em] text-white font-carbon uppercase tracking-wide">
                       {p.name}
                     </p>
-                    <p className="text-[12px] font-semibold">
+                    <p className="text-sm font-bold text-white">
                       <ClientPrice cents={p.priceCents} size="xs" />
                     </p>
                   </Link>

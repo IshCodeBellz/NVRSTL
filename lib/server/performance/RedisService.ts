@@ -211,7 +211,7 @@ class RedisService {
           const values = await this.redis!.mget(...keys);
           this.stats.operations++;
 
-          return values.map((value, index) => {
+          return values.map((value) => {
             if (value === null) {
               this.stats.misses++;
               return null;

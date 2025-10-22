@@ -17,6 +17,7 @@ const productSchema = z.object({
   brandId: z.string().optional(),
   categoryId: z.string().optional(),
   gender: z.string().optional().nullable(),
+  productType: z.string().optional().nullable(),
   isJersey: z.boolean().optional(),
   // Accept jerseyConfig as either a JSON object or a string (for legacy clients)
   jerseyConfig: z
@@ -123,6 +124,7 @@ export const POST = withRequest(async function POST(req: NextRequest) {
           description: rest.description,
           priceCents: rest.priceCents,
           gender: rest.gender ?? undefined,
+          productType: rest.productType ?? undefined,
           // these may be rejected if client not migrated
           ...(typeof rest.isJersey === "boolean"
             ? { isJersey: rest.isJersey }

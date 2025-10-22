@@ -97,8 +97,8 @@ export function AdminNotificationDashboard() {
         const healthData = await healthRes.json();
         setHealth(healthData);
       }
-    } catch (error) {
-      
+    } catch {
+      // Handle error silently2
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -187,8 +187,8 @@ export function AdminNotificationDashboard() {
       if (response.ok) {
         await fetchData(); // Refresh data
       }
-    } catch (error) {
-      
+    } catch {
+      // Handle error silently
     }
   };
 

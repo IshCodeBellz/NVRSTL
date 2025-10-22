@@ -16,20 +16,6 @@ export interface PersonalizationRecommendation {
   confidence: number;
 }
 
-interface MinimalVariant {
-  type: string;
-  value: string;
-  hexColor?: string | null;
-}
-
-interface MinimalProductForScoring {
-  id: string;
-  brandId: string | null;
-  categoryId: string | null;
-  priceCents: number;
-  variants: MinimalVariant[];
-}
-
 export class PersonalizationService {
   // Get personalized product recommendations
   static async getRecommendations(
@@ -37,9 +23,6 @@ export class PersonalizationService {
     limit: number = 10
   ): Promise<PersonalizationRecommendation[]> {
     try {
-      // Get user behavior data
-      const behavior = await this.getUserBehaviorData(userId);
-
       // Get products based on behavior
       const products = await prisma.product.findMany({
         take: limit,
@@ -56,7 +39,7 @@ export class PersonalizationService {
       // Score and rank products
       const recommendations = products.map((product) => ({
         productId: product.id,
-        score: this.calculatePersonalizationScore(product, behavior),
+        score: this.calculatePersonalizationScore(),
         reason: "Based on your browsing history",
         confidence: 0.7,
       }));
@@ -70,9 +53,7 @@ export class PersonalizationService {
   }
 
   // Get user behavior data
-  private static async getUserBehaviorData(
-    userId: string
-  ): Promise<UserBehaviorData> {
+  private static async getUserBehaviorData(): Promise<UserBehaviorData> {
     try {
       // This would typically analyze user's past orders, views, etc.
       // For now, return default behavior
@@ -98,10 +79,7 @@ export class PersonalizationService {
   }
 
   // Calculate personalization score for a product
-  private static calculatePersonalizationScore(
-    product: MinimalProductForScoring,
-    behavior: UserBehaviorData
-  ): number {
+  private static calculatePersonalizationScore(): number {
     const score = 50; // Base score
 
     // Add scoring logic here based on user behavior and product fields if needed

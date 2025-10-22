@@ -40,6 +40,7 @@ export default function NewProductPage() {
   const [categoryId, setCategoryId] = useState<string>("");
   const [brands, setBrands] = useState<MetaBrand[]>([]);
   const [categories, setCategories] = useState<MetaCategory[]>([]);
+  const [productType, setProductType] = useState<string>("");
   const [gender, setGender] = useState<string>("");
   const [isJersey, setIsJersey] = useState(false);
   const [jerseyConfig, setJerseyConfig] = useState<string>("");
@@ -110,6 +111,7 @@ export default function NewProductPage() {
         brandId: brandId || undefined,
         categoryId: categoryId || undefined,
         gender: gender || undefined,
+        productType: productType || undefined,
         isJersey,
         jerseyConfig: jerseyConfig.trim() || undefined,
         images: images
@@ -214,19 +216,56 @@ export default function NewProductPage() {
                 </div>
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
-                    Gender
+                    Product Type
                   </label>
                   <select
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
+                    value={productType}
+                    onChange={(e) => {
+                      setProductType(e.target.value);
+                      setGender(""); // Reset gender when product type changes
+                    }}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="">Unspecified</option>
-                    <option value="women">Women</option>
-                    <option value="men">Men</option>
-                    <option value="unisex">Unisex</option>
+                    <option value="">Select Product Type</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="shoes">Shoes</option>
+                    <option value="accessories">Accessories</option>
                   </select>
                 </div>
+                {(productType === "clothing" || productType === "shoes") && (
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Gender
+                    </label>
+                    <select
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="men">Men</option>
+                      <option value="women">Women</option>
+                      <option value="unisex">Unisex</option>
+                    </select>
+                  </div>
+                )}
+                {productType === "accessories" && (
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Gender
+                    </label>
+                    <select
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="men">Men</option>
+                      <option value="women">Women</option>
+                      <option value="unisex">Unisex</option>
+                    </select>
+                  </div>
+                )}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Product Name *

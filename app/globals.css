@@ -1,6 +1,119 @@
+@font-face {
+  font-family: "Carbon";
+  src: url("/fonts/Carbon-Bold.woff2") format("woff2"),
+    url("/fonts/Carbon-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "VirtualModern";
+  src: url("/fonts/VirtualModern-Regular.woff2") format("woff2"),
+    url("/fonts/VirtualModern-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "VirtualModern";
+  src: url("/fonts/VirtualModern-Bold.woff2") format("woff2"),
+    url("/fonts/VirtualModern-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "AnxlerTechnology";
+  src: url("/fonts/anxler-technology-corporate-font-family-2025-08-07-22-25-55-utc.woff2")
+      format("woff2"),
+    url("/fonts/anxler-technology-corporate-font-family-2025-08-07-22-25-55-utc.woff")
+      format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* @keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
+  display: flex;
+  width: 200%;
+} */
+
+/* Customize as needed */
+:root {
+  --marquee-gap: 2.5rem; /* space between items */
+  --marquee-duration: 24s; /* speed (lower = faster) */
+}
+
+/* A single horizontal track that contains two groups side-by-side */
+.marquee {
+  display: flex;
+  gap: var(--marquee-gap);
+  overflow: hidden;
+  /* optional edge fade (remove if undesired) */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+/* Each group fills at least the viewport width and never shrinks */
+.marquee-group {
+  display: flex;
+  align-items: center;
+  gap: var(--marquee-gap);
+  flex-shrink: 0;
+  min-width: 100%;
+  animation: marquee-scroll var(--marquee-duration) linear infinite;
+  will-change: transform;
+}
+
+/* Individual items: no wrapping to avoid line breaks */
+.marquee-item {
+  white-space: nowrap;
+  font-family: carbon; /* your font-carbon */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  font-size: 1.5rem; /* text-lg */
+  color: #fff;
+}
+
+/* One simple animation: move one full group width to the left */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
 
 :root {
   --color-bg: #ffffff;
@@ -73,6 +186,162 @@ body {
 
   .animate-slide-in {
     animation: slideIn 0.3s ease-out;
+  }
+
+  /* Currency Selector Styling */
+  .currency-selector {
+    @apply font-mono font-bold tracking-widest text-sm uppercase;
+    font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+      "Courier New", monospace;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: #f5f5f5;
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+    position: relative;
+  }
+
+  .currency-selector::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(59, 130, 246, 0.1),
+      transparent
+    );
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .currency-selector:hover::before {
+    opacity: 1;
+  }
+
+  /* Currency Dropdown Styling */
+  .currency-dropdown {
+    @apply bg-gray-900 border border-gray-700 rounded-lg shadow-2xl;
+    backdrop-filter: blur(10px);
+    background: rgba(17, 24, 39, 0.95);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3),
+      0 10px 10px -5px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(59, 130, 246, 0.1);
+  }
+
+  .currency-dropdown-item {
+    @apply hover:bg-gray-800 transition-all duration-200;
+    font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono",
+      "Courier New", monospace;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    position: relative;
+    border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+    color: #f5f5f5;
+  }
+
+  .currency-dropdown-item:last-child {
+    border-bottom: none;
+  }
+
+  .currency-dropdown-item.selected {
+    @apply bg-blue-600;
+    color: #f5f5f5;
+    box-shadow: inset 0 0 10px rgba(59, 130, 246, 0.3);
+  }
+
+  .currency-dropdown-item:hover {
+    @apply bg-gray-700;
+    background: linear-gradient(
+      90deg,
+      rgba(59, 130, 246, 0.1),
+      rgba(75, 85, 99, 0.8)
+    );
+    color: #f5f5f5;
+  }
+
+  .currency-dropdown-item:hover::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #3b82f6, #1d4ed8);
+    border-radius: 0 2px 2px 0;
+    animation: slideInLeft 0.3s ease-out;
+  }
+
+  @keyframes slideInLeft {
+    from {
+      width: 0;
+      opacity: 0;
+    }
+    to {
+      width: 3px;
+      opacity: 1;
+    }
+  }
+
+  /* Currency selector button animation */
+  .currency-selector-button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .currency-selector-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3),
+      0 4px 6px -2px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Ensure currency text elements are visible */
+  .currency-selector span,
+  .currency-dropdown-item div {
+    color: #f5f5f5 !important;
+  }
+
+  .currency-dropdown-item:hover span,
+  .currency-dropdown-item:hover div {
+    color: #f5f5f5 !important;
+  }
+
+  .currency-dropdown-item.selected span,
+  .currency-dropdown-item.selected div {
+    color: #f5f5f5 !important;
+  }
+
+  /* Ensure icons are visible */
+  .currency-selector svg {
+    color: #f5f5f5 !important;
+  }
+
+  .currency-dropdown-item svg {
+    color: #f5f5f5 !important;
+  }
+
+  /* Recently Viewed and Trending Now Font Styling */
+  .font-virtual-modern {
+    font-family: "VirtualModern", "SF Mono", "Monaco", "Inconsolata",
+      "Roboto Mono", "Courier New", monospace;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .font-carbon {
+    font-family: "Carbon", "Arial Black", "Helvetica Neue", "Helvetica",
+      sans-serif;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+  }
+
+  .font-anxler-tech {
+    font-family: "AnxlerTechnology", "Inter", "SF Pro Display", "system-ui",
+      sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.05em;
   }
 }
 

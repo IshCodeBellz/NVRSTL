@@ -43,8 +43,8 @@ export function DynamicLogo({
           const data = await response.json();
           setLogoSettings(data.logoSettings);
         }
-      } catch (error) {
-        console.warn("Failed to fetch logo settings, using defaults:", error);
+      } catch {
+        // Failed to fetch logo settings, using defaults
       } finally {
         setLoading(false);
       }
@@ -58,14 +58,17 @@ export function DynamicLogo({
     return (
       <div className={className}>
         <Link href="/" className={linkClassName} aria-label="Home">
-          <div className="animate-pulse bg-neutral-200 dark:bg-neutral-700 h-6 w-32 rounded"></div>
+          <div
+            className="animate-pulse bg-gray-700 h-24 md:h-32 lg:h-40 w-40 md:w-52 lg:w-64 rounded"
+            style={{ transform: "skew(-12deg)" }}
+          ></div>
         </Link>
       </div>
     );
   }
 
   const renderTextLogo = () => {
-    const prefixColor = "text-neutral-900 dark:text-white";
+    const prefixColor = "text-white";
 
     if (
       logoSettings.logoType === "text" &&
@@ -88,7 +91,15 @@ export function DynamicLogo({
     }
 
     return (
-      <span className={`${prefixColor} ${textClassName}`}>
+      <span
+        className={`${prefixColor} ${textClassName} font-black italic`}
+        style={{
+          fontSize: "clamp(60px, 10vw, 120px)",
+          lineHeight: "clamp(60px, 10vw, 120px)",
+          transform: "skew(-12deg)",
+          letterSpacing: "-0.02em",
+        }}
+      >
         {logoSettings.logoText || "NVRSTL"}
       </span>
     );
@@ -101,9 +112,9 @@ export function DynamicLogo({
       <Image
         src={logoSettings.logoImageUrl}
         alt="Logo"
-        width={120}
-        height={40}
-        className="h-8 md:h-10 w-auto object-contain"
+        width={300}
+        height={120}
+        className="h-24 md:h-32 lg:h-40 w-auto object-contain"
         priority
       />
     );
@@ -111,14 +122,14 @@ export function DynamicLogo({
 
   const renderCombinedLogo = () => {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-6">
         {logoSettings.logoImageUrl && (
           <Image
             src={logoSettings.logoImageUrl}
             alt="Logo"
-            width={32}
-            height={32}
-            className="h-6 md:h-8 w-auto object-contain"
+            width={120}
+            height={120}
+            className="h-16 md:h-20 lg:h-24 w-auto object-contain"
             priority
           />
         )}

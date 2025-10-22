@@ -60,7 +60,7 @@ export default async function MensPage({
     })) || [];
 
   // Build top-level products query for Men's page
-  const where: any = {
+  const where: Record<string, unknown> = {
     isActive: true,
     deletedAt: null,
     gender: { in: ["men", "unisex"] },
@@ -83,9 +83,9 @@ export default async function MensPage({
     }
   }
   if (minCents != null || maxCents != null) {
-    where.priceCents = {} as any;
-    if (minCents != null) (where.priceCents as any).gte = minCents;
-    if (maxCents != null) (where.priceCents as any).lte = maxCents;
+    where.priceCents = {};
+    if (minCents != null) (where.priceCents as { gte: number }).gte = minCents;
+    if (maxCents != null) (where.priceCents as { lte: number }).lte = maxCents;
   }
   if (sp.brand) {
     where.brand = { name: { contains: sp.brand, mode: "insensitive" } };
@@ -126,7 +126,7 @@ export default async function MensPage({
     prisma.category.findMany({ select: { id: true, slug: true, name: true } }),
     prisma.brand.findMany({ select: { id: true, name: true } }),
   ]);
-  const baseFilter: any = { ...where };
+  const baseFilter: Record<string, unknown> = { ...where };
   delete baseFilter.categoryId;
   delete baseFilter.brand;
   const [categoryCounts, brandCounts] = await Promise.all([
@@ -176,15 +176,15 @@ export default async function MensPage({
                   <Link
                     href={`/product/${p.id}`}
                     key={p.id}
-                    className="group block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+                    className="group block bg-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:border-gray-600 transition-all duration-300 hover:shadow-2xl"
                   >
-                    <div className="aspect-square bg-gray-100 relative overflow-hidden">
+                    <div className="aspect-square bg-gray-700 relative overflow-hidden">
                       {p.images[0]?.url ? (
                         <Image
                           src={p.images[0].url}
                           alt={p.images[0].alt || p.name}
                           fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="object-cover group-hover:scale-110 transition-transform duration-500"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -192,16 +192,16 @@ export default async function MensPage({
                         </div>
                       )}
                     </div>
-                    <div className="p-3">
-                      <h3 className="font-medium text-gray-900 line-clamp-2 mb-1">
+                    <div className="p-4">
+                      <h3 className="font-bold text-white line-clamp-2 mb-2 font-carbon uppercase tracking-wide text-sm">
                         {p.name}
                       </h3>
                       {p.brand?.name && (
-                        <p className="text-xs text-gray-500 mb-1">
+                        <p className="text-xs text-gray-400 mb-3 font-carbon uppercase tracking-wider">
                           {p.brand.name}
                         </p>
                       )}
-                      <div className="text-sm font-semibold">
+                      <div className="text-sm font-bold text-white">
                         <ClientPrice cents={p.priceCents} />
                       </div>
                     </div>

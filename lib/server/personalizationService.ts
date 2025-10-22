@@ -155,7 +155,7 @@ export class PersonalizationService {
     console.log("trackUserInteraction", { userId, productId, interactionType });
   }
 
-  static async getUserPreferences(userId: string): Promise<{
+  static async getUserPreferences(): Promise<{
     categories: Array<{ id: string; name: string }>;
     brands: Array<{ id: string; name: string }>;
     priceRange: { min: number; max: number };

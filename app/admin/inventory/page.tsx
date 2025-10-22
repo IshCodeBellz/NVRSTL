@@ -21,7 +21,7 @@ export default async function InventoryPage() {
   const [stockAlerts, recentMovements, lowStockItems, inventoryStats] =
     await Promise.all([
       inventoryService.getStockAlerts(),
-      inventoryService.getRecentStockMovements(20),
+      inventoryService.getRecentStockMovements(),
       inventoryService.getLowStockProducts(10),
       inventoryService.getInventoryStats(),
     ]);

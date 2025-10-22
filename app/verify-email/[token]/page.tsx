@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,8 +40,7 @@ export default function VerifyEmailPage({ params }: PageProps) {
             setError(data.error || "Verification failed");
           }
         }
-      } catch (error) {
-        
+      } catch {
         setStatus("error");
         setError("Network error occurred");
       }
@@ -65,8 +65,7 @@ export default function VerifyEmailPage({ params }: PageProps) {
       if (res.ok) {
         setResendSuccess(true);
       }
-    } catch (error) {
-      
+    } catch {
       // Handle silently
     } finally {
       setResendLoading(false);

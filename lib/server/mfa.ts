@@ -32,7 +32,7 @@ export class MFAService {
       try {
         const settings = await CMSService.getSiteSettings();
         appName = (settings.siteName as string) || "DY OFFICIALETTE";
-      } catch (_error) {
+      } catch {
         console.warn("Could not load site name from CMS, using default");
         appName = "DY OFFICIALETTE";
       }

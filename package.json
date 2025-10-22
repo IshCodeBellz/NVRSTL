@@ -88,7 +88,7 @@
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.6.0",
     "recharts": "^3.2.1",
-    "resend": "^6.1.2",
+    "resend": "^6.2.2",
     "speakeasy": "^2.0.0",
     "stripe": "^16.0.0",
     "tailwind-merge": "^2.3.0",

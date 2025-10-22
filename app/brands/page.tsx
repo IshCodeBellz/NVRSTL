@@ -27,9 +27,8 @@ export default function BrandsPage() {
           const data = await response.json();
           setBrands(data.brands || []);
         }
-      } catch (error) {
-        
-        
+      } catch {
+        // Handle error silently
       } finally {
         setLoading(false);
       }

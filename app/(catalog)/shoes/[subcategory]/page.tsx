@@ -38,6 +38,7 @@ export default async function ShoesSubcategoryPage({
     categoryId: category.id,
     isActive: true,
     deletedAt: null,
+    productType: "shoes",
   };
 
   // Apply filters from search params

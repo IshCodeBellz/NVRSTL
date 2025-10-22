@@ -3,9 +3,8 @@ import Link from "next/link";
 import EnhancedSearchBar from "../search/EnhancedSearchBar";
 import { useCart, useWishlist } from "../providers/CartProvider";
 import { useSession, signOut } from "next-auth/react";
-import { DarkModeToggle } from "./DarkModeToggle";
-import { CurrencySelector } from "../ui/CurrencySelector";
 import { DynamicLogo } from "./DynamicLogo";
+import { CurrencySelector } from "../ui/CurrencySelector";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
@@ -129,40 +128,76 @@ export function Header() {
       >
         Skip to main content
       </a>
-      <header className="bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700 sticky top-0 z-40">
-        <div className="container mx-auto px-2 md:px-4 lg:px-6">
-          {/* Main Header Row */}
-          <div className="flex items-center h-16 gap-2 md:gap-4 justify-between">
-            {/* Logo */}
-            <DynamicLogo
-              className="flex items-center shrink-0"
-              linkClassName="font-bold text-lg md:text-xl tracking-tight"
-            />
+      <header className="bg-black border-b border-gray-800 sticky top-0 z-40">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8">
+          {/* Logo Row - Centered */}
+          <div className="flex justify-center py-0">
+            <DynamicLogo className="flex items-center" linkClassName="" />
+          </div>
 
-            {/* Desktop Search Bar - Centered */}
-            <div className="hidden md:flex flex-1 justify-center max-w-none min-w-0">
-              <div className="w-full max-w-sm lg:max-w-md xl:max-w-lg min-w-0">
-                <EnhancedSearchBar />
+          {/* Main Header Row */}
+          <div className="flex items-center h-20 gap-4 md:gap-6 justify-between">
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link
+                href="/"
+                className="text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors"
+              >
+                Home
+              </Link>
+              <Link
+                href="/mens"
+                className="text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors"
+              >
+                Discover
+              </Link>
+              <Link
+                href="/womens"
+                className="text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors"
+              >
+                Gallery
+              </Link>
+              <Link
+                href="/contact"
+                className="text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors"
+              >
+                Contact
+              </Link>
+            </nav>
+
+            {/* Desktop Search Bar with Currency Selector - Centered */}
+            <div className="hidden lg:flex flex-1 justify-center max-w-none min-w-0 mx-8">
+              <div className="flex items-center gap-4 w-full max-w-md lg:max-w-lg xl:max-w-xl min-w-0">
+                {/* Currency Selector */}
+                <div className="text-white [&_button]:text-[#f5f5f5] [&_button]:hover:bg-gray-800 [&_button]:hover:text-[#f5f5f5] [&_button]:currency-selector [&_button]:currency-selector-button [&_button]:border [&_button]:border-gray-600 [&_button]:rounded-lg [&_button]:px-3 [&_button]:py-2 [&_button]:bg-gray-900 [&_button]:hover:border-gray-500 [&_button]:transition-all [&_button]:duration-200 [&_div]:currency-dropdown [&_button]:currency-dropdown-item">
+                  <CurrencySelector
+                    variant="minimal"
+                    size="sm"
+                    showLabel={false}
+                  />
+                </div>
+                {/* Search Bar */}
+                <div className="flex-1">
+                  <EnhancedSearchBar />
+                </div>
               </div>
             </div>
 
-            {/* Right Side - Currency, Auth, Actions */}
-            <nav className="hidden md:flex header-nav shrink-0">
-              <CurrencySelector variant="minimal" showLabel={false} size="sm" />
-              <DarkModeToggle />
+            {/* Right Side - Auth, Actions */}
+            <nav className="hidden md:flex items-center space-x-6 shrink-0">
               {session ? (
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-4 text-sm">
                   {session.user?.isAdmin && (
                     <>
                       <Link
                         href="/admin"
-                        className="hover:underline font-medium text-neutral-900 dark:text-white text-xs px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded"
+                        className="hover:underline font-medium text-white text-base px-3 py-2 bg-gray-800 rounded font-carbon uppercase tracking-wider"
                       >
                         Admin
                       </Link>
                       <Link
                         href="/admin/orders?status=PAID"
-                        className="relative hover:underline font-medium text-neutral-900 dark:text-white text-xs px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded"
+                        className="relative hover:underline font-medium text-white text-base px-3 py-2 bg-gray-800 rounded font-carbon uppercase tracking-wider"
                         title="Manage orders"
                       >
                         Orders
@@ -185,7 +220,7 @@ export function Header() {
                       }}
                       aria-controls="site-mobile-menu"
                       aria-expanded={mobileMenuOpen}
-                      className="text-neutral-900 dark:text-white font-medium hover:text-red-600 dark:hover:text-red-400 text-xs truncate max-w-20"
+                      className="text-white font-carbon uppercase tracking-wider hover:text-gray-300 text-base truncate max-w-20"
                     >
                       {session.user?.name?.split(" ")[0] || "Account"}
                     </button>
@@ -194,19 +229,19 @@ export function Header() {
               ) : (
                 <Link
                   href="/login"
-                  className="text-xs hover:underline text-neutral-900 dark:text-white px-2 py-1"
+                  className="text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors px-2 py-1"
                 >
                   Sign in
                 </Link>
               )}
               <Link
                 href="/saved"
-                className="relative text-xs hover:underline text-neutral-900 dark:text-white px-1"
+                className="relative text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors px-2"
               >
                 Saved
                 <span
                   className={
-                    "absolute -top-1 -right-1 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 rounded-full text-[9px] leading-none h-3 min-w-3 px-0.5 flex items-center justify-center transition-opacity " +
+                    "absolute -top-1 -right-1 bg-white text-black rounded-full text-[9px] leading-none h-3 min-w-3 px-0.5 flex items-center justify-center transition-opacity " +
                     (wishItems.length === 0 ? "opacity-0" : "opacity-100")
                   }
                   aria-hidden={wishItems.length === 0}
@@ -215,19 +250,13 @@ export function Header() {
                 </span>
               </Link>
               <Link
-                href="/social/wishlists"
-                className="text-xs hover:underline text-neutral-900 dark:text-white px-1"
-              >
-                Social
-              </Link>
-              <Link
                 href="/bag"
-                className="relative text-xs hover:underline text-neutral-900 dark:text-white px-1"
+                className="relative text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors px-2"
               >
                 Bag
                 <span
                   className={
-                    "absolute -top-1 -right-1 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 rounded-full text-[9px] leading-none h-3 min-w-3 px-0.5 flex items-center justify-center transition-opacity " +
+                    "absolute -top-1 -right-1 bg-white text-black rounded-full text-[9px] leading-none h-3 min-w-3 px-0.5 flex items-center justify-center transition-opacity " +
                     (totalQuantity === 0 ? "opacity-0" : "opacity-100")
                   }
                   aria-hidden={totalQuantity === 0}
@@ -235,20 +264,29 @@ export function Header() {
                   {totalQuantity}
                 </span>
               </Link>
+
+              {/* SIGN UP Button */}
+              {!session && (
+                <Link
+                  href="/register"
+                  className="bg-white text-black px-4 py-2 font-bold uppercase tracking-wider hover:bg-gray-100 transition-colors font-carbon text-base"
+                >
+                  Sign Up
+                </Link>
+              )}
             </nav>
 
             {/* Mobile Controls */}
-            <div className="flex md:hidden items-center gap-2 ml-auto">
-              <DarkModeToggle />
+            <div className="flex md:hidden items-center gap-3 ml-auto">
               <Link
                 href="/saved"
-                className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-neutral-300 dark:border-neutral-600 text-[11px] text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-600 text-white hover:bg-gray-800 transition-colors"
                 aria-label="Saved items"
               >
                 ♥
                 <span
                   className={
-                    "absolute -top-1 -right-1 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 rounded-full text-[10px] leading-none h-4 min-w-4 px-1 flex items-center justify-center " +
+                    "absolute -top-1 -right-1 bg-white text-black rounded-full text-[10px] leading-none h-4 min-w-4 px-1 flex items-center justify-center " +
                     (wishItems.length === 0 ? "opacity-0" : "opacity-100")
                   }
                   aria-hidden={wishItems.length === 0}
@@ -258,13 +296,13 @@ export function Header() {
               </Link>
               <Link
                 href="/bag"
-                className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-neutral-300 dark:border-neutral-600 text-[11px] text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-600 text-white hover:bg-gray-800 transition-colors"
                 aria-label="Bag"
               >
                 👜
                 <span
                   className={
-                    "absolute -top-1 -right-1 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 rounded-full text-[10px] leading-none h-4 min-w-4 px-1 flex items-center justify-center " +
+                    "absolute -top-1 -right-1 bg-white text-black rounded-full text-[10px] leading-none h-4 min-w-4 px-1 flex items-center justify-center " +
                     (totalQuantity === 0 ? "opacity-0" : "opacity-100")
                   }
                   aria-hidden={totalQuantity === 0}
@@ -277,7 +315,7 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(true)}
                 aria-label="Open menu"
                 aria-expanded={mobileMenuOpen}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-600 text-white hover:bg-gray-800 transition-colors"
               >
                 <svg
                   width="18"
@@ -297,47 +335,57 @@ export function Header() {
             </div>
           </div>
 
-          {/* Mobile Search Bar */}
-          <div className="md:hidden pb-3">
+          {/* Mobile Search Bar with Currency Selector */}
+          <div className="md:hidden pb-6">
+            <div className="flex items-center gap-4 mb-4">
+              {/* Currency Selector for Mobile */}
+              <div className="text-white [&_button]:text-[#f5f5f5] [&_button]:hover:bg-gray-800 [&_button]:hover:text-[#f5f5f5] [&_button]:currency-selector [&_button]:currency-selector-button [&_button]:border [&_button]:border-gray-600 [&_button]:rounded-lg [&_button]:px-3 [&_button]:py-2 [&_button]:bg-gray-900 [&_button]:hover:border-gray-500 [&_button]:transition-all [&_button]:duration-200 [&_div]:currency-dropdown [&_button]:currency-dropdown-item">
+                <CurrencySelector
+                  variant="minimal"
+                  size="sm"
+                  showLabel={false}
+                />
+              </div>
+            </div>
             <EnhancedSearchBar />
           </div>
 
           {/* Navigation Row - Desktop Only */}
-          <div className="hidden md:block border-t border-neutral-200 dark:border-neutral-700">
-            <nav className="flex items-center justify-center gap-4 lg:gap-6 xl:gap-8 py-3 overflow-x-auto">
+          <div className="hidden md:block border-t border-gray-800">
+            <nav className="flex items-center justify-center gap-6 lg:gap-8 xl:gap-10 py-4 overflow-x-auto">
               <Link
                 href="/new-in"
-                className="text-sm font-medium text-neutral-900 dark:text-white hover:text-red-600 dark:hover:text-red-400 whitespace-nowrap"
+                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 New In
               </Link>
               <Link
                 href="/womens"
-                className="text-sm font-medium text-neutral-900 dark:text-white hover:text-red-600 dark:hover:text-red-400 whitespace-nowrap"
+                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 Women
               </Link>
               <Link
                 href="/mens"
-                className="text-sm font-medium text-neutral-900 dark:text-white hover:text-red-600 dark:hover:text-red-400 whitespace-nowrap"
+                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 Men
               </Link>
               <Link
                 href="/shoes"
-                className="text-sm font-medium text-neutral-900 dark:text-white hover:text-red-600 dark:hover:text-red-400 whitespace-nowrap"
+                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 Shoes
               </Link>
               <Link
                 href="/accessories"
-                className="text-sm font-medium text-neutral-900 dark:text-white hover:text-red-600 dark:hover:text-red-400 whitespace-nowrap"
+                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 Accessories
               </Link>
               <Link
                 href="/brands"
-                className="text-sm font-medium text-neutral-900 dark:text-white hover:text-red-600 dark:hover:text-red-400 whitespace-nowrap"
+                className="text-base font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 Brands
               </Link>
@@ -355,30 +403,41 @@ export function Header() {
               aria-hidden="true"
             />
             <div
-              className="fixed top-0 right-0 h-full w-80 max-w-[92%] bg-white dark:bg-neutral-900 z-[101] shadow-xl flex flex-col will-change-transform animate-slide-in"
+              className="fixed top-0 right-0 h-full w-80 max-w-[92%] bg-black z-[101] shadow-xl flex flex-col will-change-transform animate-slide-in border-l border-gray-800"
               role="dialog"
               aria-modal="true"
               aria-label="Mobile menu"
             >
-              <div className="flex items-center justify-between pl-4 pr-2 h-16 border-b border-neutral-200 dark:border-neutral-700">
-                <span className="font-semibold text-sm text-neutral-900 dark:text-white">
+              <div className="flex items-center justify-between pl-4 pr-2 h-20 border-b border-gray-800">
+                <span className="font-bold text-sm text-white font-carbon uppercase tracking-wider">
                   Menu
                 </span>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
                   aria-label="Close menu"
-                  className="rounded-full h-10 w-10 inline-flex items-center justify-center border border-neutral-300 dark:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white"
+                  className="rounded-full h-10 w-10 inline-flex items-center justify-center border border-gray-600 hover:bg-gray-800 text-white transition-colors"
                 >
                   <span className="text-lg leading-none">×</span>
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto px-4 py-5 text-sm space-y-6">
+                {/* Currency Selector for Mobile */}
+                <div className="pb-4 border-b border-gray-800">
+                  <div className="text-white [&_button]:text-[#f5f5f5] [&_button]:hover:bg-gray-800 [&_button]:hover:text-[#f5f5f5] [&_button]:currency-selector [&_button]:currency-selector-button [&_button]:border [&_button]:border-gray-600 [&_button]:rounded-lg [&_button]:px-3 [&_button]:py-2 [&_button]:bg-gray-900 [&_button]:hover:border-gray-500 [&_button]:transition-all [&_button]:duration-200 [&_div]:currency-dropdown [&_button]:currency-dropdown-item">
+                    <CurrencySelector
+                      variant="minimal"
+                      size="sm"
+                      showLabel={false}
+                    />
+                  </div>
+                </div>
+
                 {status === "loading" && (
-                  <div className="h-5 w-32 bg-neutral-200 dark:bg-neutral-700 animate-pulse rounded" />
+                  <div className="h-5 w-32 bg-gray-700 animate-pulse rounded" />
                 )}
                 {status !== "loading" && session && (
                   <div className="space-y-2">
-                    <div className="font-medium truncate text-neutral-900 dark:text-white">
+                    <div className="font-bold truncate text-white font-carbon uppercase tracking-wider">
                       {session.user?.name || session.user?.email}
                     </div>
                     {session.user?.isAdmin && (
@@ -386,14 +445,14 @@ export function Header() {
                         <Link
                           href="/admin"
                           onClick={() => setMobileMenuOpen(false)}
-                          className="block hover:text-brand-accent text-neutral-700 dark:text-neutral-300"
+                          className="block hover:text-gray-300 text-gray-400 font-carbon uppercase tracking-wider transition-colors"
                         >
                           Admin Dashboard
                         </Link>
                         <Link
                           href="/admin/orders?status=PAID"
                           onClick={() => setMobileMenuOpen(false)}
-                          className="block hover:text-brand-accent text-neutral-700 dark:text-neutral-300"
+                          className="block hover:text-gray-300 text-gray-400 font-carbon uppercase tracking-wider transition-colors"
                         >
                           Orders
                         </Link>
@@ -402,7 +461,7 @@ export function Header() {
                     <Link
                       href="/account"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block hover:text-brand-accent text-neutral-700 dark:text-neutral-300"
+                      className="block hover:text-gray-300 text-gray-400 font-carbon uppercase tracking-wider transition-colors"
                     >
                       My Account
                     </Link>
@@ -418,7 +477,7 @@ export function Header() {
                         } catch {}
                         signOut();
                       }}
-                      className="block hover:text-brand-accent text-left w-full text-neutral-700 dark:text-neutral-300"
+                      className="block hover:text-gray-300 text-left w-full text-gray-400 font-carbon uppercase tracking-wider transition-colors"
                     >
                       Sign out
                     </button>
@@ -429,21 +488,21 @@ export function Header() {
                     <Link
                       href="/login"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block hover:text-brand-accent font-medium text-neutral-900 dark:text-white"
+                      className="block hover:text-gray-300 font-bold text-white font-carbon uppercase tracking-wider transition-colors"
                     >
                       Sign in
                     </Link>
                     <Link
                       href="/register"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block hover:text-brand-accent text-neutral-700 dark:text-neutral-300"
+                      className="block hover:text-gray-300 text-gray-400 font-carbon uppercase tracking-wider transition-colors"
                     >
                       Create account
                     </Link>
                   </div>
                 )}
-                <div className="space-y-2 pt-2 border-t border-neutral-200 dark:border-neutral-700">
-                  <p className="text-[10px] font-semibold tracking-wide text-neutral-500 dark:text-neutral-400 uppercase">
+                <div className="space-y-2 pt-2 border-t border-gray-800">
+                  <p className="text-[10px] font-bold tracking-wide text-gray-400 uppercase font-carbon">
                     Categories
                   </p>
                   {/* Primary Categories */}
@@ -460,7 +519,7 @@ export function Header() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block text-base font-medium text-neutral-900 dark:text-white hover:text-brand-accent py-1"
+                        className="block text-base font-bold text-white hover:text-gray-300 font-carbon uppercase tracking-wider py-1 transition-colors"
                       >
                         {item.label}
                       </Link>
@@ -468,8 +527,8 @@ export function Header() {
                   </div>
 
                   {/* Subcategories */}
-                  <div className="pt-3 border-t border-neutral-200 dark:border-neutral-700">
-                    <p className="text-[10px] font-semibold tracking-wide text-neutral-500 dark:text-neutral-400 uppercase mb-2">
+                  <div className="pt-3 border-t border-gray-800">
+                    <p className="text-[10px] font-bold tracking-wide text-gray-400 uppercase mb-2 font-carbon">
                       Popular Categories
                     </p>
                     <div className="grid grid-cols-2 gap-1.5 text-[13px]">
@@ -486,7 +545,7 @@ export function Header() {
                           key={item.href}
                           href={item.href}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-transparent focus:outline-none focus:ring-2 focus:ring-neutral-300 dark:focus:ring-neutral-600 text-neutral-700 dark:text-neutral-300"
+                          className="px-2 py-1 rounded hover:bg-gray-800 border border-transparent focus:outline-none focus:ring-2 focus:ring-gray-600 text-gray-400 hover:text-white transition-colors font-carbon uppercase tracking-wider text-xs"
                         >
                           {item.label}
                         </Link>
@@ -494,37 +553,37 @@ export function Header() {
                     </div>
                   </div>
                 </div>
-                <div className="space-y-2 pt-2 border-t border-neutral-200 dark:border-neutral-700">
+                <div className="space-y-2 pt-2 border-t border-gray-800">
                   <Link
                     href="/saved"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-between text-neutral-700 dark:text-neutral-300 hover:text-brand-accent"
+                    className="flex items-center justify-between text-gray-400 hover:text-white transition-colors font-carbon uppercase tracking-wider"
                   >
                     <span>Saved Items</span>
-                    <span className="text-xs bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center">
+                    <span className="text-xs bg-white text-black rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center">
                       {wishItems.length}
                     </span>
                   </Link>
                   <Link
                     href="/social/wishlists"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block hover:text-brand-accent text-neutral-700 dark:text-neutral-300"
+                    className="block hover:text-white text-gray-400 transition-colors font-carbon uppercase tracking-wider"
                   >
                     Social Wishlists
                   </Link>
                   <Link
                     href="/bag"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-between text-neutral-700 dark:text-neutral-300 hover:text-brand-accent"
+                    className="flex items-center justify-between text-gray-400 hover:text-white transition-colors font-carbon uppercase tracking-wider"
                   >
                     <span>Bag</span>
-                    <span className="text-xs bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center">
+                    <span className="text-xs bg-white text-black rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center">
                       {totalQuantity}
                     </span>
                   </Link>
                 </div>
               </div>
-              <div className="px-4 py-3 border-t border-neutral-200 dark:border-neutral-700 text-[10px] text-neutral-500 dark:text-neutral-400">
+              <div className="px-4 py-3 border-t border-gray-800 text-[10px] text-gray-400 font-carbon uppercase tracking-wider">
                 © {new Date().getFullYear()} NVRSTL
               </div>
             </div>

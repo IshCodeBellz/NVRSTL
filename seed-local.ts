@@ -1,5 +1,5 @@
 // Force local database URL
-process.env.DATABASE_URL = "postgresql://ishaqbello@localhost:5432/test_db";
+process.env.DATABASE_URL = "postgresql://ishaqbello@localhost:5432/nvrstl_test_db";
 
 import { PrismaClient } from "@prisma/client";
 

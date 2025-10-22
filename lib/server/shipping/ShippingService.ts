@@ -144,8 +144,7 @@ export class ShippingService {
           const carrierRates = await this.getCarrierRates(
             carrierName,
             fromAddress,
-            toAddress,
-            packages
+            toAddress
           );
           rates.push(...carrierRates);
         }
@@ -184,15 +183,14 @@ export class ShippingService {
 
       if (config.testMode) {
         // Generate mock label for development
-        label = this.generateMockLabel(carrierName, serviceType, toAddress);
+        label = this.generateMockLabel(carrierName, serviceType);
       } else {
         // Use real carrier API
         label = await this.createCarrierLabel(
           config,
           serviceType,
           fromAddress,
-          toAddress,
-          packages
+          toAddress
         );
       }
 
@@ -247,7 +245,7 @@ export class ShippingService {
 
       if (config.testMode) {
         // Return mock tracking data
-        return this.getMockTrackingUpdates(trackingNumber);
+        return this.getMockTrackingUpdates();
       }
 
       // Use real carrier tracking API
@@ -375,8 +373,7 @@ export class ShippingService {
    */
   private static generateMockLabel(
     carrier: string,
-    service: string,
-    toAddress: ShippingAddress
+    service: string
   ): ShipmentLabel {
     const trackingNumber = `${carrier
       .substring(0, 3)
@@ -403,9 +400,7 @@ export class ShippingService {
   /**
    * Get mock tracking updates for development
    */
-  private static getMockTrackingUpdates(
-    trackingNumber: string
-  ): TrackingUpdate[] {
+  private static getMockTrackingUpdates(): TrackingUpdate[] {
     const now = new Date();
     const updates: TrackingUpdate[] = [
       {
@@ -541,8 +536,7 @@ export class ShippingService {
   private static async getCarrierRates(
     carrier: string,
     fromAddress: ShippingAddress,
-    toAddress: ShippingAddress,
-    packages: PackageDimensions[]
+    toAddress: ShippingAddress
   ): Promise<ShippingRate[]> {
     // TODO: Implement real carrier API calls
     return this.getMockRates(carrier, toAddress.country, 2000);
@@ -552,11 +546,10 @@ export class ShippingService {
     config: CarrierConfig,
     service: string,
     fromAddress: ShippingAddress,
-    toAddress: ShippingAddress,
-    packages: PackageDimensions[]
+    toAddress: ShippingAddress
   ): Promise<ShipmentLabel> {
     // TODO: Implement real carrier API calls
-    return this.generateMockLabel(config.name, service, toAddress);
+    return this.generateMockLabel(config.name, service);
   }
 
   private static async getCarrierTracking(
@@ -564,6 +557,6 @@ export class ShippingService {
     trackingNumber: string
   ): Promise<TrackingUpdate[]> {
     // TODO: Implement real carrier API calls
-    return this.getMockTrackingUpdates(trackingNumber);
+    return this.getMockTrackingUpdates();
   }
 }

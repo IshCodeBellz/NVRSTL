@@ -144,7 +144,7 @@ export function SecuritySettings({
         }));
         setSecurityEvents(mappedEvents);
       }
-    } catch (error) {
+    } catch {
       push({ message: "Failed to load security settings", type: "error" });
     } finally {
       setLoading(false);
@@ -198,7 +198,7 @@ export function SecuritySettings({
           type: "error",
         });
       }
-    } catch (error) {
+    } catch {
       push({
         message: "Failed to disable two-factor authentication",
         type: "error",
@@ -231,7 +231,7 @@ export function SecuritySettings({
           type: "error",
         });
       }
-    } catch (error) {
+    } catch {
       push({ message: "Failed to generate backup codes", type: "error" });
     }
   };

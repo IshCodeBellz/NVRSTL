@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
@@ -751,12 +752,11 @@ export default function AccountDetailsPage() {
                 <div className="text-xs text-neutral-500 dark:text-neutral-400 space-y-2 pt-4 border-t border-neutral-200 dark:border-neutral-600">
                   <p>
                     *By ticking the SMS box, you are agreeing to receive texts
-                    from or on behalf of NVRSTL, our family of
-                    companies, or one of its third-party associates, to any
-                    telephone number you provide. These texts could be sent
-                    using an automated telephone system. Agreement is not a
-                    requirement of purchase and you are free to opt-out at any
-                    time.
+                    from or on behalf of NVRSTL, our family of companies, or one
+                    of its third-party associates, to any telephone number you
+                    provide. These texts could be sent using an automated
+                    telephone system. Agreement is not a requirement of purchase
+                    and you are free to opt-out at any time.
                   </p>
                   <p>
                     By creating your account you agree to our{" "}

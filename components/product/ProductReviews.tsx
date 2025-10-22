@@ -64,9 +64,8 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
           setHasMore(data.hasMore);
           setPage(pageNum);
         }
-      } catch (error) {
-        
-        
+      } catch {
+        // Handle error silently
       } finally {
         setLoading(false);
       }
@@ -90,11 +89,13 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Customer Reviews</h2>
+        <h2 className="text-3xl font-black text-white font-carbon uppercase tracking-tight">
+          Customer Reviews
+        </h2>
         {session && (
           <button
             onClick={() => setShowForm(true)}
-            className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors"
+            className="px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-100 transition-colors font-bold font-carbon uppercase tracking-wider"
           >
             Write a Review
           </button>

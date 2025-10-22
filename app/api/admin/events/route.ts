@@ -1,9 +1,8 @@
-import { NextRequest } from "next/server";
 import { createAdminEventStream } from "@/lib/server/events/adminEvents";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
   const stream = createAdminEventStream();
 
   return new Response(stream, {

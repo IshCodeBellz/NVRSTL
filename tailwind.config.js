@@ -15,6 +15,23 @@ export default {
           accent: "#ff385c",
         },
       },
+      fontFamily: {
+        carbon: ["Carbon", "sans-serif"],
+        "virtual-modern": [
+          "VirtualModern",
+          "Inter",
+          "SF Pro Display",
+          "system-ui",
+          "sans-serif",
+        ],
+        "anxler-tech": [
+          "AnxlerTechnology",
+          "Inter",
+          "SF Pro Display",
+          "system-ui",
+          "sans-serif",
+        ],
+      },
     },
   },
   plugins: [],

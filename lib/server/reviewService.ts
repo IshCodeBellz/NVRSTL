@@ -184,7 +184,7 @@ export class ReviewService {
       await this.updateProductReviewAnalytics(data.productId);
 
       return { success: true, review };
-    } catch (e) {
+    } catch {
       return { success: false, error: "Failed to create review" };
     }
   }
@@ -326,8 +326,7 @@ export class ReviewService {
   }
 
   static async deleteReview(
-    reviewId: string,
-    adminId: string
+    reviewId: string
   ): Promise<{ success: boolean; message?: string; error?: string }> {
     try {
       const deleted = await prisma.productReview.delete({

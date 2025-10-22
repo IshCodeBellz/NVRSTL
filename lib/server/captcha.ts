@@ -294,7 +294,7 @@ export class CaptchaService {
     return (req as unknown as { ip?: string }).ip || "unknown";
   }
 
-  static async getAnalytics(timeRange: { start: Date; end: Date }): Promise<{
+  static async getAnalytics(): Promise<{
     totalVerifications: number;
     successRate: number;
     averageScore: number;

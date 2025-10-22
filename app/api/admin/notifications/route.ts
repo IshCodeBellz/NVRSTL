@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptionsEnhanced } from "@/lib/server/authOptionsEnhanced";
 import { prisma } from "@/lib/server/prisma";
 import { logger } from "@/lib/server/logger";
+
+export const dynamic = "force-dynamic";
 
 type NotificationWithRelations = {
   id: string;
@@ -23,7 +25,7 @@ type NotificationWithRelations = {
   order: { id: string; status: string } | null;
 };
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptionsEnhanced);
 

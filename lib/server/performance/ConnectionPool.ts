@@ -308,7 +308,6 @@ class ConnectionPoolManager {
   }
 
   private async cleanupStaleConnections(): Promise<void> {
-    const now = Date.now();
     const staleConnections: PrismaClient[] = [];
 
     // Find connections that have exceeded their lifetime

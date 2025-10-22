@@ -353,7 +353,7 @@ function TrackingPageContent() {
                 </h2>
                 <div className="border rounded p-6 bg-white dark:bg-neutral-800 dark:border-neutral-700">
                   <div className="space-y-4">
-                    {trackingData.deliveryProgress.steps.map((step, index) => (
+                    {trackingData.deliveryProgress.steps.map((step) => (
                       <div key={step.step} className="flex items-center">
                         <div
                           className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${

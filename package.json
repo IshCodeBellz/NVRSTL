@@ -9,7 +9,6 @@
     "start": "next start",
     "lint": "next lint",
     "prisma:generate": "prisma generate",
-    "prisma:studio": "dotenv -e .env.local -- prisma studio",
     "prisma:studio:local": "dotenv -e .env.local -- prisma studio",
     "prisma:studio:production": "dotenv -e .env.production -- prisma studio",
     "prisma:seed": "tsx prisma/seed.ts",
@@ -32,6 +31,8 @@
     "performance:analyze": "npx tsx scripts/optimize-database.ts --analyze-only",
     "performance:full": "npm run db:optimize && npm run cache:warm",
     "production:setup": "npm run env:validate:production && npm run deploy:setup && npm run shipping:seed && npm run performance:full",
+    "migrate:production": "npx tsx scripts/migrate-production.ts",
+    "baseline:production": "npx tsx scripts/baseline-production.ts",
     "production:configure": "node scripts/configure-production.js",
     "production:validate": "node scripts/validate-deployment.js",
     "production:deploy": "./scripts/deploy-production.sh",
@@ -110,8 +111,5 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
     "typescript": "^5.4.0"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
   }
 }

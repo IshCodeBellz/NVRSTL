@@ -97,7 +97,7 @@ class DatabaseOptimizer {
             q.mean_time
           ),
         }));
-      } catch (error) {
+      } catch {
         // Fallback if pg_stat_statements is not available
         console.warn(
           "pg_stat_statements not available, using fallback analysis"
@@ -378,7 +378,7 @@ class DatabaseOptimizer {
 
         totalQueries = Number(queryStats[0]?.calls || 0);
         avgResponseTime = queryStats[0]?.mean_time || 0;
-      } catch (error) {
+      } catch {
         console.log("pg_stat_statements not available, using fallback metrics");
         // Use fallback metrics based on connection activity
         totalQueries = activeConnections * 100; // Estimate based on active connections
@@ -418,7 +418,7 @@ class DatabaseOptimizer {
           WHERE schemaname = 'public'
           ORDER BY size_bytes DESC
         `;
-      } catch (error) {
+      } catch {
         console.log(
           "Advanced table statistics not available, using simplified metrics"
         );
@@ -433,7 +433,7 @@ class DatabaseOptimizer {
             FROM pg_stat_user_tables stat
             WHERE schemaname = 'public'
           `;
-        } catch (fallbackError) {
+        } catch {
           console.log(
             "Using hardcoded table stats for development environment"
           );
@@ -514,8 +514,8 @@ class DatabaseOptimizer {
       await prisma.$executeRawUnsafe(sql);
       console.log(`Successfully created index: ${sql}`);
       return true;
-    } catch (error) {
-      console.error(`Failed to create index: ${sql}`, error);
+    } catch {
+      console.error(`Failed to create index: ${sql}`);
       return false;
     }
   }
@@ -666,7 +666,7 @@ class DatabaseOptimizer {
               ? "Consider running VACUUM"
               : "Table bloat is acceptable",
         }));
-      } catch (error) {
+      } catch {
         console.warn("Table bloat analysis failed, using simplified check");
         return [];
       }
@@ -684,7 +684,7 @@ class DatabaseOptimizer {
         ) as exists
       `;
       return result[0]?.exists || false;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
@@ -698,7 +698,7 @@ class DatabaseOptimizer {
         WHERE schemaname = 'public'
       `;
       return result.map((row) => row.tablename);
-    } catch (error) {
+    } catch {
       return [];
     }
   }

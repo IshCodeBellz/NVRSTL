@@ -20,12 +20,7 @@ export async function GET() {
       );
     }
 
-    // Mock user ID since session.user.id not available
-    const mockUserId = session.user.email || "user_123";
-
-    const preferences = await PersonalizationService.getUserPreferences(
-      mockUserId
-    );
+    const preferences = await PersonalizationService.getUserPreferences();
 
     return NextResponse.json({
       success: true,

@@ -95,8 +95,6 @@ export function ReviewDisplay({
       // For now, we'll just show a success message
       alert("Thanks for your feedback!");
     } catch (error) {
-      
-      
       alert(error instanceof Error ? error.message : "Failed to vote");
     } finally {
       setVotingStates((prev) => ({ ...prev, [reviewId]: false }));
@@ -130,8 +128,6 @@ export function ReviewDisplay({
 
       alert("Review reported. Thank you for helping maintain quality.");
     } catch (error) {
-      
-      
       alert(error instanceof Error ? error.message : "Failed to report");
     } finally {
       setReportingStates((prev) => ({ ...prev, [reviewId]: false }));
@@ -242,30 +238,30 @@ export function ReviewDisplay({
               : content;
 
           return (
-            <div key={review.id} className="border-b border-gray-200 pb-6">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                    <span className="text-sm font-medium text-gray-600">
+            <div key={review.id} className="border-b border-gray-700 pb-8">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center border-2 border-gray-600">
+                    <span className="text-sm font-bold text-white font-carbon uppercase">
                       {review.userName
                         ? review.userName.charAt(0).toUpperCase()
                         : "?"}
                     </span>
                   </div>
                   <div>
-                    <div className="flex items-center space-x-2">
-                      <span className="font-medium text-gray-900">
+                    <div className="flex items-center space-x-3">
+                      <span className="font-bold text-white font-carbon uppercase tracking-wider">
                         {review.userName || "Anonymous"}
                       </span>
                       {review.isVerified && (
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                        <span className="text-xs bg-green-600 text-white px-3 py-1 rounded-full font-bold font-carbon uppercase tracking-wider">
                           Verified Purchase
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center space-x-2 mt-1">
+                    <div className="flex items-center space-x-3 mt-2">
                       {renderStars(review.rating)}
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-400 font-carbon uppercase tracking-wider">
                         {timeAgo(new Date(review.createdAt))}
                       </span>
                     </div>
@@ -274,17 +270,19 @@ export function ReviewDisplay({
               </div>
 
               {review.title && (
-                <h4 className="font-medium text-gray-900 mb-2">
+                <h4 className="font-bold text-white mb-3 font-carbon uppercase tracking-wide">
                   {review.title}
                 </h4>
               )}
 
-              <p className="text-gray-700 mb-4">{displayContent}</p>
+              <p className="text-gray-300 mb-4 font-carbon leading-relaxed">
+                {displayContent}
+              </p>
 
               {shouldTruncate && (
                 <button
                   onClick={() => toggleExpanded(review.id)}
-                  className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center mb-3"
+                  className="text-white hover:text-gray-300 text-sm font-bold flex items-center mb-3 font-carbon uppercase tracking-wider transition-colors"
                 >
                   {isExpanded ? (
                     <>

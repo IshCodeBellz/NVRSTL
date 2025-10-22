@@ -130,9 +130,7 @@ export const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
       });
 
       onSuccess?.();
-    } catch (error) {
-      
-      
+    } catch {
       setErrors({
         general: "An unexpected error occurred. Please try again.",
       });

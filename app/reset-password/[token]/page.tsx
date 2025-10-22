@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 import { FormEvent, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -27,8 +28,7 @@ export default function ResetPasswordPage({ params }: PageProps) {
         });
 
         setTokenValid(res.ok);
-      } catch (error) {
-      
+      } catch {
         setTokenValid(false);
       }
     }
@@ -84,8 +84,7 @@ export default function ResetPasswordPage({ params }: PageProps) {
           router.push("/login?message=password-reset-success");
         }, 3000);
       }
-    } catch (error) {
-      
+    } catch {
       setError("Network error. Please check your connection.");
     } finally {
       setLoading(false);

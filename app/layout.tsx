@@ -10,6 +10,9 @@ import { AuthProvider } from "../components/providers/AuthProvider";
 import { LiveRegion } from "../components/a11y/LiveRegion";
 import { CurrencyNotification } from "../components/ui/CurrencyNotification";
 
+// Force all pages to be dynamically rendered
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "NVRSTL",
   description:

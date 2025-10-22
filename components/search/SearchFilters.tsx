@@ -2,7 +2,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
-import { currencyService } from "@/lib/currency";
 
 interface FilterOption {
   id: string;
@@ -24,7 +23,7 @@ type Facets = {
 export default function SearchFilters({ facets }: { facets?: Facets }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { currentCurrency, formatPrice, convertPrice } = useCurrency();
+  const { formatPrice, convertPrice } = useCurrency();
   const [isOpen, setIsOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<
     Record<string, string[]>
@@ -114,7 +113,7 @@ export default function SearchFilters({ facets }: { facets?: Facets }) {
         ],
       },
     ],
-    [currentCurrency, formatPrice, convertPrice]
+    [formatPrice, convertPrice, facets?.brands, facets?.categories]
   );
 
   useEffect(() => {

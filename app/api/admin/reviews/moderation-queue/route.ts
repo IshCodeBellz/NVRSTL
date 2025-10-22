@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
         );
         break;
       case "delete":
-        result = await ReviewService.deleteReview(reviewId, admin.id);
+        result = await ReviewService.deleteReview(reviewId);
         break;
       default:
         return NextResponse.json(

@@ -1,0 +1,43 @@
+"use client";
+
+const SCROLLING_TEXT = [
+  "Virtually",
+  "Be Healthy and Strong",
+  "Train Our Bodies",
+  "Make Fashion as a Fun Hobby",
+  "Express Your Style",
+  "Discover New Trends",
+  "Shop Global Brands",
+];
+
+export function ScrollingBanner() {
+  return (
+    <section className="bg-gray-900 py-16">
+      <div className="relative overflow-hidden">
+        {/* Track holds two identical groups */}
+        <div className="marquee" role="marquee" aria-label="Scrolling benefits">
+          <MarqueeGroup />
+          <MarqueeGroup ariaHidden />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MarqueeGroup({ ariaHidden = false }: { ariaHidden?: boolean }) {
+  return (
+    <div
+      className="marquee-group"
+      aria-hidden={ariaHidden ? "true" : undefined}
+    >
+      {SCROLLING_TEXT.map((t, i) => (
+        <div key={`${t}-${i}`} className="marquee-item">
+          <span>{t}</span>
+          <span className="mx-6 select-none" aria-hidden="true">
+            ◆
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}

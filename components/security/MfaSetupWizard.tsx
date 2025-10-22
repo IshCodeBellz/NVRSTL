@@ -52,10 +52,8 @@ export function MfaSetupWizard({
       console.log("MFA Setup Result:", result); // Debug log
       setSetupData(result.data);
       setStep("setup");
-    } catch (error) {
-      
+    } catch {
       push({ message: "Failed to start MFA setup", type: "error" });
-      
     } finally {
       setLoading(false);
     }
@@ -83,7 +81,7 @@ export function MfaSetupWizard({
 
       if (!result.success) {
         const errorMessage = result.error || "Invalid verification code";
-        
+
         push({
           message: `Verification failed: ${errorMessage}`,
           type: "error",
@@ -96,10 +94,9 @@ export function MfaSetupWizard({
       // Notify parent component that setup is complete
       onSetupComplete();
     } catch (error) {
-      
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
-      
+
       push({
         message: `Verification failed: ${errorMessage}`,
         type: "error",

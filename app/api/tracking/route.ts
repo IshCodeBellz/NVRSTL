@@ -1,9 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { logger } from "@/lib/server/logger";
 import { TrackingService } from "@/lib/server/shipping/TrackingService";
 import { prisma } from "@/lib/server/prisma";
 
-export async function GET(request: NextRequest) {
+export const dynamic = "force-dynamic";
+
+export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const trackingNumber = searchParams.get("tracking");

@@ -453,11 +453,6 @@ DY Official System
       }
 
       if (template === "ORDER_CONFIRMATION") {
-        const deliveryEstimate =
-          typeof additionalVariables.deliveryEstimate === "string"
-            ? additionalVariables.deliveryEstimate
-            : undefined;
-
         const lines: OrderEmailLine[] = order.items.map((item) => {
           let parsedCustomizations: unknown;
           if (item.customizations) {

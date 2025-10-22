@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -122,11 +122,7 @@ export function AdminShippingDashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    Promise.all([fetchShipments(), fetchMetrics()]);
-  }, [currentPage, searchQuery, status, carrier]);
-
-  const fetchShipments = async () => {
+  const fetchShipments = useCallback(async () => {
     try {
       const params = new URLSearchParams({
         page: currentPage.toString(),
@@ -143,11 +139,12 @@ export function AdminShippingDashboard() {
       const data = await response.json();
       setShipments(data.shipments);
       setTotalPages(data.pagination.pages);
-    } catch (error) {
+    } catch {
+      // Handle error silently
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchQuery, status, carrier]);
 
   const fetchMetrics = async () => {
     try {
@@ -156,8 +153,14 @@ export function AdminShippingDashboard() {
 
       const data = await response.json();
       setMetrics(data);
-    } catch (error) {}
+    } catch {
+      // Handle error silently
+    }
   };
+
+  useEffect(() => {
+    Promise.all([fetchShipments(), fetchMetrics()]);
+  }, [currentPage, searchQuery, status, carrier, fetchShipments]);
 
   const handleRefreshAll = async () => {
     setRefreshing(true);
@@ -172,7 +175,8 @@ export function AdminShippingDashboard() {
 
       // Refresh data
       await Promise.all([fetchShipments(), fetchMetrics()]);
-    } catch (error) {
+    } catch {
+      // Handle error silently
     } finally {
       setRefreshing(false);
     }

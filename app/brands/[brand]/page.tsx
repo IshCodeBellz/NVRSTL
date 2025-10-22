@@ -47,9 +47,7 @@ export default function BrandPage({ params }: { params: { brand: string } }) {
           const data = await response.json();
           setBrand(data.brand);
         }
-      } catch (error) {
-        
-        
+      } catch {
         setNotFound(true);
       } finally {
         setLoading(false);

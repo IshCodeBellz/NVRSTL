@@ -5,17 +5,43 @@ import { TrendingNow } from "../components/home/TrendingNow";
 import { ReviewsCarousel } from "../components/home/ReviewsCarousel";
 import { DynamicCategories } from "../components/home/DynamicCategories";
 import { ScrollingBanner } from "../components/home/ScrollingBanner";
-import { CMSService } from "@/lib/server/cmsService";
+import { CMSService, CategorySectionData } from "@/lib/server/cmsService";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  // Get CMS images and category sections
-  const [{ heroImages, heroLayout, categoryImages }, categorySections] =
-    await Promise.all([
+  // Get CMS images and category sections with error handling
+  let heroImages: { left: string; right: string };
+  let heroLayout: "two-image" | "single-image";
+  let categoryImages: Record<string, string>;
+  let categorySections: CategorySectionData[];
+
+  try {
+    const [homePageData, categoryData] = await Promise.all([
       CMSService.getHomePageImages(),
       CMSService.getCategorySections(),
     ]);
+
+    heroImages = homePageData.heroImages;
+    heroLayout = homePageData.heroLayout;
+    categoryImages = homePageData.categoryImages;
+    categorySections = categoryData;
+  } catch (error) {
+    console.error("Error loading CMS data:", error);
+    // Fallback data
+    heroImages = {
+      left: "https://picsum.photos/900/1200",
+      right: "https://picsum.photos/901/1200",
+    };
+    heroLayout = "two-image";
+    categoryImages = {
+      denim: "https://picsum.photos/400/300",
+      tops: "https://picsum.photos/401/300",
+      shoes: "https://picsum.photos/402/300",
+      accessories: "https://picsum.photos/403/300",
+    };
+    categorySections = [];
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">

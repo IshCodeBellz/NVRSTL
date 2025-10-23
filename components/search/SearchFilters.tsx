@@ -183,7 +183,7 @@ export default function SearchFilters({ facets }: { facets?: Facets }) {
       <div className="lg:hidden mb-4">
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 border rounded-lg bg-white"
+          className="flex items-center gap-2 px-4 py-2 border border-gray-600 rounded-lg bg-gray-800 text-white hover:bg-gray-700 transition-colors"
         >
           <svg
             className="w-4 h-4"
@@ -198,9 +198,9 @@ export default function SearchFilters({ facets }: { facets?: Facets }) {
               d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
             />
           </svg>
-          <span>Filters</span>
+          <span className="font-carbon">Filters</span>
           {activeFilterCount > 0 && (
-            <span className="bg-neutral-900 text-white text-xs px-2 py-1 rounded-full">
+            <span className="bg-white text-black text-xs px-2 py-1 rounded-full font-carbon font-bold">
               {activeFilterCount}
             </span>
           )}
@@ -209,13 +209,13 @@ export default function SearchFilters({ facets }: { facets?: Facets }) {
 
       {/* Desktop Filters */}
       <div className="hidden lg:block sticky top-24">
-        <div className="bg-white border rounded-lg p-4">
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold">Filters</h3>
+            <h3 className="font-bold text-white font-carbon">Filters</h3>
             {hasActiveFilters && (
               <button
                 onClick={clearAllFilters}
-                className="text-sm text-blue-600 hover:text-blue-500"
+                className="text-sm text-gray-300 hover:text-white transition-colors font-carbon"
               >
                 Clear all
               </button>
@@ -239,19 +239,19 @@ export default function SearchFilters({ facets }: { facets?: Facets }) {
 
       {/* Mobile Filter Modal */}
       {isOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-white">
-          <div className="flex items-center justify-between p-4 border-b">
-            <h3 className="font-semibold">Filters</h3>
+        <div className="lg:hidden fixed inset-0 z-50 bg-black">
+          <div className="flex items-center justify-between p-4 border-b border-gray-700">
+            <h3 className="font-bold text-white font-carbon">Filters</h3>
             <div className="flex items-center gap-2">
               {hasActiveFilters && (
                 <button
                   onClick={clearAllFilters}
-                  className="text-sm text-blue-600 hover:text-blue-500"
+                  className="text-sm text-gray-300 hover:text-white transition-colors font-carbon"
                 >
                   Clear all
                 </button>
               )}
-              <button onClick={() => setIsOpen(false)} className="p-2">
+              <button onClick={() => setIsOpen(false)} className="p-2 text-white hover:text-gray-300 transition-colors">
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -282,10 +282,10 @@ export default function SearchFilters({ facets }: { facets?: Facets }) {
             ))}
           </div>
 
-          <div className="p-4 border-t">
+          <div className="p-4 border-t border-gray-700">
             <button
               onClick={() => setIsOpen(false)}
-              className="w-full bg-neutral-900 text-white py-3 rounded-lg"
+              className="w-full bg-white text-black py-3 rounded-lg font-bold font-carbon hover:bg-gray-100 transition-colors"
             >
               Apply Filters
             </button>
@@ -311,9 +311,9 @@ function FilterGroup({
     <div>
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center justify-between w-full text-left py-2"
+        className="flex items-center justify-between w-full text-left py-2 text-white hover:text-gray-300 transition-colors"
       >
-        <span className="font-medium">{group.label}</span>
+        <span className="font-bold font-carbon">{group.label}</span>
         <svg
           className={`w-4 h-4 transition-transform ${
             isExpanded ? "rotate-180" : ""
@@ -336,16 +336,16 @@ function FilterGroup({
           {group.options.map((option) => (
             <label
               key={option.id}
-              className="flex items-center gap-2 cursor-pointer"
+              className="flex items-center gap-2 cursor-pointer hover:text-gray-300 transition-colors"
             >
               <input
                 type="checkbox"
                 checked={selectedOptions.includes(option.id)}
                 onChange={(e) => onOptionChange(option.id, e.target.checked)}
-                className="rounded border-neutral-300 focus:ring-blue-500"
+                className="rounded border-gray-600 bg-gray-700 text-white focus:ring-gray-500 focus:ring-2"
               />
-              <span className="text-sm">{option.label}</span>
-              <span className="text-xs text-neutral-500">({option.count})</span>
+              <span className="text-sm text-gray-300 font-carbon">{option.label}</span>
+              <span className="text-xs text-gray-400 font-carbon">({option.count})</span>
             </label>
           ))}
         </div>

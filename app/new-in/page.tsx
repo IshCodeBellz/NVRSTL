@@ -75,85 +75,100 @@ export default function DropsPage() {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
-    <div className="container mx-auto px-4 py-10 space-y-10">
-      <header className="flex flex-col md:flex-row md:items-end gap-4">
-        <h1 className="text-3xl font-bold">🔥 JUST DROPPED 🔥</h1>
-        <div className="flex items-center gap-2">
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-neutral-400 border-t-transparent rounded-full animate-spin" />
-                Loading latest products...
-              </span>
-            ) : (
-              `Showing ${items.length} of ${total} latest items`
-            )}
-          </p>
+    <div className="min-h-screen bg-black text-white">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-gray-900 to-black py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight text-white font-carbon mb-6">
+              🔥 DROPS 🔥
+            </h1>
+            <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto font-carbon">
+              Fresh arrivals just landed. Be the first to get your hands on the latest drops.
+            </p>
+          </div>
         </div>
-      </header>
-      <div className="flex flex-wrap gap-4 items-end text-sm">
-        <div className="flex flex-col gap-1">
-          <label className="text-xs uppercase tracking-wide font-semibold">
-            Search
-          </label>
-          <input
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setPage(1);
-            }}
-            placeholder="Filter new arrivals"
-            disabled={loading}
-            className="border border-neutral-300 dark:border-neutral-600 rounded px-2 py-1 bg-white dark:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed"
-          />
-        </div>
-        {(query || page > 1) && (
-          <button
-            onClick={() => {
-              setQuery("");
-              setPage(1);
-            }}
-            disabled={loading}
-            className="btn-outline text-xs disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Reset
-          </button>
-        )}
-      </div>
-      {items.length === 0 && !loading && (
-        <div className="text-center py-12">
-          <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
-            No new products found.
-          </p>
-          {query && (
+      </section>
+
+      {/* Content Section */}
+      <div className="container mx-auto px-4 py-10 space-y-10">
+        <header className="flex flex-col md:flex-row md:items-end gap-4">
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-gray-400 font-carbon">
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                  Loading latest products...
+                </span>
+              ) : (
+                `Showing ${items.length} of ${total} latest items`
+              )}
+            </p>
+          </div>
+        </header>
+        <div className="flex flex-wrap gap-4 items-end text-sm">
+          <div className="flex flex-col gap-1">
+            <label className="text-xs uppercase tracking-wide font-semibold text-gray-300 font-carbon">
+              Search
+            </label>
+            <input
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setPage(1);
+              }}
+              placeholder="Filter new arrivals"
+              disabled={loading}
+              className="border border-gray-600 rounded px-3 py-2 bg-gray-800 text-white placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-500"
+            />
+          </div>
+          {(query || page > 1) && (
             <button
               onClick={() => {
                 setQuery("");
                 setPage(1);
               }}
-              className="btn-outline text-xs"
+              disabled={loading}
+              className="px-4 py-2 border border-gray-600 text-gray-300 rounded hover:bg-gray-800 transition-colors text-xs disabled:opacity-50 disabled:cursor-not-allowed font-carbon"
             >
-              Clear filters
+              Reset
             </button>
           )}
         </div>
-      )}
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {loading
-          ? // Loading skeleton
-            Array.from({ length: 20 }).map((_, i) => (
-              <div
-                key={`skeleton-${i}`}
-                className="group relative bg-neutral-100 dark:bg-neutral-800 aspect-[3/4] overflow-hidden rounded flex flex-col animate-pulse"
+        {items.length === 0 && !loading && (
+          <div className="text-center py-12">
+            <p className="text-sm text-gray-400 mb-4 font-carbon">
+              No new products found.
+            </p>
+            {query && (
+              <button
+                onClick={() => {
+                  setQuery("");
+                  setPage(1);
+                }}
+                className="px-4 py-2 border border-gray-600 text-gray-300 rounded hover:bg-gray-800 transition-colors text-xs font-carbon"
               >
-                <div className="w-full h-3/4 bg-neutral-200 dark:bg-neutral-700" />
-                <div className="p-2 space-y-2">
-                  <div className="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-3/4" />
-                  <div className="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-1/2" />
+                Clear filters
+              </button>
+            )}
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {loading
+            ? // Loading skeleton
+              Array.from({ length: 20 }).map((_, i) => (
+                <div
+                  key={`skeleton-${i}`}
+                  className="group relative bg-gray-800 aspect-[3/4] overflow-hidden rounded flex flex-col animate-pulse"
+                >
+                  <div className="w-full h-3/4 bg-gray-700" />
+                  <div className="p-2 space-y-2">
+                    <div className="h-3 bg-gray-700 rounded w-3/4" />
+                    <div className="h-3 bg-gray-700 rounded w-1/2" />
+                  </div>
                 </div>
-              </div>
-            ))
+              ))
           : items.map((p) => {
               const id = lineIdFor(p.id);
               const inWish = has(id);
@@ -161,7 +176,7 @@ export default function DropsPage() {
               return (
                 <div
                   key={p.id}
-                  className="group relative bg-neutral-100 aspect-[3/4] overflow-hidden rounded flex flex-col"
+                  className="group relative bg-gray-800 aspect-[3/4] overflow-hidden rounded flex flex-col border border-gray-700 hover:border-gray-600 transition-all duration-300"
                 >
                   <Link href={`/product/${p.id}`} className="absolute inset-0">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -293,27 +308,28 @@ export default function DropsPage() {
               );
             })}
       </div>
-      {totalPages > 1 && (
-        <div className="flex items-center gap-4 justify-center pt-4">
-          <button
-            disabled={page === 1 || loading}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="btn-outline text-xs disabled:opacity-40"
-          >
-            Prev
-          </button>
-          <span className="text-xs">
-            Page {page} / {totalPages}
-          </span>
-          <button
-            disabled={page === totalPages || loading}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            className="btn-outline text-xs disabled:opacity-40"
-          >
-            Next
-          </button>
-        </div>
-      )}
+        {totalPages > 1 && (
+          <div className="flex items-center gap-4 justify-center pt-4">
+            <button
+              disabled={page === 1 || loading}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="px-4 py-2 border border-gray-600 text-gray-300 rounded hover:bg-gray-800 transition-colors text-xs disabled:opacity-40 disabled:cursor-not-allowed font-carbon"
+            >
+              Prev
+            </button>
+            <span className="text-xs text-gray-400 font-carbon">
+              Page {page} / {totalPages}
+            </span>
+            <button
+              disabled={page === totalPages || loading}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              className="px-4 py-2 border border-gray-600 text-gray-300 rounded hover:bg-gray-800 transition-colors text-xs disabled:opacity-40 disabled:cursor-not-allowed font-carbon"
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

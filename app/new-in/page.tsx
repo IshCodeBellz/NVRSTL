@@ -6,7 +6,7 @@ import { lineIdFor } from "@/lib/types";
 import Image from "next/image";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ClientPrice } from "@/components/ui/ClientPrice";
-import { SimpleSearchInput } from "@/components/ui/SimpleSearchInput";
+import { IsolatedSearchInput } from "@/components/ui/IsolatedSearchInput";
 
 // "Drops" shows the latest products by createdAt desc (reuses /api/products ordering)
 // Provides simple client pagination (page param to API) and basic search.
@@ -35,9 +35,9 @@ export default function DropsPage() {
   const [query, setQuery] = useState("");
   const [resetTrigger, setResetTrigger] = useState(0);
 
-  // Memoize the filter change callback to prevent re-renders
-  const handleFilterChange = useCallback((value: string) => {
-    setQuery(value);
+  // Handle search from isolated input
+  const handleSearch = useCallback((searchQuery: string) => {
+    setQuery(searchQuery);
     setPage(1);
   }, []);
 
@@ -120,12 +120,10 @@ export default function DropsPage() {
             <label className="text-xs uppercase tracking-wide font-semibold text-gray-300 font-carbon">
               Search
             </label>
-            <SimpleSearchInput
+            <IsolatedSearchInput
               placeholder="Filter new arrivals"
-              onFilterChange={handleFilterChange}
+              onSearch={handleSearch}
               resetTrigger={resetTrigger}
-              loading={loading}
-              disabled={loading}
               className="w-64"
             />
           </div>

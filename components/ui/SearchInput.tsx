@@ -256,6 +256,17 @@ export function SearchInput({
     [getSuggestions]
   );
 
+  // Debounced filter change for filter variant
+  const debouncedFilterChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        if (onFilterChange) {
+          onFilterChange(value);
+        }
+      }, 300),
+    [onFilterChange]
+  );
+
   // Handle input change
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -267,8 +278,11 @@ export function SearchInput({
         setQuery(newValue);
       }
 
-      // Call filter change callback for immediate filtering
-      if (onFilterChange) {
+      // Use debounced filter change for filter variant to prevent immediate re-renders
+      if (variant === "filter" && onFilterChange) {
+        debouncedFilterChange(newValue);
+      } else if (variant !== "filter" && onFilterChange) {
+        // For non-filter variants, call immediately
         onFilterChange(newValue);
       }
 
@@ -283,6 +297,7 @@ export function SearchInput({
       variant,
       showSuggestions,
       debouncedGetSuggestions,
+      debouncedFilterChange,
     ]
   );
 

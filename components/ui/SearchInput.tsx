@@ -267,23 +267,44 @@ export function SearchInput({
     [onFilterChange]
   );
 
+  // Debounced controlled onChange for filter variant
+  const debouncedControlledOnChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        if (controlledOnChange) {
+          controlledOnChange(value);
+        }
+      }, 300),
+    [controlledOnChange]
+  );
+
   // Handle input change
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
 
-      if (controlledOnChange) {
-        controlledOnChange(newValue);
+      // For filter variant, use debounced controlled onChange to prevent focus loss
+      if (variant === "filter") {
+        if (controlledOnChange) {
+          debouncedControlledOnChange(newValue);
+        } else {
+          setQuery(newValue);
+        }
+        
+        if (onFilterChange) {
+          debouncedFilterChange(newValue);
+        }
       } else {
-        setQuery(newValue);
-      }
-
-      // Use debounced filter change for filter variant to prevent immediate re-renders
-      if (variant === "filter" && onFilterChange) {
-        debouncedFilterChange(newValue);
-      } else if (variant !== "filter" && onFilterChange) {
-        // For non-filter variants, call immediately
-        onFilterChange(newValue);
+        // For non-filter variants, update immediately
+        if (controlledOnChange) {
+          controlledOnChange(newValue);
+        } else {
+          setQuery(newValue);
+        }
+        
+        if (onFilterChange) {
+          onFilterChange(newValue);
+        }
       }
 
       // Get suggestions for header variant
@@ -298,6 +319,7 @@ export function SearchInput({
       showSuggestions,
       debouncedGetSuggestions,
       debouncedFilterChange,
+      debouncedControlledOnChange,
     ]
   );
 

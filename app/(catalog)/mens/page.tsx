@@ -152,10 +152,26 @@ export default async function MensPage({
   ]);
 
   return (
-    <div className="space-y-10">
-      <SubcategoriesGrid title="Men's Fashion" subcategories={subcategories} />
+    <div className="min-h-screen bg-black text-white">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-gray-900 to-black py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight text-white font-carbon mb-6">
+              MEN&apos;S FASHION
+            </h1>
+            <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto font-carbon">
+              Discover our curated collection of men&apos;s fashion and accessories.
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Content Section */}
+      <div className="space-y-10">
+        <SubcategoriesGrid title="Men's Fashion" subcategories={subcategories} />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <aside className="lg:col-span-3">
             {/* Filters sidebar (client) */}
@@ -165,8 +181,8 @@ export default async function MensPage({
           </aside>
           <section className="lg:col-span-9">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Products</h2>
-              <p className="text-sm text-gray-500">
+              <h2 className="text-xl font-bold text-white font-carbon">Products</h2>
+              <p className="text-sm text-gray-400 font-carbon">
                 {products.length} result{products.length === 1 ? "" : "s"}
               </p>
             </div>
@@ -209,9 +225,10 @@ export default async function MensPage({
                 ))}
               </div>
             ) : (
-              <div className="text-sm text-gray-600">No products found.</div>
+              <div className="text-sm text-gray-400 font-carbon">No products found.</div>
             )}
           </section>
+        </div>
         </div>
       </div>
     </div>

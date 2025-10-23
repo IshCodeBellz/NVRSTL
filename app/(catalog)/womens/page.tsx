@@ -149,12 +149,28 @@ export default async function WomensPage({
   ]);
 
   return (
-    <div className="space-y-10">
-      <SubcategoriesGrid
-        title="Women's Fashion"
-        subcategories={subcategories}
-      />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black text-white">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-gray-900 to-black py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight text-white font-carbon mb-6">
+              WOMEN&apos;S FASHION
+            </h1>
+            <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto font-carbon">
+              Discover our curated collection of women&apos;s fashion and accessories.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Content Section */}
+      <div className="space-y-10">
+        <SubcategoriesGrid
+          title="Women's Fashion"
+          subcategories={subcategories}
+        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <aside className="lg:col-span-3">
             <SearchFilters
@@ -163,8 +179,8 @@ export default async function WomensPage({
           </aside>
           <section className="lg:col-span-9">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Products</h2>
-              <p className="text-sm text-gray-500">
+              <h2 className="text-xl font-bold text-white font-carbon">Products</h2>
+              <p className="text-sm text-gray-400 font-carbon">
                 {products.length} result{products.length === 1 ? "" : "s"}
               </p>
             </div>
@@ -174,15 +190,15 @@ export default async function WomensPage({
                   <Link
                     href={`/product/${p.id}`}
                     key={p.id}
-                    className="group block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+                    className="group block bg-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:border-gray-600 transition-all duration-300 hover:shadow-2xl"
                   >
-                    <div className="aspect-square bg-gray-100 relative overflow-hidden">
+                    <div className="aspect-square bg-gray-700 relative overflow-hidden">
                       {p.images[0]?.url ? (
                         <Image
                           src={p.images[0].url}
                           alt={p.images[0].alt || p.name}
                           fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="object-cover group-hover:scale-110 transition-transform duration-500"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -190,16 +206,16 @@ export default async function WomensPage({
                         </div>
                       )}
                     </div>
-                    <div className="p-3">
-                      <h3 className="font-medium text-gray-900 line-clamp-2 mb-1">
+                    <div className="p-4">
+                      <h3 className="font-bold text-white line-clamp-2 mb-2 font-carbon uppercase tracking-wide text-sm">
                         {p.name}
                       </h3>
                       {p.brand?.name && (
-                        <p className="text-xs text-gray-500 mb-1">
+                        <p className="text-xs text-gray-400 mb-3 font-carbon uppercase tracking-wider">
                           {p.brand.name}
                         </p>
                       )}
-                      <div className="text-sm font-semibold">
+                      <div className="text-sm font-bold text-white">
                         <ClientPrice cents={p.priceCents} />
                       </div>
                     </div>
@@ -207,9 +223,10 @@ export default async function WomensPage({
                 ))}
               </div>
             ) : (
-              <div className="text-sm text-gray-600">No products found.</div>
+              <div className="text-sm text-gray-400 font-carbon">No products found.</div>
             )}
           </section>
+        </div>
         </div>
       </div>
     </div>

@@ -40,27 +40,27 @@ export async function GET(req: Request) {
     // Add search query
     if (q) {
       const searchTerms = q.toLowerCase().split(/\s+/).filter(Boolean);
-      
+
       // Add synonyms for better search results
       const synonyms: Record<string, string[]> = {
-        'jersey': ['shirt', 'kit', 'uniform', 'top'],
-        'shirt': ['jersey', 'kit', 'uniform', 'top'],
-        'sneakers': ['shoes', 'trainers', 'kicks'],
-        'shoes': ['sneakers', 'trainers', 'kicks'],
-        'pants': ['trousers', 'jeans'],
-        'jeans': ['pants', 'trousers'],
-        'dress': ['gown', 'frock'],
-        'jacket': ['coat', 'blazer'],
-        'hat': ['cap', 'beanie'],
-        'bag': ['purse', 'handbag', 'tote'],
+        jersey: ["shirt", "kit", "uniform", "top"],
+        shirt: ["jersey", "kit", "uniform", "top"],
+        sneakers: ["shoes", "trainers", "kicks"],
+        shoes: ["sneakers", "trainers", "kicks"],
+        pants: ["trousers", "jeans"],
+        jeans: ["pants", "trousers"],
+        dress: ["gown", "frock"],
+        jacket: ["coat", "blazer"],
+        hat: ["cap", "beanie"],
+        bag: ["purse", "handbag", "tote"],
       };
-      
+
       // Expand search terms with synonyms
       const expandedTerms = new Set<string>();
-      searchTerms.forEach(term => {
+      searchTerms.forEach((term) => {
         expandedTerms.add(term);
         if (synonyms[term]) {
-          synonyms[term].forEach(synonym => expandedTerms.add(synonym));
+          synonyms[term].forEach((synonym) => expandedTerms.add(synonym));
         }
         // Also add reverse synonyms
         Object.entries(synonyms).forEach(([key, values]) => {
@@ -69,7 +69,7 @@ export async function GET(req: Request) {
           }
         });
       });
-      
+
       where.OR = Array.from(expandedTerms).flatMap((term) => [
         { name: { contains: term, mode: "insensitive" } },
         { description: { contains: term, mode: "insensitive" } },

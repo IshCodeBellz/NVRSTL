@@ -15,8 +15,14 @@ export async function GET(req: Request) {
     const min = parseFloat(searchParams.get("min") || "0");
     const max = parseFloat(searchParams.get("max") || "1000000");
     const sort = (searchParams.get("sort") || "newest").toLowerCase();
-    const page = Math.max(parseInt(searchParams.get("page") || "1", 10) || 1, 1);
-    const limit = Math.min(parseInt(searchParams.get("limit") || "30", 10) || 30, 60);
+    const page = Math.max(
+      parseInt(searchParams.get("page") || "1", 10) || 1,
+      1
+    );
+    const limit = Math.min(
+      parseInt(searchParams.get("limit") || "30", 10) || 30,
+      60
+    );
     const includeFacets = searchParams.get("facets") === "1";
     const skip = (page - 1) * limit;
 
@@ -34,12 +40,12 @@ export async function GET(req: Request) {
     // Add search query
     if (q) {
       const searchTerms = q.toLowerCase().split(/\s+/).filter(Boolean);
-      where.OR = searchTerms.flatMap(term => [
+      where.OR = searchTerms.flatMap((term) => [
         { name: { contains: term, mode: "insensitive" } },
         { description: { contains: term, mode: "insensitive" } },
         { brand: { name: { contains: term, mode: "insensitive" } } },
         { category: { name: { contains: term, mode: "insensitive" } } },
-        { sku: { contains: term, mode: "insensitive" } }
+        { sku: { contains: term, mode: "insensitive" } },
       ]);
     }
 
@@ -82,7 +88,7 @@ export async function GET(req: Request) {
     });
 
     // Format response
-    const items = products.map(product => ({
+    const items = products.map((product) => ({
       id: product.id,
       name: product.name,
       priceCents: product.priceCents,
@@ -99,24 +105,26 @@ export async function GET(req: Request) {
     if (includeFacets) {
       const [categories, brands] = await Promise.all([
         prisma.category.findMany({
-          where: { deletedAt: null },
           select: { id: true, name: true, slug: true },
-          orderBy: { name: "asc" }
+          orderBy: { name: "asc" },
         }),
         prisma.brand.findMany({
-          where: { deletedAt: null },
           select: { id: true, name: true, slug: true },
-          orderBy: { name: "asc" }
-        })
+          orderBy: { name: "asc" },
+        }),
       ]);
 
       facets = {
-        categories: categories.map(c => ({ id: c.id, name: c.name, slug: c.slug })),
-        brands: brands.map(b => ({ id: b.id, name: b.name, slug: b.slug })),
+        categories: categories.map((c) => ({
+          id: c.id,
+          name: c.name,
+          slug: c.slug,
+        })),
+        brands: brands.map((b) => ({ id: b.id, name: b.name, slug: b.slug })),
         priceRange: {
           min: 0,
-          max: 1000000
-        }
+          max: 1000000,
+        },
       };
     }
 
@@ -127,18 +135,17 @@ export async function GET(req: Request) {
       page,
       pageSize: limit,
       facets,
-      query: q
+      query: q,
     });
-
   } catch (error) {
     logger.error("Search API error:", error);
     return NextResponse.json(
-      { 
-        error: "Search failed", 
+      {
+        error: "Search failed",
         details: (error as Error).message,
         items: [],
         total: 0,
-        totalCount: 0
+        totalCount: 0,
       },
       { status: 500 }
     );

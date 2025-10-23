@@ -38,30 +38,30 @@ interface TrendingSearch {
 export interface SearchInputProps {
   // Size variants
   size?: "sm" | "md" | "lg";
-  
+
   // Behavior variants
   variant?: "header" | "page" | "filter";
-  
+
   // Styling
   className?: string;
   placeholder?: string;
-  
+
   // Functionality
   showSuggestions?: boolean;
   showRecentSearches?: boolean;
   showTrendingSearches?: boolean;
-  
+
   // Callbacks
   onSearch?: (query: string) => void;
   onFilterChange?: (query: string) => void;
-  
+
   // Current value (for controlled components)
   value?: string;
   onChange?: (value: string) => void;
-  
+
   // Loading state
   loading?: boolean;
-  
+
   // Disabled state
   disabled?: boolean;
 }
@@ -85,7 +85,9 @@ export function SearchInput({
   const [query, setQuery] = useState(controlledValue || "");
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
-  const [trendingSearches, setTrendingSearches] = useState<TrendingSearch[]>([]);
+  const [trendingSearches, setTrendingSearches] = useState<TrendingSearch[]>(
+    []
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -96,7 +98,8 @@ export function SearchInput({
 
   // Use controlled value if provided
   const currentQuery = controlledValue !== undefined ? controlledValue : query;
-  const currentLoading = controlledLoading !== undefined ? controlledLoading : loading;
+  const currentLoading =
+    controlledLoading !== undefined ? controlledLoading : loading;
 
   // Size classes
   const sizeClasses = {
@@ -107,7 +110,7 @@ export function SearchInput({
       dropdown: "top-10",
     },
     md: {
-      input: "px-4 py-2.5 text-sm",
+      input: "pl-10 pr-4 py-2.5 text-sm",
       icon: "h-4 w-4",
       button: "h-8 w-8",
       dropdown: "top-10",
@@ -122,9 +125,11 @@ export function SearchInput({
 
   // Variant classes
   const variantClasses = {
-    header: "rounded-full border-gray-500 bg-gray-800 text-white placeholder:text-gray-400",
+    header:
+      "rounded-lg border-gray-500 bg-gray-800 text-white placeholder:text-gray-400",
     page: "rounded-lg border-gray-600 bg-gray-800 text-white placeholder:text-gray-400",
-    filter: "rounded-md border-gray-600 bg-gray-800 text-white placeholder:text-gray-400",
+    filter:
+      "rounded-md border-gray-600 bg-gray-800 text-white placeholder:text-gray-400",
   };
 
   // Default placeholders
@@ -199,16 +204,16 @@ export function SearchInput({
     try {
       const stored = localStorage.getItem("recent-searches");
       const recent: RecentSearch[] = stored ? JSON.parse(stored) : [];
-      
+
       // Remove if already exists
       const filtered = recent.filter((r) => r.query !== searchQuery);
-      
+
       // Add to beginning
       const updated = [
         { query: searchQuery, timestamp: Date.now() },
         ...filtered,
       ].slice(0, 10);
-      
+
       localStorage.setItem("recent-searches", JSON.stringify(updated));
       setRecentSearches(updated.slice(0, 5));
     } catch {
@@ -255,7 +260,7 @@ export function SearchInput({
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
-      
+
       if (controlledOnChange) {
         controlledOnChange(newValue);
       } else {
@@ -272,7 +277,13 @@ export function SearchInput({
         debouncedGetSuggestions(newValue);
       }
     },
-    [controlledOnChange, onFilterChange, variant, showSuggestions, debouncedGetSuggestions]
+    [
+      controlledOnChange,
+      onFilterChange,
+      variant,
+      showSuggestions,
+      debouncedGetSuggestions,
+    ]
   );
 
   // Handle search execution
@@ -311,9 +322,7 @@ export function SearchInput({
       switch (e.key) {
         case "ArrowDown":
           e.preventDefault();
-          setSelectedIndex((prev) =>
-            prev < totalItems - 1 ? prev + 1 : prev
-          );
+          setSelectedIndex((prev) => (prev < totalItems - 1 ? prev + 1 : prev));
           break;
         case "ArrowUp":
           e.preventDefault();
@@ -404,7 +413,7 @@ export function SearchInput({
         />
 
         {/* Search Icon */}
-        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
           {currentLoading ? (
             <Loader2 className={cn("animate-spin", sizeClasses[size].icon)} />
           ) : (
@@ -457,7 +466,7 @@ export function SearchInput({
                         key={search.timestamp}
                         onClick={() => handleSearch(search.query)}
                         className={cn(
-                          "w-full text-left px-3 py-2 rounded hover:bg-gray-800 transition-colors text-sm",
+                          "w-full text-left px-3 py-2 rounded hover:bg-gray-800 transition-colors text-sm text-gray-300",
                           selectedIndex === index && "bg-gray-800"
                         )}
                       >
@@ -481,8 +490,9 @@ export function SearchInput({
                         key={search.query}
                         onClick={() => handleSearch(search.query)}
                         className={cn(
-                          "w-full text-left px-3 py-2 rounded hover:bg-gray-800 transition-colors text-sm",
-                          selectedIndex === recentSearches.length + index && "bg-gray-800"
+                          "w-full text-left px-3 py-2 rounded hover:bg-gray-800 transition-colors text-sm text-gray-300",
+                          selectedIndex === recentSearches.length + index &&
+                            "bg-gray-800"
                         )}
                       >
                         {search.query}
@@ -517,7 +527,9 @@ export function SearchInput({
                       </div>
                     )}
                     <div className="flex-1 text-left">
-                      <div className="font-medium text-white">{suggestion.text}</div>
+                      <div className="font-medium text-white">
+                        {suggestion.text}
+                      </div>
                       {suggestion.price && (
                         <div className="text-xs text-gray-400">
                           £{(suggestion.price / 100).toFixed(2)}
@@ -534,11 +546,14 @@ export function SearchInput({
           )}
 
           {/* No Results */}
-          {!showHistory && currentQuery.trim() && suggestions.length === 0 && !currentLoading && (
-            <div className="p-4 text-center text-gray-400 text-sm">
-              No results found for "{currentQuery}"
-            </div>
-          )}
+          {!showHistory &&
+            currentQuery.trim() &&
+            suggestions.length === 0 &&
+            !currentLoading && (
+              <div className="p-4 text-center text-gray-400 text-sm">
+                No results found for "{currentQuery}"
+              </div>
+            )}
         </div>
       )}
     </div>

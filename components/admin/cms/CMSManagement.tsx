@@ -909,8 +909,8 @@ export function CMSManagement() {
 
             {activeTab === "sections" && (
               <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <div>
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                  <div className="flex-1 min-w-0">
                     <h3 className="text-lg font-medium text-gray-900">
                       Category Sections Management
                     </h3>
@@ -929,7 +929,7 @@ export function CMSManagement() {
                       });
                       setIsDialogOpen(true);
                     }}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-neutral-900 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500"
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-neutral-900 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500 w-full sm:w-auto"
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Add Section
@@ -942,73 +942,77 @@ export function CMSManagement() {
                       key={section.id}
                       className="border border-gray-200 rounded-lg p-6 bg-white"
                     >
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <h4 className="text-lg font-medium text-gray-900">
-                            {section.title}
-                          </h4>
-                          <p className="text-sm text-gray-500">
-                            Slug: {section.slug} | Order: {section.displayOrder}
-                          </p>
-                          {section.description && (
-                            <p className="text-sm text-gray-600 mt-2">
-                              {section.description}
+                      <div className="mb-4">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-lg font-medium text-gray-900">
+                              {section.title}
+                            </h4>
+                            <p className="text-sm text-gray-500">
+                              Slug: {section.slug} | Order: {section.displayOrder}
                             </p>
-                          )}
-                        </div>
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => {
-                              setEditingSection(section);
-                              setIsDialogOpen(true);
-                            }}
-                            className="inline-flex items-center px-3 py-1 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500"
-                          >
-                            <Edit className="h-4 w-4 mr-1" />
-                            Edit
-                          </button>
-                          <button
-                            onClick={async () => {
-                              if (
-                                confirm(
-                                  `Are you sure you want to delete the section "${section.title}"? This will also delete all its cards.`
-                                )
-                              ) {
-                                try {
-                                  const response = await fetch(
-                                    `/api/admin/cms/sections/${section.id}`,
-                                    { method: "DELETE" }
-                                  );
-                                  if (response.ok) {
-                                    showMessage(
-                                      "Section deleted successfully",
-                                      "success"
+                          </div>
+                          <div className="flex flex-wrap gap-2 sm:flex-nowrap">
+                            <button
+                              onClick={() => {
+                                setEditingSection(section);
+                                setIsDialogOpen(true);
+                              }}
+                              className="inline-flex items-center px-3 py-1 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500"
+                            >
+                              <Edit className="h-4 w-4 mr-1" />
+                              Edit
+                            </button>
+                            <button
+                              onClick={async () => {
+                                if (
+                                  confirm(
+                                    `Are you sure you want to delete the section "${section.title}"? This will also delete all its cards.`
+                                  )
+                                ) {
+                                  try {
+                                    const response = await fetch(
+                                      `/api/admin/cms/sections/${section.id}`,
+                                      { method: "DELETE" }
                                     );
-                                    loadData();
-                                  } else {
+                                    if (response.ok) {
+                                      showMessage(
+                                        "Section deleted successfully",
+                                        "success"
+                                      );
+                                      loadData();
+                                    } else {
+                                      showMessage(
+                                        "Failed to delete section",
+                                        "error"
+                                      );
+                                    }
+                                  } catch {
                                     showMessage(
                                       "Failed to delete section",
                                       "error"
                                     );
                                   }
-                                } catch {
-                                  showMessage(
-                                    "Failed to delete section",
-                                    "error"
-                                  );
                                 }
-                              }
-                            }}
-                            className="inline-flex items-center px-3 py-1 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                          >
-                            <Trash2 className="h-4 w-4 mr-1" />
-                            Delete
-                          </button>
+                              }}
+                              className="inline-flex items-center px-3 py-1 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                            >
+                              <Trash2 className="h-4 w-4 mr-1" />
+                              Delete
+                            </button>
+                          </div>
                         </div>
+                        {section.description && (
+                          <div className="w-full">
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                              {section.description}
+                            </p>
+                          </div>
+                        )}
                       </div>
 
                       <div className="space-y-3">
-                        <div className="flex justify-between items-center">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                           <h5 className="text-md font-medium text-gray-700">
                             Category Cards ({section.cards?.length || 0})
                           </h5>
@@ -1024,7 +1028,7 @@ export function CMSManagement() {
                               });
                               setIsDialogOpen(true);
                             }}
-                            className="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
+                            className="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 w-full sm:w-auto justify-center"
                           >
                             <Plus className="h-3 w-3 mr-1" />
                             Add Card

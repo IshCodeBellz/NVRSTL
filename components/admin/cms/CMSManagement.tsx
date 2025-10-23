@@ -358,60 +358,60 @@ export function CMSManagement() {
         {/* Tab Navigation */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           <div className="border-b border-gray-200">
-            <nav className="flex space-x-8 px-6">
+            <nav className="flex flex-wrap gap-2 sm:gap-8 px-2 sm:px-6 overflow-x-auto">
               <button
                 onClick={() => setActiveTab("pages")}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                   activeTab === "pages"
                     ? "border-neutral-900 text-neutral-900"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                <FileText className="h-4 w-4 inline mr-2" />
+                <FileText className="h-3 w-3 sm:h-4 sm:w-4 inline mr-1 sm:mr-2" />
                 Pages
               </button>
               <button
                 onClick={() => setActiveTab("settings")}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                   activeTab === "settings"
                     ? "border-neutral-900 text-neutral-900"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                <Settings className="h-4 w-4 inline mr-2" />
+                <Settings className="h-3 w-3 sm:h-4 sm:w-4 inline mr-1 sm:mr-2" />
                 Site Settings
               </button>
               <button
                 onClick={() => setActiveTab("images")}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                   activeTab === "images"
                     ? "border-neutral-900 text-neutral-900"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                <Layout className="h-4 w-4 inline mr-2" />
+                <Layout className="h-3 w-3 sm:h-4 sm:w-4 inline mr-1 sm:mr-2" />
                 Homepage Images
               </button>
               <button
                 onClick={() => setActiveTab("logo")}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                   activeTab === "logo"
                     ? "border-neutral-900 text-neutral-900"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                <Palette className="h-4 w-4 inline mr-2" />
+                <Palette className="h-3 w-3 sm:h-4 sm:w-4 inline mr-1 sm:mr-2" />
                 Logo & Branding
               </button>
               <button
                 onClick={() => setActiveTab("sections")}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                   activeTab === "sections"
                     ? "border-neutral-900 text-neutral-900"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                <Grid className="h-4 w-4 inline mr-2" />
+                <Grid className="h-3 w-3 sm:h-4 sm:w-4 inline mr-1 sm:mr-2" />
                 Category Sections
               </button>
             </nav>
@@ -949,7 +949,8 @@ export function CMSManagement() {
                               {section.title}
                             </h4>
                             <p className="text-sm text-gray-500">
-                              Slug: {section.slug} | Order: {section.displayOrder}
+                              Slug: {section.slug} | Order:{" "}
+                              {section.displayOrder}
                             </p>
                           </div>
                           <div className="flex flex-wrap gap-2 sm:flex-nowrap">

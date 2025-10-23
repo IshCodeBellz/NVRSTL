@@ -56,10 +56,10 @@ export function Price({
 
   // Variant classes
   const variantClasses = {
-    default: "font-mono font-semibold text-neutral-900 dark:text-white",
-    large: "font-mono font-bold text-neutral-900 dark:text-white",
-    small: "font-mono text-neutral-600 dark:text-neutral-400",
-    crossed: "font-mono line-through text-neutral-500 dark:text-neutral-400",
+    default: "font-mono font-semibold text-white",
+    large: "font-mono font-bold text-white",
+    small: "font-mono text-white",
+    crossed: "font-mono line-through text-white",
   };
 
   const baseClassName =
@@ -100,7 +100,7 @@ export function Price({
           )}
         </span>
         <span
-          className={`${sizeClasses[size]} font-mono line-through text-neutral-500 dark:text-neutral-400`}
+          className={`${sizeClasses[size]} font-mono line-through text-white`}
         >
           {formattedComparePrice}
         </span>

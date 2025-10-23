@@ -37,7 +37,7 @@ export function CurrencySelector({
           disabled={isLoading}
         >
           <Globe className="w-4 h-4" />
-          <span className="font-mono font-semibold">
+          <span className="font-mono font-semibold text-white">
             {currentCurrencyData?.symbol || "$"}
           </span>
           <ChevronDown
@@ -70,7 +70,10 @@ export function CurrencySelector({
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-sm font-medium text-neutral-900 dark:text-white">
-                        <span className="font-mono font-semibold">{currency.symbol}</span> {currency.code}
+                         <span className="font-mono font-semibold text-white">
+                           {currency.symbol}
+                         </span>{" "}
+                        {currency.code}
                       </div>
                       <div className="text-xs text-neutral-500 dark:text-neutral-400">
                         {currency.name}
@@ -100,7 +103,10 @@ export function CurrencySelector({
           <Globe className="w-4 h-4" />
           {showLabel && <span>Currency:</span>}
           <span className="font-medium">
-            <span className="font-mono font-semibold">{currentCurrencyData?.symbol}</span> {currentCurrency}
+            <span className="font-mono font-semibold text-white">
+              {currentCurrencyData?.symbol}
+            </span>{" "}
+            {currentCurrency}
           </span>
           <ChevronDown
             className={`w-4 h-4 transition-transform ${
@@ -132,7 +138,10 @@ export function CurrencySelector({
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-sm font-medium text-neutral-900 dark:text-white">
-                        <span className="font-mono font-semibold">{currency.symbol}</span> {currency.code}
+                         <span className="font-mono font-semibold text-white">
+                           {currency.symbol}
+                         </span>{" "}
+                        {currency.code}
                       </div>
                       <div className="text-xs text-neutral-500 dark:text-neutral-400">
                         {currency.name}
@@ -166,7 +175,10 @@ export function CurrencySelector({
           <div className="flex items-center gap-2">
             <Globe className="w-4 h-4" />
             <span className="font-medium">
-              <span className="font-mono font-semibold">{currentCurrencyData?.symbol}</span> {currentCurrency}
+              <span className="font-mono font-semibold text-white">
+                {currentCurrencyData?.symbol}
+              </span>{" "}
+              {currentCurrency}
             </span>
             <span className="text-neutral-500 dark:text-neutral-400 text-sm">
               {currentCurrencyData?.name}

@@ -76,32 +76,32 @@ export function DynamicCategories({
   return (
     <div className="w-full">
       {/* Pills Navigation */}
-      <div className="flex justify-center mb-12">
-        <div className="flex items-center space-x-4">
+      <div className="flex justify-center mb-12 px-4">
+        <div className="flex items-center space-x-2 md:space-x-4 max-w-full">
           {/* Previous Arrow */}
           <button
             onClick={handlePrevious}
-            className="w-12 h-12 rounded-full bg-gray-800 border border-gray-600 flex items-center justify-center hover:bg-gray-700 transition-colors"
+            className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-800 border border-gray-600 flex items-center justify-center hover:bg-gray-700 transition-colors flex-shrink-0"
             aria-label="Previous section"
           >
-            <ChevronLeft className="w-6 h-6 text-white" />
+            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-white" />
           </button>
 
-          {/* Pills */}
-          <div className="flex space-x-3">
+          {/* Pills - Mobile scrollable */}
+          <div className="flex space-x-2 md:space-x-3 overflow-x-auto scrollbar-hide max-w-full">
             {sections.map((section) => (
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section)}
-                className={`px-6 py-3 rounded-full border-2 transition-all font-carbon uppercase tracking-wider ${
+                className={`px-3 py-2 md:px-6 md:py-3 rounded-full border-2 transition-all font-carbon uppercase tracking-wider whitespace-nowrap flex-shrink-0 ${
                   activeSection?.id === section.id
                     ? "bg-white text-black border-white"
                     : "bg-transparent text-white border-gray-600 hover:border-gray-400"
                 }`}
               >
-                <span className="flex items-center space-x-2">
-                  <span className="text-lg">◆</span>
-                  <span className="font-bold">{section.title}</span>
+                <span className="flex items-center space-x-1 md:space-x-2">
+                  <span className="text-sm md:text-lg">◆</span>
+                  <span className="font-bold text-sm md:text-base">{section.title}</span>
                 </span>
               </button>
             ))}
@@ -110,27 +110,27 @@ export function DynamicCategories({
           {/* Next Arrow */}
           <button
             onClick={handleNext}
-            className="w-12 h-12 rounded-full bg-white border border-white flex items-center justify-center hover:bg-gray-100 transition-colors"
+            className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border border-white flex items-center justify-center hover:bg-gray-100 transition-colors flex-shrink-0"
             aria-label="Next section"
           >
-            <ChevronRight className="w-6 h-6 text-black" />
+            <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-black" />
           </button>
         </div>
       </div>
 
       {/* Dynamic Title and Description */}
-      <div className="text-center mb-16">
-        <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-white font-carbon mb-6">
+      <div className="text-center mb-12 md:mb-16 px-4">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tight text-white font-carbon mb-4 md:mb-6">
           {activeSection?.title || "Categories"}
         </h2>
-        <p className="text-lg text-gray-300 max-w-2xl mx-auto font-carbon">
+        <p className="text-sm sm:text-base md:text-lg text-gray-300 max-w-2xl mx-auto font-carbon leading-relaxed">
           {activeSection?.description ||
             "Discover our curated collection of products and services."}
         </p>
       </div>
 
       {/* Categories Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 px-4 md:px-0">
         {currentCategories.map((cat) => (
           <Link
             key={cat.slug}
@@ -143,24 +143,24 @@ export function DynamicCategories({
                 src={cat.img}
                 alt={cat.label}
                 fill
-                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
                 className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
               />
             </div>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xl font-bold text-white font-carbon uppercase tracking-wide">
+            <div className="p-4 md:p-6">
+              <div className="flex items-center justify-between mb-2 md:mb-3">
+                <h3 className="text-lg md:text-xl font-bold text-white font-carbon uppercase tracking-wide">
                   {cat.label}
                 </h3>
-                <span className="text-sm text-gray-400 font-carbon">
+                <span className="text-xs md:text-sm text-gray-400 font-carbon">
                   {new Date().getFullYear()}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-300 font-carbon">
+                <span className="text-xs md:text-sm text-gray-300 font-carbon">
                   ◆ Global Brands
                 </span>
-                <span className="text-sm text-gray-300 font-carbon">
+                <span className="text-xs md:text-sm text-gray-300 font-carbon">
                   Style - Fashion
                 </span>
               </div>

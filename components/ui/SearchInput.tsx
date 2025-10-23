@@ -104,7 +104,7 @@ export function SearchInput({
   // Size classes
   const sizeClasses = {
     sm: {
-      input: "px-3 py-2 text-sm",
+      input: "pl-8 pr-3 py-2 text-sm",
       icon: "h-4 w-4",
       button: "h-7 w-7",
       dropdown: "top-10",
@@ -116,7 +116,7 @@ export function SearchInput({
       dropdown: "top-10",
     },
     lg: {
-      input: "px-4 py-4 text-base",
+      input: "pl-12 pr-4 py-4 text-base",
       icon: "h-5 w-5",
       button: "h-9 w-9",
       dropdown: "top-12",

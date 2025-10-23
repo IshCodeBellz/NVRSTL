@@ -118,10 +118,6 @@ export default function DropsPage() {
               size="sm"
               placeholder="Filter new arrivals"
               value={query}
-              onChange={(value) => {
-                setQuery(value);
-                setPage(1);
-              }}
               onFilterChange={(value) => {
                 setQuery(value);
                 setPage(1);

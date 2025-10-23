@@ -180,7 +180,9 @@ export async function GET(req: Request) {
             ...(sort === "trending" ? { metrics: true } : {}),
           },
         });
-      } catch {}
+      } catch (error) {
+        logger.error("Search API error:", error);
+      }
     }
     // Final relaxed retry ignoring price bounds if still nothing
     if (products.length === 0) {
@@ -196,7 +198,9 @@ export async function GET(req: Request) {
             ...(sort === "trending" ? { metrics: true } : {}),
           },
         });
-      } catch {}
+      } catch (error) {
+        logger.error("Search API error:", error);
+      }
     }
     // Raw SQL fallback (defensive): if still nothing, attempt manual LIKE across name/description
     if (products.length === 0) {

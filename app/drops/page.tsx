@@ -161,10 +161,10 @@ export default function DropsPage() {
               Array.from({ length: 20 }).map((_, i) => (
                 <div
                   key={`skeleton-${i}`}
-                  className="group relative bg-gray-800 aspect-[3/4] overflow-hidden rounded flex flex-col animate-pulse"
+                  className="group relative bg-gray-800 aspect-[3/4] overflow-hidden rounded-lg flex flex-col animate-pulse border border-gray-700"
                 >
                   <div className="w-full h-3/4 bg-gray-700" />
-                  <div className="p-2 space-y-2">
+                  <div className="p-4 space-y-2">
                     <div className="h-3 bg-gray-700 rounded w-3/4" />
                     <div className="h-3 bg-gray-700 rounded w-1/2" />
                   </div>
@@ -177,7 +177,7 @@ export default function DropsPage() {
                 return (
                   <div
                     key={p.id}
-                    className="group relative bg-gray-800 aspect-[3/4] overflow-hidden rounded flex flex-col border border-gray-700 hover:border-gray-600 transition-all duration-300"
+                    className="group relative bg-gray-800 aspect-[3/4] overflow-hidden rounded-lg flex flex-col border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl hover:shadow-gray-900/50"
                   >
                     <Link
                       href={`/product/${p.id}`}
@@ -189,10 +189,10 @@ export default function DropsPage() {
                         alt={p.name}
                         width={400}
                         height={500}
-                        className="object-cover w-full h-full group-hover:scale-105 transition-transform"
+                        className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
                       />
                     </Link>
-                    <div className="absolute top-2 right-2 flex flex-col gap-2">
+                    <div className="absolute top-3 right-3 flex flex-col gap-2">
                       <button
                         onClick={() => {
                           const already = inWish;
@@ -207,8 +207,8 @@ export default function DropsPage() {
                             message: already ? "Removed from saved" : "Saved",
                           });
                         }}
-                        className={`rounded-full h-8 w-8 text-[11px] font-semibold flex items-center justify-center backdrop-blur bg-white/80 border ${
-                          inWish ? "border-neutral-900" : "border-transparent"
+                        className={`rounded-full h-9 w-9 text-sm font-bold flex items-center justify-center backdrop-blur bg-white/90 border shadow-lg transition-all duration-200 hover:scale-110 ${
+                          inWish ? "border-red-500 text-red-500" : "border-gray-300 text-gray-600 hover:border-red-400 hover:text-red-400"
                         }`}
                       >
                         {inWish ? "♥" : "♡"}
@@ -236,7 +236,7 @@ export default function DropsPage() {
                             );
                             push({ type: "success", message: "Added to bag" });
                           }}
-                          className="rounded-full h-8 w-8 text-[15px] leading-none font-semibold flex items-center justify-center backdrop-blur bg-white/80 border border-transparent"
+                          className="rounded-full h-9 w-9 text-lg leading-none font-bold flex items-center justify-center backdrop-blur bg-white/90 border border-gray-300 shadow-lg transition-all duration-200 hover:scale-110 hover:border-green-500 hover:text-green-600"
                           aria-label={hasSizes ? "Choose size" : "Add to bag"}
                         >
                           +
@@ -296,15 +296,15 @@ export default function DropsPage() {
                         )}
                       </div>
                     </div>
-                    <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/70 to-transparent text-white text-xs">
-                      <div className="font-semibold truncate" title={p.name}>
+                    <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/95 via-black/60 to-transparent text-white">
+                      <div className="font-bold text-sm truncate font-carbon uppercase tracking-wide mb-2" title={p.name}>
                         {p.name}
                       </div>
                       <div className="text-white">
                         <ClientPrice
                           cents={p.priceCents}
                           size="sm"
-                          className="text-white"
+                          className="text-white font-bold font-carbon"
                         />
                       </div>
                     </div>

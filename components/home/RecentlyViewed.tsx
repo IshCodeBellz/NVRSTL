@@ -133,7 +133,11 @@ export function RecentlyViewed() {
                 </p>
                 <div className="mt-1 text-[12px] font-carbon">
                   <ClientPrice
-                    cents={p.discountPrice ? Math.round(p.discountPrice * 100) : Math.round(p.price * 100)}
+                    cents={
+                      p.discountPrice
+                        ? Math.round(p.discountPrice * 100)
+                        : Math.round(p.price * 100)
+                    }
                     size="xs"
                     className="text-white"
                   />

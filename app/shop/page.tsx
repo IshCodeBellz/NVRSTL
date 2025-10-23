@@ -11,8 +11,8 @@ export default function ShopPage() {
               SHOP
             </h1>
             <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto font-carbon">
-              Explore our collections across different sports and categories. Find
-              the perfect merchandise for your favorite teams and leagues.
+              Explore our collections across different sports and categories.
+              Find the perfect merchandise for your favorite teams and leagues.
             </p>
           </div>
         </div>
@@ -20,7 +20,6 @@ export default function ShopPage() {
 
       {/* Content Section */}
       <div className="container mx-auto px-4 py-10">
-
         {/* Sports Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col h-full border border-gray-700 hover:border-gray-600 transition-all duration-300">
@@ -28,7 +27,9 @@ export default function ShopPage() {
               <span className="text-6xl">⚽</span>
             </div>
             <div className="p-6 flex flex-col flex-grow">
-              <h3 className="text-2xl font-bold mb-3 text-white font-carbon">Football</h3>
+              <h3 className="text-2xl font-bold mb-3 text-white font-carbon">
+                Football
+              </h3>
               <p className="text-gray-300 mb-6 flex-grow font-carbon">
                 Premier League, La Liga, Serie A and more. Official jerseys and
                 merchandise from the world&apos;s top football leagues.
@@ -47,7 +48,9 @@ export default function ShopPage() {
               <span className="text-6xl">🌍</span>
             </div>
             <div className="p-6 flex flex-col flex-grow">
-              <h3 className="text-2xl font-bold mb-3 text-white font-carbon">International</h3>
+              <h3 className="text-2xl font-bold mb-3 text-white font-carbon">
+                International
+              </h3>
               <p className="text-gray-300 mb-6 flex-grow font-carbon">
                 World Cup, Champions League, and national teams. Global football
                 culture and international tournaments.
@@ -66,10 +69,12 @@ export default function ShopPage() {
               <span className="text-6xl">🏀</span>
             </div>
             <div className="p-6 flex flex-col flex-grow">
-              <h3 className="text-2xl font-bold mb-3 text-white font-carbon">NBA</h3>
+              <h3 className="text-2xl font-bold mb-3 text-white font-carbon">
+                NBA
+              </h3>
               <p className="text-gray-300 mb-6 flex-grow font-carbon">
-                Official NBA team jerseys, player gear, and accessories from your
-                favorite basketball teams and stars.
+                Official NBA team jerseys, player gear, and accessories from
+                your favorite basketball teams and stars.
               </p>
               <Link
                 href="/shop/nba"
@@ -85,7 +90,9 @@ export default function ShopPage() {
               <span className="text-6xl">🏈</span>
             </div>
             <div className="p-6 flex flex-col flex-grow">
-              <h3 className="text-2xl font-bold mb-3 text-white font-carbon">NFL</h3>
+              <h3 className="text-2xl font-bold mb-3 text-white font-carbon">
+                NFL
+              </h3>
               <p className="text-gray-300 mb-6 flex-grow font-carbon">
                 Authentic NFL team jerseys, player merchandise, and Super Bowl
                 gear from all 32 teams.
@@ -104,7 +111,9 @@ export default function ShopPage() {
               <span className="text-6xl">👕</span>
             </div>
             <div className="p-6 flex flex-col flex-grow">
-              <h3 className="text-2xl font-bold mb-3 text-white font-carbon">Custom</h3>
+              <h3 className="text-2xl font-bold mb-3 text-white font-carbon">
+                Custom
+              </h3>
               <p className="text-gray-300 mb-6 flex-grow font-carbon">
                 Design your own personalized jerseys, team uniforms, and custom
                 merchandise with your own style.
@@ -136,7 +145,7 @@ export default function ShopPage() {
               </div>
             </div>
           </div>
-      </div>
+        </div>
 
         {/* Featured Collections */}
         <div className="bg-gray-800 rounded-lg p-8 border border-gray-700">
@@ -148,7 +157,9 @@ export default function ShopPage() {
               <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
                 ⚽
               </div>
-              <h3 className="text-lg font-bold mb-2 text-white font-carbon">Premier League</h3>
+              <h3 className="text-lg font-bold mb-2 text-white font-carbon">
+                Premier League
+              </h3>
               <p className="text-gray-300 text-sm font-carbon">
                 England&apos;s top football league
               </p>
@@ -157,15 +168,23 @@ export default function ShopPage() {
               <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
                 🏀
               </div>
-              <h3 className="text-lg font-bold mb-2 text-white font-carbon">NBA Finals</h3>
-              <p className="text-gray-300 text-sm font-carbon">Championship merchandise</p>
+              <h3 className="text-lg font-bold mb-2 text-white font-carbon">
+                NBA Finals
+              </h3>
+              <p className="text-gray-300 text-sm font-carbon">
+                Championship merchandise
+              </p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
                 🏈
               </div>
-              <h3 className="text-lg font-bold mb-2 text-white font-carbon">Super Bowl</h3>
-              <p className="text-gray-300 text-sm font-carbon">NFL championship gear</p>
+              <h3 className="text-lg font-bold mb-2 text-white font-carbon">
+                Super Bowl
+              </h3>
+              <p className="text-gray-300 text-sm font-carbon">
+                NFL championship gear
+              </p>
             </div>
           </div>
         </div>

@@ -70,9 +70,9 @@ export function CurrencySelector({
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-sm font-medium text-neutral-900 dark:text-white">
-                         <span className="font-mono font-semibold text-white">
-                           {currency.symbol}
-                         </span>{" "}
+                        <span className="font-mono font-semibold text-white">
+                          {currency.symbol}
+                        </span>{" "}
                         {currency.code}
                       </div>
                       <div className="text-xs text-neutral-500 dark:text-neutral-400">
@@ -138,9 +138,9 @@ export function CurrencySelector({
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-sm font-medium text-neutral-900 dark:text-white">
-                         <span className="font-mono font-semibold text-white">
-                           {currency.symbol}
-                         </span>{" "}
+                        <span className="font-mono font-semibold text-white">
+                          {currency.symbol}
+                        </span>{" "}
                         {currency.code}
                       </div>
                       <div className="text-xs text-neutral-500 dark:text-neutral-400">

@@ -34,7 +34,7 @@ export function SubcategoriesGrid({
   return (
     <div className="container mx-auto px-4 py-10 space-y-10">
       {/* Header */}
-      <header className="text-center space-y-4">
+      {/* <header className="text-center space-y-4">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
           {title}
         </h1>
@@ -42,7 +42,7 @@ export function SubcategoriesGrid({
           Discover our curated collection of {title.toLowerCase()}{" "}
           {hasAny ? "categories" : ""}
         </p>
-      </header>
+      </header> */}
 
       {/* Subcategories Grid - render only if we have any */}
       {hasAny && (

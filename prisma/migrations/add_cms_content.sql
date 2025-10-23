@@ -60,7 +60,7 @@ INSERT INTO "ContentPage" ("id", "slug", "title", "type") VALUES
 
 -- Insert default sections for landing page
 INSERT INTO "ContentSection" ("id", "pageId", "type", "title", "subtitle", "content", "order") VALUES 
-('cls_hero_01', 'clp_landing_01', 'hero', 'Welcome to DY Official', 'Discover the latest fashion trends', '{"description": "Premium quality clothing and accessories for the modern lifestyle.", "ctaText": "Shop Now", "ctaLink": "/new-in"}', 1),
+('cls_hero_01', 'clp_landing_01', 'hero', 'Welcome to DY Official', 'Discover the latest fashion trends', '{"description": "Premium quality clothing and accessories for the modern lifestyle.", "ctaText": "Shop Now", "ctaLink": "/drops"}', 1),
 ('cls_features_01', 'clp_landing_01', 'features', 'Why Choose Us', 'Quality you can trust', '{"features": [{"title": "Premium Quality", "description": "Carefully selected materials and craftsmanship"}, {"title": "Fast Shipping", "description": "Free delivery on orders over £50"}, {"title": "Easy Returns", "description": "30-day hassle-free return policy"}]}', 2),
 ('cls_reviews_01', 'clp_landing_01', 'reviews', 'Customer Reviews', 'What our customers say', '{"displayCount": 6, "showRatings": true, "autoPlay": true}', 3);
 

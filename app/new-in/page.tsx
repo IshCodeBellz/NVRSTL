@@ -208,7 +208,9 @@ export default function DropsPage() {
                           });
                         }}
                         className={`rounded-full h-9 w-9 text-sm font-bold flex items-center justify-center backdrop-blur bg-white/90 border shadow-lg transition-all duration-200 hover:scale-110 ${
-                          inWish ? "border-red-500 text-red-500" : "border-gray-300 text-gray-600 hover:border-red-400 hover:text-red-400"
+                          inWish
+                            ? "border-red-500 text-red-500"
+                            : "border-gray-300 text-gray-600 hover:border-red-400 hover:text-red-400"
                         }`}
                       >
                         {inWish ? "♥" : "♡"}

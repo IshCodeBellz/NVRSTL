@@ -251,7 +251,10 @@ export default function SearchFilters({ facets }: { facets?: Facets }) {
                   Clear all
                 </button>
               )}
-              <button onClick={() => setIsOpen(false)} className="p-2 text-white hover:text-gray-300 transition-colors">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="p-2 text-white hover:text-gray-300 transition-colors"
+              >
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -344,8 +347,12 @@ function FilterGroup({
                 onChange={(e) => onOptionChange(option.id, e.target.checked)}
                 className="rounded border-gray-600 bg-gray-700 text-white focus:ring-gray-500 focus:ring-2"
               />
-              <span className="text-sm text-gray-300 font-carbon">{option.label}</span>
-              <span className="text-xs text-gray-400 font-carbon">({option.count})</span>
+              <span className="text-sm text-gray-300 font-carbon">
+                {option.label}
+              </span>
+              <span className="text-xs text-gray-400 font-carbon">
+                ({option.count})
+              </span>
             </label>
           ))}
         </div>

@@ -202,10 +202,7 @@ export default function SavedPage() {
           <div className="mt-16 pt-8 border-t">
             <h2 className="text-lg font-semibold mb-4">You might also like</h2>
             <div className="text-sm text-neutral-600">
-              <Link
-                href="/new-in"
-                className="text-blue-600 hover:text-blue-500"
-              >
+              <Link href="/drops" className="text-blue-600 hover:text-blue-500">
                 Discover new arrivals
               </Link>{" "}
               based on your saved items

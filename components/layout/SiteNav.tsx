@@ -4,7 +4,7 @@ const primary = [
   { href: "/womens-clothing", label: "Women" },
   { href: "/mens-clothing", label: "Men" },
   { href: "/sportswear", label: "Sportswear" },
-  { href: "/new-in", label: "Drops" },
+  { href: "/drops", label: "Drops" },
   { href: "/brands", label: "Brands" },
   { href: "/denim", label: "Denim" },
   { href: "/footwear", label: "Shoes" },

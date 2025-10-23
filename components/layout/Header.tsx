@@ -353,7 +353,7 @@ export function Header() {
           <div className="hidden md:block border-t border-gray-800">
             <nav className="flex items-center justify-center gap-4 lg:gap-6 xl:gap-8 py-4 flex-wrap">
               <Link
-                href="/new-in"
+                href="/drops"
                 className="text-sm font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 🔥 Drops
@@ -597,7 +597,7 @@ export function Header() {
                   {/* Primary Categories */}
                   <div className="space-y-3">
                     {[
-                      { href: "/new-in", label: "🔥 Drops" },
+                      { href: "/drops", label: "🔥 Drops" },
                       { href: "/womens", label: "Women" },
                       { href: "/mens", label: "Men" },
                       // { href: "/footwear", label: "Shoes" },

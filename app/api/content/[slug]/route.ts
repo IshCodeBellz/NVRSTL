@@ -40,7 +40,7 @@ export const GET = withRequest(async function GET(
               description:
                 "Premium quality clothing and accessories for the modern lifestyle.",
               ctaText: "Shop Now",
-              ctaLink: "/new-in",
+              ctaLink: "/drops",
               backgroundImage: "/hero-bg.jpg",
             },
             order: 1,

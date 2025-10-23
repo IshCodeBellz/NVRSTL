@@ -101,7 +101,9 @@ export function DynamicCategories({
               >
                 <span className="flex items-center space-x-1 md:space-x-2">
                   <span className="text-sm md:text-lg">◆</span>
-                  <span className="font-bold text-sm md:text-base">{section.title}</span>
+                  <span className="font-bold text-sm md:text-base">
+                    {section.title}
+                  </span>
                 </span>
               </button>
             ))}
@@ -170,7 +172,7 @@ export function DynamicCategories({
 
         {/* Drops banner spanning all columns */}
         <Link
-          href="/new-in"
+          href="/drops"
           className="relative col-span-1 md:col-span-2 lg:col-span-3 h-[200px] md:h-[240px] overflow-hidden rounded-lg group flex items-center justify-center bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl"
           aria-label="Shop Drops arrivals"
         >

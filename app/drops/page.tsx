@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useCart, useWishlist } from "@/components/providers/CartProvider";
 import { lineIdFor } from "@/lib/types";
 import Image from "next/image";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ClientPrice } from "@/components/ui/ClientPrice";
-import { SearchInput } from "@/components/ui/SearchInput";
+import { SimpleSearchInput } from "@/components/ui/SimpleSearchInput";
 
 // "Drops" shows the latest products by createdAt desc (reuses /api/products ordering)
 // Provides simple client pagination (page param to API) and basic search.
@@ -34,6 +34,12 @@ export default function DropsPage() {
   const [total, setTotal] = useState(0);
   const [query, setQuery] = useState("");
   const [resetTrigger, setResetTrigger] = useState(0);
+
+  // Memoize the filter change callback to prevent re-renders
+  const handleFilterChange = useCallback((value: string) => {
+    setQuery(value);
+    setPage(1);
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -114,20 +120,12 @@ export default function DropsPage() {
             <label className="text-xs uppercase tracking-wide font-semibold text-gray-300 font-carbon">
               Search
             </label>
-            <SearchInput
-              variant="filter"
-              size="sm"
+            <SimpleSearchInput
               placeholder="Filter new arrivals"
-              onFilterChange={(value) => {
-                setQuery(value);
-                setPage(1);
-              }}
+              onFilterChange={handleFilterChange}
               resetTrigger={resetTrigger}
               loading={loading}
               disabled={loading}
-              showSuggestions={false}
-              showRecentSearches={false}
-              showTrendingSearches={false}
               className="w-64"
             />
           </div>
@@ -136,7 +134,7 @@ export default function DropsPage() {
               onClick={() => {
                 setQuery("");
                 setPage(1);
-                setResetTrigger(prev => prev + 1);
+                setResetTrigger((prev) => prev + 1);
               }}
               disabled={loading}
               className="px-4 py-2 border border-gray-600 text-gray-300 rounded hover:bg-gray-800 transition-colors text-xs disabled:opacity-50 disabled:cursor-not-allowed font-carbon"
@@ -155,7 +153,7 @@ export default function DropsPage() {
                 onClick={() => {
                   setQuery("");
                   setPage(1);
-                  setResetTrigger(prev => prev + 1);
+                  setResetTrigger((prev) => prev + 1);
                 }}
                 className="px-4 py-2 border border-gray-600 text-gray-300 rounded hover:bg-gray-800 transition-colors text-xs font-carbon"
               >

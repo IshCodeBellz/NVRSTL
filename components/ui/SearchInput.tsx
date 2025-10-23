@@ -107,7 +107,7 @@ export function SearchInput({
       dropdown: "top-10",
     },
     md: {
-      input: "px-4 py-2 text-sm",
+      input: "px-4 py-2.5 text-sm",
       icon: "h-4 w-4",
       button: "h-8 w-8",
       dropdown: "top-10",
@@ -122,7 +122,7 @@ export function SearchInput({
 
   // Variant classes
   const variantClasses = {
-    header: "rounded-full border-gray-600 bg-gray-900 text-white placeholder:text-gray-400",
+    header: "rounded-full border-gray-500 bg-gray-800 text-white placeholder:text-gray-400",
     page: "rounded-lg border-gray-600 bg-gray-800 text-white placeholder:text-gray-400",
     filter: "rounded-md border-gray-600 bg-gray-800 text-white placeholder:text-gray-400",
   };
@@ -396,7 +396,7 @@ export function SearchInput({
           onKeyDown={handleKeyDown}
           disabled={disabled}
           className={cn(
-            "w-full border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200",
+            "w-full border focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-all duration-200",
             sizeClasses[size].input,
             variantClasses[variant],
             disabled && "opacity-50 cursor-not-allowed"
@@ -404,7 +404,7 @@ export function SearchInput({
         />
 
         {/* Search Icon */}
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
           {currentLoading ? (
             <Loader2 className={cn("animate-spin", sizeClasses[size].icon)} />
           ) : (
@@ -427,7 +427,7 @@ export function SearchInput({
               setIsOpen(false);
               inputRef.current?.focus();
             }}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors hover:bg-gray-800 rounded-full p-1"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors hover:bg-gray-700 rounded-full p-1"
           >
             <X className={sizeClasses[size].icon} />
           </button>

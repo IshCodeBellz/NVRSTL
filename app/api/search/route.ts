@@ -109,7 +109,7 @@ export async function GET(req: Request) {
           orderBy: { name: "asc" },
         }),
         prisma.brand.findMany({
-          select: { id: true, name: true, slug: true },
+          select: { id: true, name: true },
           orderBy: { name: "asc" },
         }),
       ]);
@@ -120,7 +120,7 @@ export async function GET(req: Request) {
           name: c.name,
           slug: c.slug,
         })),
-        brands: brands.map((b) => ({ id: b.id, name: b.name, slug: b.slug })),
+        brands: brands.map((b) => ({ id: b.id, name: b.name })),
         priceRange: {
           min: 0,
           max: 1000000,

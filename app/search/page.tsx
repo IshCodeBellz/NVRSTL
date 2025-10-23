@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ClientPrice } from "@/components/ui/ClientPrice";
-import { useSearchParams } from "next/navigation";
 
 interface SearchProduct {
   id: string;
@@ -25,44 +24,62 @@ interface SearchData {
 }
 
 export default function SearchPage() {
-  const searchParams = useSearchParams();
-  const q = searchParams.get("q") || "";
-  const [data, setData] = useState<SearchData>({ items: [], total: 0, totalCount: 0 });
+  const [q, setQ] = useState("");
+  const [data, setData] = useState<SearchData>({
+    items: [],
+    total: 0,
+    totalCount: 0,
+  });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Get query from URL on client side
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const query = urlParams.get("q") || "";
+      console.log("SearchPage mounted with q:", query);
+      setQ(query);
+    }
+  }, []);
+
+  // Fetch data when query changes
+  useEffect(() => {
+    if (!q) {
+      setData({ items: [], total: 0, totalCount: 0 });
+      setLoading(false);
+      return;
+    }
+
     const fetchData = async () => {
       try {
         setLoading(true);
-        const url = `/api/search?q=${encodeURIComponent(q)}&facets=1&limit=60`;
-        console.log("Fetching:", url);
+        setError(null);
+        console.log("Fetching data for query:", q);
         
+        const url = `/api/search?q=${encodeURIComponent(q)}&facets=1&limit=60`;
+        console.log("Fetch URL:", url);
+
         const res = await fetch(url);
         console.log("Response status:", res.status);
-        
+
         if (!res.ok) {
-          console.log("Response not ok:", res.status, res.statusText);
-          setData({ items: [], total: 0, totalCount: 0 });
-          return;
+          throw new Error(`HTTP error! status: ${res.status}`);
         }
-        
+
         const result = await res.json();
         console.log("Data received:", result);
         setData(result);
       } catch (error) {
-        console.log("Error:", error);
+        console.error("Fetch error:", error);
+        setError(error instanceof Error ? error.message : "Failed to fetch data");
         setData({ items: [], total: 0, totalCount: 0 });
       } finally {
         setLoading(false);
       }
     };
 
-    if (q) {
-      fetchData();
-    } else {
-      setData({ items: [], total: 0, totalCount: 0 });
-      setLoading(false);
-    }
+    fetchData();
   }, [q]);
 
   if (loading) {
@@ -71,9 +88,7 @@ export default function SearchPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           <aside className="w-full lg:w-64 lg:shrink-0 space-y-6">
             <div>
-              <h1 className="text-xl font-bold mb-1">
-                Results for "{q}"
-              </h1>
+              <h1 className="text-xl font-bold mb-1">Results for "{q}"</h1>
               <p className="text-xs text-neutral-500">Loading...</p>
             </div>
           </aside>
@@ -87,14 +102,32 @@ export default function SearchPage() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          <aside className="w-full lg:w-64 lg:shrink-0 space-y-6">
+            <div>
+              <h1 className="text-xl font-bold mb-1">Results for "{q}"</h1>
+              <p className="text-xs text-neutral-500">Error occurred</p>
+            </div>
+          </aside>
+          <main className="flex-1 space-y-4 min-w-0">
+            <div className="py-20 text-sm text-red-500 text-center border rounded">
+              Error: {error}
+            </div>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
         <aside className="w-full lg:w-64 lg:shrink-0 space-y-6">
           <div>
-            <h1 className="text-xl font-bold mb-1">
-              Results for "{q}"
-            </h1>
+            <h1 className="text-xl font-bold mb-1">Results for "{q}"</h1>
             <p className="text-xs text-neutral-500">
               {data.total} item{data.total === 1 ? "" : "s"} found
             </p>

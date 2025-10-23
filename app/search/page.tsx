@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { ClientPrice } from "@/components/ui/ClientPrice";
 
 interface SearchProduct {
@@ -24,7 +25,8 @@ interface SearchData {
 }
 
 export default function SearchPage() {
-  const [q, setQ] = useState("");
+  const searchParams = useSearchParams();
+  const q = searchParams.get("q") || "";
   const [data, setData] = useState<SearchData>({
     items: [],
     total: 0,
@@ -32,28 +34,6 @@ export default function SearchPage() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Get query from URL and listen for changes
-  useEffect(() => {
-    const updateQuery = () => {
-      if (typeof window !== "undefined") {
-        const urlParams = new URLSearchParams(window.location.search);
-        const query = urlParams.get("q") || "";
-        console.log("SearchPage query updated:", query);
-        setQ(query);
-      }
-    };
-
-    // Initial load
-    updateQuery();
-
-    // Listen for URL changes (back/forward navigation)
-    window.addEventListener("popstate", updateQuery);
-    
-    return () => {
-      window.removeEventListener("popstate", updateQuery);
-    };
-  }, []);
 
   // Fetch data when query changes
   useEffect(() => {

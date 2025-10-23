@@ -56,8 +56,8 @@ export default function SearchPage() {
         setLoading(true);
         setError(null);
         console.log("Fetching data for query:", q);
-        
-        const url = `/api/search?q=${encodeURIComponent(q)}&facets=1&limit=60`;
+
+        const url = `http://localhost:3002/api/search?q=${encodeURIComponent(q)}&facets=1&limit=60`;
         console.log("Fetch URL:", url);
 
         const res = await fetch(url);
@@ -72,7 +72,9 @@ export default function SearchPage() {
         setData(result);
       } catch (error) {
         console.error("Fetch error:", error);
-        setError(error instanceof Error ? error.message : "Failed to fetch data");
+        setError(
+          error instanceof Error ? error.message : "Failed to fetch data"
+        );
         setData({ items: [], total: 0, totalCount: 0 });
       } finally {
         setLoading(false);

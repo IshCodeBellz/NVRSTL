@@ -57,7 +57,9 @@ export default function SearchPage() {
         setError(null);
         console.log("Fetching data for query:", q);
 
-        const url = `http://localhost:3002/api/search?q=${encodeURIComponent(q)}&facets=1&limit=60`;
+        const url = `http://localhost:3000/api/search?q=${encodeURIComponent(
+          q
+        )}&facets=1&limit=60`;
         console.log("Fetch URL:", url);
 
         const res = await fetch(url);

@@ -135,14 +135,19 @@ export async function TrendingNow() {
     <section className="bg-black py-20">
       <div className="container mx-auto px-8">
         <div className="flex items-center justify-between mb-12">
-          <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-white font-carbon">
-            {items[0]?.fallback ? "Latest Products" : "Trending Now"}
-          </h2>
-          {!items[0]?.fallback && (
-            <span className="text-sm uppercase tracking-wider text-gray-400 font-carbon">
-              Live Activity
-            </span>
-          )}
+          <div className="flex items-center gap-4">
+            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-white font-carbon">
+              {items[0]?.fallback ? "Latest Products" : "Trending Now"}
+            </h2>
+            {!items[0]?.fallback && (
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                <span className="text-sm uppercase tracking-wider text-gray-400 font-carbon">
+                  Live Activity
+                </span>
+              </div>
+            )}
+          </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
           {items.map(
@@ -159,10 +164,10 @@ export async function TrendingNow() {
               <Link
                 key={p.id}
                 href={`/product/${p.id}`}
-                className="group relative bg-gray-800 aspect-[3/4] overflow-hidden rounded-lg border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl"
+                className="group relative bg-gray-800 aspect-[3/4] overflow-hidden rounded-lg border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl hover:shadow-gray-900/50"
               >
                 {!p.fallback && (
-                  <div className="absolute top-2 left-2 z-10 text-xs font-bold bg-white text-black px-2 py-1 rounded-full shadow font-carbon">
+                  <div className="absolute top-3 left-3 z-10 text-xs font-bold bg-white text-black px-3 py-1.5 rounded-full shadow-lg font-carbon">
                     #{i + 1}
                   </div>
                 )}
@@ -173,15 +178,15 @@ export async function TrendingNow() {
                   sizes="(max-width:768px) 50vw, (max-width:1200px) 20vw, 15vw"
                   className="object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
-                  <div className="font-bold text-white text-sm truncate font-virtual-modern uppercase tracking-wide mb-1">
+                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/95 via-black/60 to-transparent">
+                  <div className="font-bold text-white text-sm truncate font-carbon uppercase tracking-wide mb-2">
                     {p.name}
                   </div>
                   <div className="text-white">
                     <ClientPrice
                       cents={p.priceCents}
                       size="sm"
-                      className="text-white font-bold font-virtual-modern"
+                      className="text-white font-bold font-carbon"
                     />
                   </div>
                 </div>

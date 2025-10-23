@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { ClientPrice } from "@/components/ui/ClientPrice";
 
 // API response item (tolerant of different shapes)
 interface ProductApiItem {
@@ -118,30 +119,32 @@ export function RecentlyViewed() {
                 href={href}
                 className="min-w-[140px] max-w-[140px] snap-start group"
               >
-                <div className="relative aspect-[3/4] rounded-md overflow-hidden bg-neutral-100 ring-1 ring-neutral-200">
+                <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-800 border border-gray-700 group-hover:border-gray-600 transition-all duration-300">
                   <Image
                     src={p.image}
                     alt={p.name}
                     fill
                     sizes="140px"
-                    className="object-cover transition-transform group-hover:scale-105"
+                    className="object-cover transition-transform group-hover:scale-110 duration-500"
                   />
                 </div>
-                <p className="mt-2 text-[11px] font-medium line-clamp-2 leading-tight font-anxler-tech tracking-wide text-white">
+                <p className="mt-2 text-[11px] font-bold line-clamp-2 leading-tight font-carbon uppercase tracking-wide text-white">
                   {p.name}
                 </p>
-                <div className="mt-1 text-[12px] font-anxler-tech tracking-wide text-white">
-                  {p.discountPrice ? (
-                    <>
-                      <span className="text-rose-400 font-semibold mr-1">
-                        £{p.discountPrice}
-                      </span>
-                      <span className="line-through text-gray-400">
-                        £{p.price}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-white">£{p.price}</span>
+                <div className="mt-1 text-[12px] font-carbon">
+                  <ClientPrice
+                    cents={p.discountPrice ? Math.round(p.discountPrice * 100) : Math.round(p.price * 100)}
+                    size="xs"
+                    className="text-white"
+                  />
+                  {p.discountPrice && (
+                    <span className="line-through text-gray-400 ml-1">
+                      <ClientPrice
+                        cents={Math.round(p.price * 100)}
+                        size="xs"
+                        className="text-gray-400"
+                      />
+                    </span>
                   )}
                 </div>
               </Link>

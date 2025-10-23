@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import EnhancedSearchBar from "../search/EnhancedSearchBar";
+import { SearchInput } from "../ui/SearchInput";
 import { useCart, useWishlist } from "../providers/CartProvider";
 import { useSession, signOut } from "next-auth/react";
 import { DynamicLogo } from "./DynamicLogo";
@@ -179,7 +179,14 @@ export function Header() {
                 </div>
                 {/* Search Bar */}
                 <div className="flex-1">
-                  <EnhancedSearchBar />
+                  <SearchInput
+                    variant="header"
+                    size="md"
+                    className="max-w-md"
+                    showSuggestions={true}
+                    showRecentSearches={true}
+                    showTrendingSearches={true}
+                  />
                 </div>
               </div>
             </div>
@@ -346,7 +353,13 @@ export function Header() {
 
           {/* Mobile Search Bar with Currency Selector */}
           <div className="md:hidden pb-6">
-            <EnhancedSearchBar />
+            <SearchInput
+              variant="header"
+              size="md"
+              showSuggestions={true}
+              showRecentSearches={true}
+              showTrendingSearches={true}
+            />
           </div>
 
           {/* Navigation Row - Desktop Only */}

@@ -6,6 +6,7 @@ import { lineIdFor } from "@/lib/types";
 import Image from "next/image";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ClientPrice } from "@/components/ui/ClientPrice";
+import { SearchInput } from "@/components/ui/SearchInput";
 
 // "Drops" shows the latest products by createdAt desc (reuses /api/products ordering)
 // Provides simple client pagination (page param to API) and basic search.
@@ -112,15 +113,25 @@ export default function DropsPage() {
             <label className="text-xs uppercase tracking-wide font-semibold text-gray-300 font-carbon">
               Search
             </label>
-            <input
+            <SearchInput
+              variant="filter"
+              size="sm"
+              placeholder="Filter new arrivals"
               value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
+              onChange={(value) => {
+                setQuery(value);
                 setPage(1);
               }}
-              placeholder="Filter new arrivals"
+              onFilterChange={(value) => {
+                setQuery(value);
+                setPage(1);
+              }}
+              loading={loading}
               disabled={loading}
-              className="border border-gray-600 rounded px-3 py-2 bg-gray-800 text-white placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-500"
+              showSuggestions={false}
+              showRecentSearches={false}
+              showTrendingSearches={false}
+              className="w-64"
             />
           </div>
           {(query || page > 1) && (

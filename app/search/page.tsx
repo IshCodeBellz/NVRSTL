@@ -33,14 +33,26 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Get query from URL on client side
+  // Get query from URL and listen for changes
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      const query = urlParams.get("q") || "";
-      console.log("SearchPage mounted with q:", query);
-      setQ(query);
-    }
+    const updateQuery = () => {
+      if (typeof window !== "undefined") {
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get("q") || "";
+        console.log("SearchPage query updated:", query);
+        setQ(query);
+      }
+    };
+
+    // Initial load
+    updateQuery();
+
+    // Listen for URL changes (back/forward navigation)
+    window.addEventListener("popstate", updateQuery);
+    
+    return () => {
+      window.removeEventListener("popstate", updateQuery);
+    };
   }, []);
 
   // Fetch data when query changes
@@ -48,6 +60,7 @@ export default function SearchPage() {
     if (!q) {
       setData({ items: [], total: 0, totalCount: 0 });
       setLoading(false);
+      setError(null);
       return;
     }
 
@@ -57,9 +70,7 @@ export default function SearchPage() {
         setError(null);
         console.log("Fetching data for query:", q);
 
-        const url = `http://localhost:3000/api/search?q=${encodeURIComponent(
-          q
-        )}&facets=1&limit=60`;
+        const url = `/api/search?q=${encodeURIComponent(q)}&facets=1&limit=60`;
         console.log("Fetch URL:", url);
 
         const res = await fetch(url);

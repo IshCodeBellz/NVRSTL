@@ -33,6 +33,7 @@ export default function DropsPage() {
   const [pageSize] = useState(24);
   const [total, setTotal] = useState(0);
   const [query, setQuery] = useState("");
+  const [resetTrigger, setResetTrigger] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -117,11 +118,11 @@ export default function DropsPage() {
               variant="filter"
               size="sm"
               placeholder="Filter new arrivals"
-              value={query}
               onFilterChange={(value) => {
                 setQuery(value);
                 setPage(1);
               }}
+              resetTrigger={resetTrigger}
               loading={loading}
               disabled={loading}
               showSuggestions={false}
@@ -135,6 +136,7 @@ export default function DropsPage() {
               onClick={() => {
                 setQuery("");
                 setPage(1);
+                setResetTrigger(prev => prev + 1);
               }}
               disabled={loading}
               className="px-4 py-2 border border-gray-600 text-gray-300 rounded hover:bg-gray-800 transition-colors text-xs disabled:opacity-50 disabled:cursor-not-allowed font-carbon"
@@ -153,6 +155,7 @@ export default function DropsPage() {
                 onClick={() => {
                   setQuery("");
                   setPage(1);
+                  setResetTrigger(prev => prev + 1);
                 }}
                 className="px-4 py-2 border border-gray-600 text-gray-300 rounded hover:bg-gray-800 transition-colors text-xs font-carbon"
               >

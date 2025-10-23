@@ -58,6 +58,9 @@ export interface SearchInputProps {
   // Current value (for controlled components)
   value?: string;
   onChange?: (value: string) => void;
+  
+  // Reset functionality
+  resetTrigger?: number; // When this changes, reset the input
 
   // Loading state
   loading?: boolean;
@@ -78,6 +81,7 @@ export function SearchInput({
   onFilterChange,
   value: controlledValue,
   onChange: controlledOnChange,
+  resetTrigger,
   loading: controlledLoading,
   disabled = false,
 }: SearchInputProps) {
@@ -163,6 +167,14 @@ export function SearchInput({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Handle reset trigger
+  useEffect(() => {
+    if (resetTrigger !== undefined) {
+      setQuery("");
+      setIsOpen(false);
+    }
+  }, [resetTrigger]);
 
   // Update internal state when controlled value changes
   useEffect(() => {
@@ -290,7 +302,7 @@ export function SearchInput({
         } else {
           setQuery(newValue);
         }
-        
+
         if (onFilterChange) {
           debouncedFilterChange(newValue);
         }
@@ -301,7 +313,7 @@ export function SearchInput({
         } else {
           setQuery(newValue);
         }
-        
+
         if (onFilterChange) {
           onFilterChange(newValue);
         }

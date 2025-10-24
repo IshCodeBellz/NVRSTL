@@ -31,24 +31,30 @@ export function IsolatedSearchInput({
   }, [resetTrigger]);
 
   // Debounced search callback
-  const debouncedSearch = useCallback((searchQuery: string) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    
-    timeoutRef.current = setTimeout(() => {
-      if (onSearch) {
-        onSearch(searchQuery);
+  const debouncedSearch = useCallback(
+    (searchQuery: string) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
-    }, 500); // Increased debounce time
-  }, [onSearch]);
+
+      timeoutRef.current = setTimeout(() => {
+        if (onSearch) {
+          onSearch(searchQuery);
+        }
+      }, 500); // Increased debounce time
+    },
+    [onSearch]
+  );
 
   // Handle input change
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value);
-    debouncedSearch(value);
-  }, [debouncedSearch]);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setQuery(value);
+      debouncedSearch(value);
+    },
+    [debouncedSearch]
+  );
 
   // Cleanup timeout on unmount
   useEffect(() => {

@@ -73,7 +73,10 @@ export function CurrencySelector({
           aria-haspopup="listbox"
           onBlur={(e) => {
             // Only close if clicking outside the dropdown and not just clicked
-            if (!justClicked && !dropdownRef.current?.contains(e.relatedTarget as Node)) {
+            if (
+              !justClicked &&
+              !dropdownRef.current?.contains(e.relatedTarget as Node)
+            ) {
               setTimeout(() => setIsOpen(false), 150);
             }
           }}
@@ -147,7 +150,10 @@ export function CurrencySelector({
           aria-haspopup="listbox"
           onBlur={(e) => {
             // Only close if clicking outside the dropdown and not just clicked
-            if (!justClicked && !dropdownRef.current?.contains(e.relatedTarget as Node)) {
+            if (
+              !justClicked &&
+              !dropdownRef.current?.contains(e.relatedTarget as Node)
+            ) {
               setTimeout(() => setIsOpen(false), 150);
             }
           }}
@@ -227,7 +233,10 @@ export function CurrencySelector({
           aria-haspopup="listbox"
           onBlur={(e) => {
             // Only close if clicking outside the dropdown and not just clicked
-            if (!justClicked && !dropdownRef.current?.contains(e.relatedTarget as Node)) {
+            if (
+              !justClicked &&
+              !dropdownRef.current?.contains(e.relatedTarget as Node)
+            ) {
               setTimeout(() => setIsOpen(false), 150);
             }
           }}

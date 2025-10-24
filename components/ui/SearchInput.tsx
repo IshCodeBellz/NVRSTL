@@ -58,7 +58,7 @@ export interface SearchInputProps {
   // Current value (for controlled components)
   value?: string;
   onChange?: (value: string) => void;
-  
+
   // Reset functionality
   resetTrigger?: number; // When this changes, reset the input
 

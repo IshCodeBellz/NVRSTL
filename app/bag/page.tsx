@@ -208,7 +208,10 @@ export default function BagPage() {
             {/* Cart Items */}
             <div className="space-y-4">
               {items.map((line) => (
-                <div key={line.id} className="bg-white rounded-lg p-4 shadow-sm">
+                <div
+                  key={line.id}
+                  className="bg-white rounded-lg p-4 shadow-sm"
+                >
                   <div className="flex gap-4">
                     <div className="relative w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden flex-shrink-0">
                       <Image
@@ -244,8 +247,12 @@ export default function BagPage() {
                             if (c.nameAndNumber) {
                               const nn = c.nameAndNumber;
                               rows.push(
-                                `Name & Number: ${nn.name || ""} ${nn.number || ""}${
-                                  nn.font ? ` (${String(nn.font).toUpperCase()})` : ""
+                                `Name & Number: ${nn.name || ""} ${
+                                  nn.number || ""
+                                }${
+                                  nn.font
+                                    ? ` (${String(nn.font).toUpperCase()})`
+                                    : ""
                                 }`.trim()
                               );
                             }
@@ -273,7 +280,9 @@ export default function BagPage() {
                           <div className="flex items-center border border-neutral-300 rounded-lg">
                             <button
                               type="button"
-                              onClick={() => updateQty(line.id, Math.max(1, line.qty - 1))}
+                              onClick={() =>
+                                updateQty(line.id, Math.max(1, line.qty - 1))
+                              }
                               className="p-1 hover:bg-neutral-100 transition-colors"
                             >
                               <Minus className="w-3 h-3" />
@@ -284,13 +293,18 @@ export default function BagPage() {
                               max={99}
                               value={line.qty}
                               onChange={(e) =>
-                                updateQty(line.id, parseInt(e.target.value || "1", 10))
+                                updateQty(
+                                  line.id,
+                                  parseInt(e.target.value || "1", 10)
+                                )
                               }
                               className="w-12 text-center text-sm border-0 focus:outline-none focus:ring-0"
                             />
                             <button
                               type="button"
-                              onClick={() => updateQty(line.id, Math.min(99, line.qty + 1))}
+                              onClick={() =>
+                                updateQty(line.id, Math.min(99, line.qty + 1))
+                              }
                               className="p-1 hover:bg-neutral-100 transition-colors"
                             >
                               <Plus className="w-3 h-3" />
@@ -311,8 +325,8 @@ export default function BagPage() {
                 </div>
               ))}
               {items.length > 0 && (
-                <button 
-                  onClick={clear} 
+                <button
+                  onClick={clear}
                   className="w-full text-sm text-neutral-600 hover:text-red-600 py-2 border border-neutral-300 rounded-lg hover:border-red-300 transition-colors font-medium"
                 >
                   Clear bag
@@ -321,7 +335,9 @@ export default function BagPage() {
             </div>
             {/* Order Summary */}
             <aside className="bg-white rounded-lg p-6 shadow-sm h-fit">
-              <h2 className="text-lg font-bold text-neutral-900 mb-4">Order Summary</h2>
+              <h2 className="text-lg font-bold text-neutral-900 mb-4">
+                Order Summary
+              </h2>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-neutral-600">Subtotal</span>
@@ -334,7 +350,9 @@ export default function BagPage() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-neutral-600">Delivery</span>
-                  <span className="text-neutral-600">Calculated at checkout</span>
+                  <span className="text-neutral-600">
+                    Calculated at checkout
+                  </span>
                 </div>
                 <div className="border-t border-neutral-200 pt-3 flex justify-between">
                   <span className="font-bold text-neutral-900">Total</span>

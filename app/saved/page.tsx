@@ -195,8 +195,8 @@ export default function SavedPage() {
                 You might also like
               </h2>
               <div className="text-sm text-neutral-600">
-                <Link 
-                  href="/drops" 
+                <Link
+                  href="/drops"
                   className="text-blue-600 hover:text-blue-500 font-medium"
                 >
                   Discover new arrivals

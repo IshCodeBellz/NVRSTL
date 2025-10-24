@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { ChevronDown, Globe } from "lucide-react";
 
@@ -17,10 +17,36 @@ export function CurrencySelector({
 }: CurrencySelectorProps) {
   const { currentCurrency, currencies, setCurrency, isLoading } = useCurrency();
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const currentCurrencyData = currencies.find(
     (c) => c.code === currentCurrency
   );
+
+  // Handle click outside and escape key to close dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
 
   const sizeClasses = {
     sm: "text-xs px-2 py-1",
@@ -30,7 +56,7 @@ export function CurrencySelector({
 
   if (variant === "minimal") {
     return (
-      <div className="relative">
+      <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={`flex items-center gap-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors ${sizeClasses[size]} text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800`}
@@ -50,10 +76,10 @@ export function CurrencySelector({
         {isOpen && (
           <>
             <div
-              className="fixed inset-0 z-10"
+              className="fixed inset-0 z-[9998]"
               onClick={() => setIsOpen(false)}
             />
-            <div className="absolute top-full right-0 mt-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-20 min-w-[200px] max-h-[300px] overflow-y-auto">
+            <div className="absolute top-full right-0 mt-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-[9999] min-w-[200px] max-h-[300px] overflow-y-auto">
               {currencies.map((currency) => (
                 <button
                   key={currency.code}
@@ -70,9 +96,7 @@ export function CurrencySelector({
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-sm font-medium text-neutral-900 dark:text-white">
-                        <span className="font-semibold">
-                          {currency.symbol}
-                        </span>{" "}
+                        <span className="font-semibold">{currency.symbol}</span>{" "}
                         {currency.code}
                       </div>
                       <div className="text-xs text-neutral-500 dark:text-neutral-400">
@@ -94,7 +118,7 @@ export function CurrencySelector({
 
   if (variant === "button") {
     return (
-      <div className="relative">
+      <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={`flex items-center gap-2 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:border-neutral-400 dark:hover:border-neutral-500 transition-colors ${sizeClasses[size]} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white`}
@@ -103,9 +127,7 @@ export function CurrencySelector({
           <Globe className="w-4 h-4" />
           {showLabel && <span>Currency:</span>}
           <span className="font-medium">
-            <span className="font-semibold">
-              {currentCurrencyData?.symbol}
-            </span>{" "}
+            <span className="font-semibold">{currentCurrencyData?.symbol}</span>{" "}
             {currentCurrency}
           </span>
           <ChevronDown
@@ -118,10 +140,10 @@ export function CurrencySelector({
         {isOpen && (
           <>
             <div
-              className="fixed inset-0 z-10"
+              className="fixed inset-0 z-[9998]"
               onClick={() => setIsOpen(false)}
             />
-            <div className="absolute top-full left-0 mt-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-20 min-w-full max-h-[300px] overflow-y-auto">
+            <div className="absolute top-full left-0 mt-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-[9999] min-w-full max-h-[300px] overflow-y-auto">
               {currencies.map((currency) => (
                 <button
                   key={currency.code}
@@ -138,9 +160,7 @@ export function CurrencySelector({
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-sm font-medium text-neutral-900 dark:text-white">
-                        <span className="font-semibold">
-                          {currency.symbol}
-                        </span>{" "}
+                        <span className="font-semibold">{currency.symbol}</span>{" "}
                         {currency.code}
                       </div>
                       <div className="text-xs text-neutral-500 dark:text-neutral-400">
@@ -162,7 +182,7 @@ export function CurrencySelector({
 
   // Default dropdown variant
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
         {showLabel && "Currency"}
       </label>
@@ -194,10 +214,10 @@ export function CurrencySelector({
         {isOpen && (
           <>
             <div
-              className="fixed inset-0 z-10"
+              className="fixed inset-0 z-[9998]"
               onClick={() => setIsOpen(false)}
             />
-            <div className="absolute top-full left-0 mt-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-20 w-full max-h-[300px] overflow-y-auto">
+            <div className="absolute top-full left-0 mt-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-[9999] w-full max-h-[300px] overflow-y-auto">
               {currencies.map((currency) => (
                 <button
                   key={currency.code}
@@ -214,9 +234,7 @@ export function CurrencySelector({
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-sm font-medium text-neutral-900 dark:text-white">
-                        <span className="font-semibold">
-                          {currency.symbol}
-                        </span>{" "}
+                        <span className="font-semibold">{currency.symbol}</span>{" "}
                         {currency.code}
                       </div>
                       <div className="text-xs text-neutral-500 dark:text-neutral-400">

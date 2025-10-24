@@ -26,25 +26,28 @@ export function CurrencySelector({
   // Handle click outside and escape key to close dropdown
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         setIsOpen(false);
       }
     }
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen]);
 
@@ -59,15 +62,17 @@ export function CurrencySelector({
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors ${sizeClasses[size]} text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800`}
+          className={`flex items-center gap-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-lg transition-colors ${sizeClasses[size]} text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800`}
           disabled={isLoading}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
         >
-          <Globe className="w-4 h-4" />
+          <Globe className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
           <span className="font-semibold text-neutral-900 dark:text-white">
             {currentCurrencyData?.symbol || "$"}
           </span>
           <ChevronDown
-            className={`w-3 h-3 transition-transform ${
+            className={`w-3 h-3 text-neutral-600 dark:text-neutral-400 transition-transform ${
               isOpen ? "rotate-180" : ""
             }`}
           />
@@ -121,17 +126,19 @@ export function CurrencySelector({
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-2 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:border-neutral-400 dark:hover:border-neutral-500 transition-colors ${sizeClasses[size]} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white`}
+          className={`flex items-center gap-2 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:border-neutral-400 dark:hover:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors ${sizeClasses[size]} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white`}
           disabled={isLoading}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
         >
-          <Globe className="w-4 h-4" />
+          <Globe className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
           {showLabel && <span>Currency:</span>}
           <span className="font-medium">
             <span className="font-semibold">{currentCurrencyData?.symbol}</span>{" "}
             {currentCurrency}
           </span>
           <ChevronDown
-            className={`w-4 h-4 transition-transform ${
+            className={`w-4 h-4 text-neutral-600 dark:text-neutral-400 transition-transform ${
               isOpen ? "rotate-180" : ""
             }`}
           />
@@ -189,11 +196,13 @@ export function CurrencySelector({
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full flex items-center justify-between border border-neutral-300 dark:border-neutral-600 rounded-lg hover:border-neutral-400 dark:hover:border-neutral-500 transition-colors ${sizeClasses[size]} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white`}
+          className={`w-full flex items-center justify-between border border-neutral-300 dark:border-neutral-600 rounded-lg hover:border-neutral-400 dark:hover:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors ${sizeClasses[size]} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white`}
           disabled={isLoading}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
         >
           <div className="flex items-center gap-2">
-            <Globe className="w-4 h-4" />
+            <Globe className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
             <span className="font-medium">
               <span className="font-semibold">
                 {currentCurrencyData?.symbol}
@@ -205,7 +214,7 @@ export function CurrencySelector({
             </span>
           </div>
           <ChevronDown
-            className={`w-4 h-4 transition-transform ${
+            className={`w-4 h-4 text-neutral-600 dark:text-neutral-400 transition-transform ${
               isOpen ? "rotate-180" : ""
             }`}
           />

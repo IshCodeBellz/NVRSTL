@@ -142,25 +142,25 @@ export function Header() {
             <nav className="hidden md:flex items-center space-x-8">
               <Link
                 href="/"
-                className="text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors"
+                className="text-white font-carbon uppercase tracking-wider text-lg hover:text-gray-300 transition-colors"
               >
                 Home
               </Link>
               <Link
                 href="/discover"
-                className="text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors"
+                className="text-white font-carbon uppercase tracking-wider text-lg hover:text-gray-300 transition-colors"
               >
                 Discover
               </Link>
               <Link
                 href="/gallery"
-                className="text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors"
+                className="text-white font-carbon uppercase tracking-wider text-lg hover:text-gray-300 transition-colors"
               >
                 Gallery
               </Link>
               <Link
                 href="/contact"
-                className="text-white font-carbon uppercase tracking-wider text-base hover:text-gray-300 transition-colors"
+                className="text-white font-carbon uppercase tracking-wider text-lg hover:text-gray-300 transition-colors"
               >
                 Contact
               </Link>
@@ -370,26 +370,26 @@ export function Header() {
             <nav className="flex items-center justify-center gap-4 lg:gap-6 xl:gap-8 py-4 flex-wrap">
               <Link
                 href="/drops"
-                className="text-sm font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
+                className="text-lg font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 🔥 Drops
               </Link>
               <Link
                 href="/womens"
-                className="text-sm font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
+                className="text-lg font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 Women
               </Link>
               <Link
                 href="/mens"
-                className="text-sm font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
+                className="text-lg font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 Men
               </Link>
               <div className="relative group">
                 <Link
                   href="/shop"
-                  className="text-sm font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors flex items-center"
+                  className="text-lg font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors flex items-center"
                   onMouseEnter={() => setShopDropdownOpen(true)}
                   onMouseLeave={() => setShopDropdownOpen(false)}
                 >
@@ -472,7 +472,7 @@ export function Header() {
               </Link> */}
               <Link
                 href="/brands"
-                className="text-sm font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
+                className="text-lg font-medium text-white hover:text-gray-300 font-carbon uppercase tracking-wider whitespace-nowrap transition-colors"
               >
                 Brands
               </Link>
@@ -514,7 +514,7 @@ export function Header() {
               aria-label="Mobile menu"
             >
               <div className="flex items-center justify-between pl-4 pr-2 h-20 border-b border-gray-800">
-                <span className="font-bold text-sm text-white font-carbon uppercase tracking-wider">
+                <span className="font-bold text-lg text-white font-carbon uppercase tracking-wider">
                   Menu
                 </span>
                 <button
@@ -525,7 +525,7 @@ export function Header() {
                   <span className="text-lg leading-none">×</span>
                 </button>
               </div>
-              <div className="flex-1 overflow-y-auto px-4 py-5 text-sm space-y-6">
+              <div className="flex-1 overflow-y-auto px-4 py-5 text-base space-y-6">
                 {/* Currency Selector for Mobile */}
                 <div className="pb-4 border-b border-gray-800">
                   <div className="text-white [&_button]:text-[#f5f5f5] [&_button]:hover:bg-gray-800 [&_button]:hover:text-[#f5f5f5] [&_button]:currency-selector [&_button]:currency-selector-button [&_button]:border [&_button]:border-gray-600 [&_button]:rounded-lg [&_button]:px-3 [&_button]:py-2 [&_button]:bg-gray-900 [&_button]:hover:border-gray-500 [&_button]:transition-all [&_button]:duration-200 [&_div]:currency-dropdown [&_button]:currency-dropdown-item">

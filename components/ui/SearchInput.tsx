@@ -600,7 +600,7 @@ export function SearchInput({
             suggestions.length === 0 &&
             !currentLoading && (
               <div className="p-4 text-center text-gray-400 text-sm">
-                No results found for "{currentQuery}"
+                No results found for &ldquo;{currentQuery}&rdquo;
               </div>
             )}
         </div>

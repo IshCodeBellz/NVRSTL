@@ -26,7 +26,7 @@ interface SearchData {
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
-  const q = searchParams.get("q") || "";
+  const q = searchParams?.get("q") || "";
   const [data, setData] = useState<SearchData>({
     items: [],
     total: 0,
@@ -83,7 +83,9 @@ export default function SearchPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           <aside className="w-full lg:w-64 lg:shrink-0 space-y-6">
             <div>
-              <h1 className="text-xl font-bold mb-1">Results for "{q}"</h1>
+              <h1 className="text-xl font-bold mb-1">
+                Results for &ldquo;{q}&rdquo;
+              </h1>
               <p className="text-xs text-neutral-500">Loading...</p>
             </div>
           </aside>
@@ -103,7 +105,9 @@ export default function SearchPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           <aside className="w-full lg:w-64 lg:shrink-0 space-y-6">
             <div>
-              <h1 className="text-xl font-bold mb-1">Results for "{q}"</h1>
+              <h1 className="text-xl font-bold mb-1">
+                Results for &ldquo;{q}&rdquo;
+              </h1>
               <p className="text-xs text-neutral-500">Error occurred</p>
             </div>
           </aside>
@@ -122,7 +126,9 @@ export default function SearchPage() {
       <div className="flex flex-col lg:flex-row gap-8">
         <aside className="w-full lg:w-64 lg:shrink-0 space-y-6">
           <div>
-            <h1 className="text-xl font-bold mb-1">Results for "{q}"</h1>
+            <h1 className="text-xl font-bold mb-1">
+              Results for &ldquo;{q}&rdquo;
+            </h1>
             <p className="text-xs text-neutral-500">
               {data.total} item{data.total === 1 ? "" : "s"} found
             </p>

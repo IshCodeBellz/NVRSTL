@@ -35,17 +35,17 @@ export default function SavedPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-neutral-900">
+              <h1 className="text-3xl font-bold tracking-tight text-white font-carbon uppercase">
                 Saved Items
               </h1>
               {items.length > 0 && (
-                <p className="text-sm text-neutral-600 mt-1">
+                <p className="text-sm text-gray-300 mt-1">
                   {items.length} item{items.length !== 1 ? "s" : ""} saved
                 </p>
               )}
@@ -79,18 +79,18 @@ export default function SavedPage() {
 
         {items.length === 0 ? (
           <div className="text-center py-20">
-            <div className="w-20 h-20 mx-auto mb-6 bg-white rounded-full flex items-center justify-center shadow-sm">
-              <Heart className="w-10 h-10 text-neutral-400" />
+            <div className="w-20 h-20 mx-auto mb-6 bg-gray-800 rounded-full flex items-center justify-center shadow-sm border border-gray-700">
+              <Heart className="w-10 h-10 text-gray-400" />
             </div>
-            <h2 className="text-2xl font-bold text-neutral-900 mb-3">
+            <h2 className="text-2xl font-bold text-white mb-3 font-carbon uppercase">
               No saved items yet
             </h2>
-            <p className="text-neutral-600 mb-8 max-w-md mx-auto">
+            <p className="text-gray-300 mb-8 max-w-md mx-auto">
               Start browsing and save items you love to see them here.
             </p>
             <Link
               href="/drops"
-              className="inline-flex items-center gap-2 bg-neutral-900 text-white px-6 py-3 rounded-lg hover:bg-neutral-800 transition-colors font-medium"
+              className="inline-flex items-center gap-2 bg-white text-black px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors font-medium font-carbon uppercase tracking-wider"
             >
               <Plus className="w-4 h-4" />
               Start Shopping
@@ -99,22 +99,22 @@ export default function SavedPage() {
         ) : (
           <>
             {/* Action Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 p-6 bg-white rounded-lg shadow-sm">
-              <div className="text-sm text-neutral-600">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 p-6 bg-gray-800 rounded-lg shadow-sm border border-gray-700">
+              <div className="text-sm text-gray-300">
                 {items.length} item{items.length !== 1 ? "s" : ""} in your
                 wishlist
               </div>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <button
                   onClick={moveAllToBag}
-                  className="inline-flex items-center gap-2 bg-neutral-900 text-white px-4 py-2 rounded-lg hover:bg-neutral-800 transition-colors text-sm font-medium"
+                  className="inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium font-carbon uppercase tracking-wider"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   Move All to Bag
                 </button>
                 <button
                   onClick={() => setShowClearConfirm(true)}
-                  className="inline-flex items-center gap-2 text-red-600 hover:text-red-500 text-sm font-medium px-4 py-2 rounded-lg hover:bg-red-50 transition-colors"
+                  className="inline-flex items-center gap-2 text-red-400 hover:text-red-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-red-900/20 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                   Clear All
@@ -127,10 +127,10 @@ export default function SavedPage() {
               {sortedItems.map((w) => (
                 <div
                   key={w.id}
-                  className="group relative bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 flex flex-col"
+                  className="group relative bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 flex flex-col border border-gray-700"
                 >
                   <Link href={`/product/${w.id}`} className="block">
-                    <div className="relative aspect-[3/4] bg-neutral-100">
+                    <div className="relative aspect-[3/4] bg-gray-700">
                       <Image
                         src={w.image}
                         alt={w.name}
@@ -143,13 +143,13 @@ export default function SavedPage() {
 
                   <div className="p-4 flex-1 flex flex-col">
                     <Link href={`/product/${w.id}`} className="block flex-1">
-                      <h3 className="font-medium text-sm text-neutral-900 line-clamp-2 leading-tight hover:text-neutral-600 transition-colors">
+                      <h3 className="font-medium text-sm text-white line-clamp-2 leading-tight hover:text-gray-300 transition-colors font-carbon">
                         {w.name}
                       </h3>
                     </Link>
 
                     {w.size && (
-                      <p className="text-xs text-neutral-500 mt-1">
+                      <p className="text-xs text-gray-400 mt-1">
                         Size: {w.size}
                       </p>
                     )}
@@ -157,7 +157,7 @@ export default function SavedPage() {
                     <div className="mt-2">
                       <ClientPrice
                         cents={w.priceCents}
-                        className="text-sm font-semibold text-neutral-900"
+                        className="text-sm font-semibold text-white"
                       />
                     </div>
                   </div>
@@ -165,13 +165,13 @@ export default function SavedPage() {
                   <div className="p-4 pt-0 space-y-2">
                     <button
                       onClick={() => moveToCart(w.id, addItem)}
-                      className="w-full bg-neutral-900 text-white py-2 rounded-lg text-sm hover:bg-neutral-800 transition-colors font-medium"
+                      className="w-full bg-white text-black py-2 rounded-lg text-sm hover:bg-gray-100 transition-colors font-medium font-carbon uppercase tracking-wider"
                     >
                       Add to bag
                     </button>
                     <button
                       onClick={() => remove(w.id)}
-                      className="w-full border border-neutral-300 text-neutral-700 py-2 rounded-lg text-sm hover:bg-neutral-50 transition-colors font-medium"
+                      className="w-full border border-gray-600 text-gray-300 py-2 rounded-lg text-sm hover:bg-gray-700 transition-colors font-medium"
                     >
                       Remove
                     </button>
@@ -180,24 +180,24 @@ export default function SavedPage() {
                   {/* Quick actions */}
                   <button
                     onClick={() => remove(w.id)}
-                    className="absolute top-2 right-2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-2 right-2 w-8 h-8 bg-gray-800/90 hover:bg-gray-800 rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity border border-gray-600"
                     aria-label="Remove from wishlist"
                   >
-                    <X className="w-4 h-4 text-neutral-600" />
+                    <X className="w-4 h-4 text-gray-300" />
                   </button>
                 </div>
               ))}
             </div>
 
             {/* Suggestions */}
-            <div className="mt-16 pt-8 border-t border-neutral-200">
-              <h2 className="text-xl font-bold text-neutral-900 mb-4">
+            <div className="mt-16 pt-8 border-t border-gray-600">
+              <h2 className="text-xl font-bold text-white mb-4 font-carbon uppercase">
                 You might also like
               </h2>
-              <div className="text-sm text-neutral-600">
+              <div className="text-sm text-gray-300">
                 <Link
                   href="/drops"
-                  className="text-blue-600 hover:text-blue-500 font-medium"
+                  className="text-blue-400 hover:text-blue-300 font-medium"
                 >
                   Discover new arrivals
                 </Link>{" "}
@@ -211,11 +211,11 @@ export default function SavedPage() {
       {/* Clear Confirmation Modal */}
       {showClearConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
-            <h3 className="text-lg font-bold text-neutral-900 mb-2">
+          <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-xl border border-gray-700">
+            <h3 className="text-lg font-bold text-white mb-2 font-carbon uppercase">
               Clear all saved items?
             </h3>
-            <p className="text-sm text-neutral-600 mb-6">
+            <p className="text-sm text-gray-300 mb-6">
               This will remove all {items.length} items from your wishlist. This
               action cannot be undone.
             </p>
@@ -231,7 +231,7 @@ export default function SavedPage() {
               </button>
               <button
                 onClick={() => setShowClearConfirm(false)}
-                className="flex-1 px-4 py-2 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors font-medium"
+                className="flex-1 px-4 py-2 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors font-medium"
               >
                 Cancel
               </button>

@@ -489,11 +489,11 @@ export class CMSService {
         }
 
         if (slug) {
-          // Validate slug format (alphanumeric, hyphens, underscores only)
-          const slugRegex = /^[a-z0-9-_]+$/;
+          // Validate slug format (alphanumeric, hyphens, underscores, forward slashes)
+          const slugRegex = /^[a-z0-9-_\/]+$/;
           if (!slugRegex.test(slug)) {
             throw new Error(
-              `Category slug for ${category} must contain only lowercase letters, numbers, hyphens, and underscores`
+              `Category slug for ${category} must contain only lowercase letters, numbers, hyphens, underscores, and forward slashes`
             );
           }
 

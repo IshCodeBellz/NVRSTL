@@ -1,11 +1,12 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useCart, useWishlist } from "@/components/providers/CartProvider";
 import { lineIdFor } from "@/lib/types";
 import Image from "next/image";
 import { useToast } from "@/components/providers/ToastProvider";
 import { ClientPrice } from "@/components/ui/ClientPrice";
+import { IsolatedSearchInput } from "@/components/ui/IsolatedSearchInput";
 
 // "Drops" shows the latest products by createdAt desc (reuses /api/products ordering)
 // Provides simple client pagination (page param to API) and basic search.
@@ -32,6 +33,13 @@ export default function DropsPage() {
   const [pageSize] = useState(24);
   const [total, setTotal] = useState(0);
   const [query, setQuery] = useState("");
+  const [resetTrigger, setResetTrigger] = useState(0);
+
+  // Handle search from isolated input
+  const handleSearch = useCallback((searchQuery: string) => {
+    setQuery(searchQuery);
+    setPage(1);
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -112,15 +120,11 @@ export default function DropsPage() {
             <label className="text-xs uppercase tracking-wide font-semibold text-gray-300 font-carbon">
               Search
             </label>
-            <input
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                setPage(1);
-              }}
+            <IsolatedSearchInput
               placeholder="Filter new arrivals"
-              disabled={loading}
-              className="border border-gray-600 rounded px-3 py-2 bg-gray-800 text-white placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-500"
+              onSearch={handleSearch}
+              resetTrigger={resetTrigger}
+              className="w-64"
             />
           </div>
           {(query || page > 1) && (
@@ -128,6 +132,7 @@ export default function DropsPage() {
               onClick={() => {
                 setQuery("");
                 setPage(1);
+                setResetTrigger((prev) => prev + 1);
               }}
               disabled={loading}
               className="px-4 py-2 border border-gray-600 text-gray-300 rounded hover:bg-gray-800 transition-colors text-xs disabled:opacity-50 disabled:cursor-not-allowed font-carbon"
@@ -146,6 +151,7 @@ export default function DropsPage() {
                 onClick={() => {
                   setQuery("");
                   setPage(1);
+                  setResetTrigger((prev) => prev + 1);
                 }}
                 className="px-4 py-2 border border-gray-600 text-gray-300 rounded hover:bg-gray-800 transition-colors text-xs font-carbon"
               >

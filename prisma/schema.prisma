@@ -1187,3 +1187,59 @@ model Shipment {
   @@index([status])
   @@index([createdAt])
 }
+
+model ShopCategory {
+  id           String            @id @default(cuid())
+  slug         String            @unique
+  name         String
+  description  String?
+  imageUrl     String?
+  displayOrder Int               @default(0)
+  isActive     Boolean           @default(true)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  subcategories ShopSubcategory[]
+
+  @@index([slug])
+  @@index([isActive])
+  @@index([displayOrder])
+}
+
+model ShopSubcategory {
+  id           String      @id @default(cuid())
+  categoryId   String
+  slug         String
+  name         String
+  description  String?
+  imageUrl     String?
+  displayOrder Int         @default(0)
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  category     ShopCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  teams        ShopTeam[]
+
+  @@unique([categoryId, slug])
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([displayOrder])
+}
+
+model ShopTeam {
+  id            String         @id @default(cuid())
+  subcategoryId String
+  slug          String
+  name          String
+  description   String?
+  logoUrl       String?
+  displayOrder  Int            @default(0)
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  subcategory   ShopSubcategory @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+
+  @@unique([subcategoryId, slug])
+  @@index([subcategoryId])
+  @@index([isActive])
+  @@index([displayOrder])
+}

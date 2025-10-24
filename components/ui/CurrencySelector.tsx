@@ -17,6 +17,7 @@ export function CurrencySelector({
 }: CurrencySelectorProps) {
   const { currentCurrency, currencies, setCurrency, isLoading } = useCurrency();
   const [isOpen, setIsOpen] = useState(false);
+  const [justClicked, setJustClicked] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const currentCurrencyData = currencies.find(
@@ -61,11 +62,21 @@ export function CurrencySelector({
     return (
       <div className="relative" ref={dropdownRef}>
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-lg transition-colors ${sizeClasses[size]} text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800`}
+          onClick={() => {
+            setJustClicked(true);
+            setIsOpen(!isOpen);
+            setTimeout(() => setJustClicked(false), 100);
+          }}
+          className={`flex items-center gap-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 focus:bg-white dark:focus:bg-neutral-800 rounded-lg transition-colors ${sizeClasses[size]} text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800`}
           disabled={isLoading}
           aria-expanded={isOpen}
           aria-haspopup="listbox"
+          onBlur={(e) => {
+            // Only close if clicking outside the dropdown and not just clicked
+            if (!justClicked && !dropdownRef.current?.contains(e.relatedTarget as Node)) {
+              setTimeout(() => setIsOpen(false), 150);
+            }
+          }}
         >
           <Globe className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
           <span className="font-semibold text-neutral-900 dark:text-white">
@@ -125,11 +136,21 @@ export function CurrencySelector({
     return (
       <div className="relative" ref={dropdownRef}>
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-2 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:border-neutral-400 dark:hover:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors ${sizeClasses[size]} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white`}
+          onClick={() => {
+            setJustClicked(true);
+            setIsOpen(!isOpen);
+            setTimeout(() => setJustClicked(false), 100);
+          }}
+          className={`flex items-center gap-2 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:border-neutral-400 dark:hover:border-neutral-500 active:bg-neutral-100 dark:active:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 focus:bg-white dark:focus:bg-neutral-800 transition-colors ${sizeClasses[size]} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white`}
           disabled={isLoading}
           aria-expanded={isOpen}
           aria-haspopup="listbox"
+          onBlur={(e) => {
+            // Only close if clicking outside the dropdown and not just clicked
+            if (!justClicked && !dropdownRef.current?.contains(e.relatedTarget as Node)) {
+              setTimeout(() => setIsOpen(false), 150);
+            }
+          }}
         >
           <Globe className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
           {showLabel && <span>Currency:</span>}
@@ -195,11 +216,21 @@ export function CurrencySelector({
       </label>
       <div className="relative">
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={`w-full flex items-center justify-between border border-neutral-300 dark:border-neutral-600 rounded-lg hover:border-neutral-400 dark:hover:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors ${sizeClasses[size]} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white`}
+          onClick={() => {
+            setJustClicked(true);
+            setIsOpen(!isOpen);
+            setTimeout(() => setJustClicked(false), 100);
+          }}
+          className={`w-full flex items-center justify-between border border-neutral-300 dark:border-neutral-600 rounded-lg hover:border-neutral-400 dark:hover:border-neutral-500 active:bg-neutral-100 dark:active:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 focus:bg-white dark:focus:bg-neutral-800 transition-colors ${sizeClasses[size]} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white`}
           disabled={isLoading}
           aria-expanded={isOpen}
           aria-haspopup="listbox"
+          onBlur={(e) => {
+            // Only close if clicking outside the dropdown and not just clicked
+            if (!justClicked && !dropdownRef.current?.contains(e.relatedTarget as Node)) {
+              setTimeout(() => setIsOpen(false), 150);
+            }
+          }}
         >
           <div className="flex items-center gap-2">
             <Globe className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />

@@ -286,14 +286,6 @@ export function Header() {
 
             {/* Mobile Controls */}
             <div className="flex md:hidden items-center gap-3 ml-auto">
-              {/* Currency Selector for Mobile */}
-              <div className="text-white [&_button]:text-[#f5f5f5] [&_button]:hover:bg-gray-800 [&_button]:hover:text-[#f5f5f5] [&_button]:currency-selector [&_button]:currency-selector-button [&_button]:border [&_button]:border-gray-600 [&_button]:rounded-lg [&_button]:px-3 [&_button]:py-2 [&_button]:bg-gray-900 [&_button]:hover:border-gray-500 [&_button]:transition-all [&_button]:duration-200 [&_div]:currency-dropdown [&_button]:currency-dropdown-item">
-                <CurrencySelector
-                  variant="minimal"
-                  size="sm"
-                  showLabel={false}
-                />
-              </div>
               <Link
                 href="/saved"
                 className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-600 text-white hover:bg-gray-800 transition-colors"
@@ -353,13 +345,24 @@ export function Header() {
 
           {/* Mobile Search Bar with Currency Selector */}
           <div className="md:hidden pb-6">
-            <SearchInput
-              variant="header"
-              size="md"
-              showSuggestions={true}
-              showRecentSearches={true}
-              showTrendingSearches={true}
-            />
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <SearchInput
+                  variant="header"
+                  size="md"
+                  showSuggestions={true}
+                  showRecentSearches={true}
+                  showTrendingSearches={true}
+                />
+              </div>
+              <div className="text-white [&_button]:text-[#f5f5f5] [&_button]:hover:bg-gray-800 [&_button]:hover:text-[#f5f5f5] [&_button]:currency-selector [&_button]:currency-selector-button [&_button]:border [&_button]:border-gray-600 [&_button]:rounded-lg [&_button]:px-3 [&_button]:py-2 [&_button]:bg-gray-900 [&_button]:hover:border-gray-500 [&_button]:transition-all [&_button]:duration-200 [&_div]:currency-dropdown [&_button]:currency-dropdown-item">
+                <CurrencySelector
+                  variant="minimal"
+                  size="sm"
+                  showLabel={false}
+                />
+              </div>
+            </div>
           </div>
 
           {/* Navigation Row - Desktop Only */}

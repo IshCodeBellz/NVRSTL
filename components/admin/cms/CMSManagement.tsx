@@ -99,15 +99,14 @@ export function CMSManagement() {
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      const [pagesRes, settingsRes, imagesRes, sectionsRes, shopPagesRes] = await Promise.all(
-        [
+      const [pagesRes, settingsRes, imagesRes, sectionsRes, shopPagesRes] =
+        await Promise.all([
           fetch("/api/admin/cms/pages", { credentials: "include" }),
           fetch("/api/admin/cms/settings", { credentials: "include" }),
           fetch("/api/admin/cms/images", { credentials: "include" }),
           fetch("/api/admin/cms/sections", { credentials: "include" }),
           fetch("/api/admin/cms/shop-pages", { credentials: "include" }),
-        ]
-      );
+        ]);
 
       if (pagesRes.ok) {
         const pagesData = await pagesRes.json();
@@ -933,7 +932,8 @@ export function CMSManagement() {
                       Shop Pages Management
                     </h3>
                     <p className="text-sm text-gray-500 mt-1">
-                      Manage the main shop page and individual shop category pages
+                      Manage the main shop page and individual shop category
+                      pages
                     </p>
                   </div>
                 </div>
@@ -956,21 +956,28 @@ export function CMSManagement() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
-                          const existingPage = shopPages.find(p => p.slug === "shop");
-                          setEditingPage(existingPage || {
-                            slug: "shop",
-                            title: "Shop",
-                            type: "shop",
-                            isActive: true,
-                            sections: [],
-                          });
+                          const existingPage = shopPages.find(
+                            (p) => p.slug === "shop"
+                          );
+                          setEditingPage(
+                            existingPage || {
+                              slug: "shop",
+                              title: "Shop",
+                              type: "shop",
+                              isActive: true,
+                              sections: [],
+                            }
+                          );
                           setIsDialogOpen(true);
                         }}
                         className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                       >
-                        {shopPages.find(p => p.slug === "shop") ? "Edit" : "Create"} Shop Page
+                        {shopPages.find((p) => p.slug === "shop")
+                          ? "Edit"
+                          : "Create"}{" "}
+                        Shop Page
                       </button>
-                      {shopPages.find(p => p.slug === "shop") && (
+                      {shopPages.find((p) => p.slug === "shop") && (
                         <button
                           onClick={() => window.open("/shop", "_blank")}
                           className="p-2 text-gray-400 hover:text-gray-600"
@@ -999,23 +1006,32 @@ export function CMSManagement() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
-                          const existingPage = shopPages.find(p => p.slug === "shop/football");
-                          setEditingPage(existingPage || {
-                            slug: "shop/football",
-                            title: "Football",
-                            type: "shop-category",
-                            isActive: true,
-                            sections: [],
-                          });
+                          const existingPage = shopPages.find(
+                            (p) => p.slug === "shop/football"
+                          );
+                          setEditingPage(
+                            existingPage || {
+                              slug: "shop/football",
+                              title: "Football",
+                              type: "shop-category",
+                              isActive: true,
+                              sections: [],
+                            }
+                          );
                           setIsDialogOpen(true);
                         }}
                         className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
                       >
-                        {shopPages.find(p => p.slug === "shop/football") ? "Edit" : "Create"} Football Page
+                        {shopPages.find((p) => p.slug === "shop/football")
+                          ? "Edit"
+                          : "Create"}{" "}
+                        Football Page
                       </button>
-                      {shopPages.find(p => p.slug === "shop/football") && (
+                      {shopPages.find((p) => p.slug === "shop/football") && (
                         <button
-                          onClick={() => window.open("/shop/football", "_blank")}
+                          onClick={() =>
+                            window.open("/shop/football", "_blank")
+                          }
                           className="p-2 text-gray-400 hover:text-gray-600"
                           title="View page"
                         >
@@ -1032,8 +1048,12 @@ export function CMSManagement() {
                         <span className="text-lg">🌍</span>
                       </div>
                       <div>
-                        <h4 className="font-medium text-gray-900">International</h4>
-                        <p className="text-sm text-gray-500">/shop/international</p>
+                        <h4 className="font-medium text-gray-900">
+                          International
+                        </h4>
+                        <p className="text-sm text-gray-500">
+                          /shop/international
+                        </p>
                       </div>
                     </div>
                     <p className="text-sm text-gray-600 mb-4">
@@ -1042,23 +1062,34 @@ export function CMSManagement() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
-                          const existingPage = shopPages.find(p => p.slug === "shop/international");
-                          setEditingPage(existingPage || {
-                            slug: "shop/international",
-                            title: "International",
-                            type: "shop-category",
-                            isActive: true,
-                            sections: [],
-                          });
+                          const existingPage = shopPages.find(
+                            (p) => p.slug === "shop/international"
+                          );
+                          setEditingPage(
+                            existingPage || {
+                              slug: "shop/international",
+                              title: "International",
+                              type: "shop-category",
+                              isActive: true,
+                              sections: [],
+                            }
+                          );
                           setIsDialogOpen(true);
                         }}
                         className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium"
                       >
-                        {shopPages.find(p => p.slug === "shop/international") ? "Edit" : "Create"} International Page
+                        {shopPages.find((p) => p.slug === "shop/international")
+                          ? "Edit"
+                          : "Create"}{" "}
+                        International Page
                       </button>
-                      {shopPages.find(p => p.slug === "shop/international") && (
+                      {shopPages.find(
+                        (p) => p.slug === "shop/international"
+                      ) && (
                         <button
-                          onClick={() => window.open("/shop/international", "_blank")}
+                          onClick={() =>
+                            window.open("/shop/international", "_blank")
+                          }
                           className="p-2 text-gray-400 hover:text-gray-600"
                           title="View page"
                         >
@@ -1085,21 +1116,28 @@ export function CMSManagement() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
-                          const existingPage = shopPages.find(p => p.slug === "shop/nba");
-                          setEditingPage(existingPage || {
-                            slug: "shop/nba",
-                            title: "NBA",
-                            type: "shop-category",
-                            isActive: true,
-                            sections: [],
-                          });
+                          const existingPage = shopPages.find(
+                            (p) => p.slug === "shop/nba"
+                          );
+                          setEditingPage(
+                            existingPage || {
+                              slug: "shop/nba",
+                              title: "NBA",
+                              type: "shop-category",
+                              isActive: true,
+                              sections: [],
+                            }
+                          );
                           setIsDialogOpen(true);
                         }}
                         className="flex-1 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium"
                       >
-                        {shopPages.find(p => p.slug === "shop/nba") ? "Edit" : "Create"} NBA Page
+                        {shopPages.find((p) => p.slug === "shop/nba")
+                          ? "Edit"
+                          : "Create"}{" "}
+                        NBA Page
                       </button>
-                      {shopPages.find(p => p.slug === "shop/nba") && (
+                      {shopPages.find((p) => p.slug === "shop/nba") && (
                         <button
                           onClick={() => window.open("/shop/nba", "_blank")}
                           className="p-2 text-gray-400 hover:text-gray-600"
@@ -1128,21 +1166,28 @@ export function CMSManagement() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
-                          const existingPage = shopPages.find(p => p.slug === "shop/nfl");
-                          setEditingPage(existingPage || {
-                            slug: "shop/nfl",
-                            title: "NFL",
-                            type: "shop-category",
-                            isActive: true,
-                            sections: [],
-                          });
+                          const existingPage = shopPages.find(
+                            (p) => p.slug === "shop/nfl"
+                          );
+                          setEditingPage(
+                            existingPage || {
+                              slug: "shop/nfl",
+                              title: "NFL",
+                              type: "shop-category",
+                              isActive: true,
+                              sections: [],
+                            }
+                          );
                           setIsDialogOpen(true);
                         }}
                         className="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
                       >
-                        {shopPages.find(p => p.slug === "shop/nfl") ? "Edit" : "Create"} NFL Page
+                        {shopPages.find((p) => p.slug === "shop/nfl")
+                          ? "Edit"
+                          : "Create"}{" "}
+                        NFL Page
                       </button>
-                      {shopPages.find(p => p.slug === "shop/nfl") && (
+                      {shopPages.find((p) => p.slug === "shop/nfl") && (
                         <button
                           onClick={() => window.open("/shop/nfl", "_blank")}
                           className="p-2 text-gray-400 hover:text-gray-600"
@@ -1171,21 +1216,28 @@ export function CMSManagement() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
-                          const existingPage = shopPages.find(p => p.slug === "shop/custom");
-                          setEditingPage(existingPage || {
-                            slug: "shop/custom",
-                            title: "Custom",
-                            type: "shop-category",
-                            isActive: true,
-                            sections: [],
-                          });
+                          const existingPage = shopPages.find(
+                            (p) => p.slug === "shop/custom"
+                          );
+                          setEditingPage(
+                            existingPage || {
+                              slug: "shop/custom",
+                              title: "Custom",
+                              type: "shop-category",
+                              isActive: true,
+                              sections: [],
+                            }
+                          );
                           setIsDialogOpen(true);
                         }}
                         className="flex-1 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
                       >
-                        {shopPages.find(p => p.slug === "shop/custom") ? "Edit" : "Create"} Custom Page
+                        {shopPages.find((p) => p.slug === "shop/custom")
+                          ? "Edit"
+                          : "Create"}{" "}
+                        Custom Page
                       </button>
-                      {shopPages.find(p => p.slug === "shop/custom") && (
+                      {shopPages.find((p) => p.slug === "shop/custom") && (
                         <button
                           onClick={() => window.open("/shop/custom", "_blank")}
                           className="p-2 text-gray-400 hover:text-gray-600"

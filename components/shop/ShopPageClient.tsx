@@ -67,44 +67,50 @@ export function ShopPageClient({ fallbackContent }: ShopPageClientProps) {
   // Default content if no CMS data is available
   const defaultContent = fallbackContent || {
     title: "SHOP",
-    description: "Explore our collections across different sports and categories. Find the perfect merchandise for your favorite teams and leagues.",
+    description:
+      "Explore our collections across different sports and categories. Find the perfect merchandise for your favorite teams and leagues.",
     categories: [
       {
         title: "Football",
-        description: "Premier League, La Liga, Serie A and more. Official jerseys and merchandise from the world's top football leagues.",
+        description:
+          "Premier League, La Liga, Serie A and more. Official jerseys and merchandise from the world's top football leagues.",
         href: "/shop/football",
         icon: "⚽",
-        gradient: "from-blue-500 to-blue-700"
+        gradient: "from-blue-500 to-blue-700",
       },
       {
         title: "International",
-        description: "World Cup, Champions League, and national teams. Global football culture and international tournaments.",
+        description:
+          "World Cup, Champions League, and national teams. Global football culture and international tournaments.",
         href: "/shop/international",
         icon: "🌍",
-        gradient: "from-yellow-400 to-orange-500"
+        gradient: "from-yellow-400 to-orange-500",
       },
       {
         title: "NBA",
-        description: "Official NBA team jerseys, player gear, and accessories from your favorite basketball teams and stars.",
+        description:
+          "Official NBA team jerseys, player gear, and accessories from your favorite basketball teams and stars.",
         href: "/shop/nba",
         icon: "🏀",
-        gradient: "from-orange-500 to-red-600"
+        gradient: "from-orange-500 to-red-600",
       },
       {
         title: "NFL",
-        description: "Authentic NFL team jerseys, player merchandise, and Super Bowl gear from all 32 teams.",
+        description:
+          "Authentic NFL team jerseys, player merchandise, and Super Bowl gear from all 32 teams.",
         href: "/shop/nfl",
         icon: "🏈",
-        gradient: "from-blue-600 to-blue-800"
+        gradient: "from-blue-600 to-blue-800",
       },
       {
         title: "Custom",
-        description: "Design your own personalized jerseys, team uniforms, and custom merchandise with your own style.",
+        description:
+          "Design your own personalized jerseys, team uniforms, and custom merchandise with your own style.",
         href: "/shop/custom",
         icon: "👕",
-        gradient: "from-pink-500 to-purple-600"
-      }
-    ]
+        gradient: "from-pink-500 to-purple-600",
+      },
+    ],
   };
 
   if (loading) {
@@ -119,19 +125,23 @@ export function ShopPageClient({ fallbackContent }: ShopPageClientProps) {
   }
 
   // Use CMS data if available, otherwise use default content
-  const content = pageData ? {
-    title: pageData.title,
-    description: pageData.sections.find(s => s.type === "hero")?.content || defaultContent.description,
-    categories: pageData.sections
-      .filter(s => s.type === "category" && s.isVisible)
-      .map(section => ({
-        title: section.title || "",
-        description: section.content || "",
-        href: section.buttonLink || "",
-        icon: section.imageUrl || "🏆",
-        gradient: "from-gray-500 to-gray-700"
-      }))
-  } : defaultContent;
+  const content = pageData
+    ? {
+        title: pageData.title,
+        description:
+          pageData.sections.find((s) => s.type === "hero")?.content ||
+          defaultContent.description,
+        categories: pageData.sections
+          .filter((s) => s.type === "category" && s.isVisible)
+          .map((section) => ({
+            title: section.title || "",
+            description: section.content || "",
+            href: section.buttonLink || "",
+            icon: section.imageUrl || "🏆",
+            gradient: "from-gray-500 to-gray-700",
+          })),
+      }
+    : defaultContent;
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -154,8 +164,13 @@ export function ShopPageClient({ fallbackContent }: ShopPageClientProps) {
         {/* Sports Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {content.categories.map((category, index) => (
-            <div key={index} className="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col h-full border border-gray-700 hover:border-gray-600 transition-all duration-300">
-              <div className={`h-64 bg-gradient-to-br ${category.gradient} flex items-center justify-center`}>
+            <div
+              key={index}
+              className="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col h-full border border-gray-700 hover:border-gray-600 transition-all duration-300"
+            >
+              <div
+                className={`h-64 bg-gradient-to-br ${category.gradient} flex items-center justify-center`}
+              >
                 <span className="text-6xl">{category.icon}</span>
               </div>
               <div className="p-6 flex flex-col flex-grow">

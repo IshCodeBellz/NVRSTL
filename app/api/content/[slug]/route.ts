@@ -9,7 +9,7 @@ export async function GET(
     const { slug } = params;
 
     const page = await prisma.contentPage.findUnique({
-      where: { 
+      where: {
         slug,
         isActive: true,
       },

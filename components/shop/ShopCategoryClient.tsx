@@ -41,7 +41,10 @@ interface ShopCategoryClientProps {
   };
 }
 
-export function ShopCategoryClient({ categorySlug, fallbackContent }: ShopCategoryClientProps) {
+export function ShopCategoryClient({
+  categorySlug,
+  fallbackContent,
+}: ShopCategoryClientProps) {
   const [pageData, setPageData] = useState<ContentPage | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -67,7 +70,7 @@ export function ShopCategoryClient({ categorySlug, fallbackContent }: ShopCatego
   const defaultContent = fallbackContent || {
     title: categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1),
     description: `Explore our ${categorySlug} collection with official merchandise and gear.`,
-    cards: []
+    cards: [],
   };
 
   if (loading) {
@@ -82,18 +85,22 @@ export function ShopCategoryClient({ categorySlug, fallbackContent }: ShopCatego
   }
 
   // Use CMS data if available, otherwise use default content
-  const content = pageData ? {
-    title: pageData.title,
-    description: pageData.sections.find(s => s.type === "hero")?.content || defaultContent.description,
-    cards: pageData.sections
-      .filter(s => s.type === "card" && s.isVisible)
-      .map(section => ({
-        title: section.title || "",
-        description: section.content || "",
-        href: section.buttonLink || "",
-        imageUrl: section.imageUrl
-      }))
-  } : defaultContent;
+  const content = pageData
+    ? {
+        title: pageData.title,
+        description:
+          pageData.sections.find((s) => s.type === "hero")?.content ||
+          defaultContent.description,
+        cards: pageData.sections
+          .filter((s) => s.type === "card" && s.isVisible)
+          .map((section) => ({
+            title: section.title || "",
+            description: section.content || "",
+            href: section.buttonLink || "",
+            imageUrl: section.imageUrl,
+          })),
+      }
+    : defaultContent;
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -117,11 +124,14 @@ export function ShopCategoryClient({ categorySlug, fallbackContent }: ShopCatego
         {content.cards.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {content.cards.map((card, index) => (
-              <div key={index} className="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col h-full border border-gray-700 hover:border-gray-600 transition-all duration-300">
+              <div
+                key={index}
+                className="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col h-full border border-gray-700 hover:border-gray-600 transition-all duration-300"
+              >
                 {card.imageUrl && (
                   <div className="h-64 bg-gray-700 flex items-center justify-center">
-                    <img 
-                      src={card.imageUrl} 
+                    <img
+                      src={card.imageUrl}
                       alt={card.title}
                       className="w-full h-full object-cover"
                     />
@@ -155,7 +165,8 @@ export function ShopCategoryClient({ categorySlug, fallbackContent }: ShopCatego
               Coming Soon
             </h2>
             <p className="text-gray-300 font-carbon">
-              This category is being prepared. Check back soon for exciting merchandise!
+              This category is being prepared. Check back soon for exciting
+              merchandise!
             </p>
           </div>
         )}

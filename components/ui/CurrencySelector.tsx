@@ -33,11 +33,11 @@ export function CurrencySelector({
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-1 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded transition-colors ${sizeClasses[size]} text-neutral-700 dark:text-neutral-300`}
+          className={`flex items-center gap-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors ${sizeClasses[size]} text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800`}
           disabled={isLoading}
         >
           <Globe className="w-4 h-4" />
-          <span className="font-mono font-semibold text-white">
+          <span className="font-semibold text-neutral-900 dark:text-white">
             {currentCurrencyData?.symbol || "$"}
           </span>
           <ChevronDown
@@ -53,7 +53,7 @@ export function CurrencySelector({
               className="fixed inset-0 z-10"
               onClick={() => setIsOpen(false)}
             />
-            <div className="absolute top-full right-0 mt-1 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-20 min-w-[200px] max-h-[300px] overflow-y-auto">
+            <div className="absolute top-full right-0 mt-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-20 min-w-[200px] max-h-[300px] overflow-y-auto">
               {currencies.map((currency) => (
                 <button
                   key={currency.code}
@@ -61,16 +61,16 @@ export function CurrencySelector({
                     setCurrency(currency.code);
                     setIsOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors border-b border-neutral-100 dark:border-neutral-600 last:border-b-0 ${
+                  className={`w-full text-left px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors border-b border-neutral-100 dark:border-neutral-600 last:border-b-0 ${
                     currency.code === currentCurrency
-                      ? "bg-neutral-50 dark:bg-neutral-700 font-medium"
+                      ? "bg-blue-50 dark:bg-blue-900/20 font-medium"
                       : ""
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-sm font-medium text-neutral-900 dark:text-white">
-                        <span className="font-mono font-semibold text-white">
+                        <span className="font-semibold">
                           {currency.symbol}
                         </span>{" "}
                         {currency.code}
@@ -103,7 +103,7 @@ export function CurrencySelector({
           <Globe className="w-4 h-4" />
           {showLabel && <span>Currency:</span>}
           <span className="font-medium">
-            <span className="font-mono font-semibold text-white">
+            <span className="font-semibold">
               {currentCurrencyData?.symbol}
             </span>{" "}
             {currentCurrency}
@@ -121,7 +121,7 @@ export function CurrencySelector({
               className="fixed inset-0 z-10"
               onClick={() => setIsOpen(false)}
             />
-            <div className="absolute top-full left-0 mt-1 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-20 min-w-full max-h-[300px] overflow-y-auto">
+            <div className="absolute top-full left-0 mt-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-20 min-w-full max-h-[300px] overflow-y-auto">
               {currencies.map((currency) => (
                 <button
                   key={currency.code}
@@ -129,16 +129,16 @@ export function CurrencySelector({
                     setCurrency(currency.code);
                     setIsOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors border-b border-neutral-100 dark:border-neutral-600 last:border-b-0 ${
+                  className={`w-full text-left px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors border-b border-neutral-100 dark:border-neutral-600 last:border-b-0 ${
                     currency.code === currentCurrency
-                      ? "bg-neutral-50 dark:bg-neutral-700 font-medium"
+                      ? "bg-blue-50 dark:bg-blue-900/20 font-medium"
                       : ""
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-sm font-medium text-neutral-900 dark:text-white">
-                        <span className="font-mono font-semibold text-white">
+                        <span className="font-semibold">
                           {currency.symbol}
                         </span>{" "}
                         {currency.code}
@@ -175,7 +175,7 @@ export function CurrencySelector({
           <div className="flex items-center gap-2">
             <Globe className="w-4 h-4" />
             <span className="font-medium">
-              <span className="font-mono font-semibold text-white">
+              <span className="font-semibold">
                 {currentCurrencyData?.symbol}
               </span>{" "}
               {currentCurrency}
@@ -197,7 +197,7 @@ export function CurrencySelector({
               className="fixed inset-0 z-10"
               onClick={() => setIsOpen(false)}
             />
-            <div className="absolute top-full left-0 mt-1 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-20 w-full max-h-[300px] overflow-y-auto">
+            <div className="absolute top-full left-0 mt-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-20 w-full max-h-[300px] overflow-y-auto">
               {currencies.map((currency) => (
                 <button
                   key={currency.code}
@@ -205,23 +205,23 @@ export function CurrencySelector({
                     setCurrency(currency.code);
                     setIsOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors border-b border-neutral-100 dark:border-neutral-600 last:border-b-0 ${
+                  className={`w-full text-left px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors border-b border-neutral-100 dark:border-neutral-600 last:border-b-0 ${
                     currency.code === currentCurrency
-                      ? "bg-neutral-50 dark:bg-neutral-700 font-medium"
+                      ? "bg-blue-50 dark:bg-blue-900/20 font-medium"
                       : ""
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-neutral-900 dark:text-white">
-                        {currency.symbol}
-                      </span>
-                      <span className="text-sm text-neutral-900 dark:text-white">
+                    <div>
+                      <div className="text-sm font-medium text-neutral-900 dark:text-white">
+                        <span className="font-semibold">
+                          {currency.symbol}
+                        </span>{" "}
                         {currency.code}
-                      </span>
-                      <span className="text-sm text-neutral-500 dark:text-neutral-400">
+                      </div>
+                      <div className="text-xs text-neutral-500 dark:text-neutral-400">
                         {currency.name}
-                      </span>
+                      </div>
                     </div>
                     {currency.code === currentCurrency && (
                       <div className="w-2 h-2 bg-blue-500 rounded-full" />

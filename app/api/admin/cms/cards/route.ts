@@ -23,12 +23,12 @@ export const POST = async function POST(req: NextRequest) {
     }
 
     // Validate slug format
-    const slugRegex = /^[a-z0-9-_]+$/;
+    const slugRegex = /^[a-z0-9-_\/]+$/;
     if (!slugRegex.test(slug)) {
       return NextResponse.json(
         {
           error:
-            "Slug must contain only lowercase letters, numbers, hyphens, and underscores",
+            "Slug must contain only lowercase letters, numbers, hyphens, underscores, and forward slashes",
         },
         { status: 400 }
       );

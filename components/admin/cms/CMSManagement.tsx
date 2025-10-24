@@ -1458,10 +1458,10 @@ export function CMSManagement() {
                               ...editingCard,
                               slug: e.target.value
                                 .toLowerCase()
-                                .replace(/[^a-z0-9-_]/g, ""),
+                                .replace(/[^a-z0-9-_\/]/g, ""),
                             })
                           }
-                          placeholder="e.g., premier-league"
+                          placeholder="e.g., premier-league or shop/football/premier-league"
                         />
                       </div>
                     </div>

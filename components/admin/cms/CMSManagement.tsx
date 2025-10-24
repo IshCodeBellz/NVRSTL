@@ -72,7 +72,7 @@ export function CMSManagement() {
   const [editingPage, setEditingPage] = useState<ContentPage | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<
-    "pages" | "settings" | "images" | "logo" | "sections"
+    "pages" | "settings" | "images" | "logo" | "sections" | "shop"
   >("pages");
   const [message, setMessage] = useState<{
     text: string;
@@ -86,6 +86,7 @@ export function CMSManagement() {
   const [categorySections, setCategorySections] = useState<
     CategorySectionData[]
   >([]);
+  const [shopPages, setShopPages] = useState<ContentPage[]>([]);
   const [editingSection, setEditingSection] =
     useState<Partial<CategorySectionData> | null>(null);
   const [editingCard, setEditingCard] =
@@ -98,12 +99,13 @@ export function CMSManagement() {
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      const [pagesRes, settingsRes, imagesRes, sectionsRes] = await Promise.all(
+      const [pagesRes, settingsRes, imagesRes, sectionsRes, shopPagesRes] = await Promise.all(
         [
           fetch("/api/admin/cms/pages", { credentials: "include" }),
           fetch("/api/admin/cms/settings", { credentials: "include" }),
           fetch("/api/admin/cms/images", { credentials: "include" }),
           fetch("/api/admin/cms/sections", { credentials: "include" }),
+          fetch("/api/admin/cms/shop-pages", { credentials: "include" }),
         ]
       );
 
@@ -135,6 +137,11 @@ export function CMSManagement() {
       if (sectionsRes.ok) {
         const sectionsData = await sectionsRes.json();
         setCategorySections(sectionsData.sections || []);
+      }
+
+      if (shopPagesRes.ok) {
+        const shopPagesData = await shopPagesRes.json();
+        setShopPages(shopPagesData.pages || []);
       }
     } catch {
       showMessage("Failed to load CMS data", "error");
@@ -413,6 +420,17 @@ export function CMSManagement() {
               >
                 <Grid className="h-3 w-3 sm:h-4 sm:w-4 inline mr-1 sm:mr-2" />
                 Category Sections
+              </button>
+              <button
+                onClick={() => setActiveTab("shop")}
+                className={`py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
+                  activeTab === "shop"
+                    ? "border-neutral-900 text-neutral-900"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                <Settings className="h-3 w-3 sm:h-4 sm:w-4 inline mr-1 sm:mr-2" />
+                Shop Pages
               </button>
             </nav>
           </div>
@@ -906,6 +924,281 @@ export function CMSManagement() {
             )}
 
             {activeTab === "logo" && <LogoManager />}
+
+            {activeTab === "shop" && (
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-medium text-gray-900">
+                      Shop Pages Management
+                    </h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Manage the main shop page and individual shop category pages
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* Main Shop Page */}
+                  <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Settings className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">Main Shop</h4>
+                        <p className="text-sm text-gray-500">/shop</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Edit the main shop page content and layout
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          const existingPage = shopPages.find(p => p.slug === "shop");
+                          setEditingPage(existingPage || {
+                            slug: "shop",
+                            title: "Shop",
+                            type: "shop",
+                            isActive: true,
+                            sections: [],
+                          });
+                          setIsDialogOpen(true);
+                        }}
+                        className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                      >
+                        {shopPages.find(p => p.slug === "shop") ? "Edit" : "Create"} Shop Page
+                      </button>
+                      {shopPages.find(p => p.slug === "shop") && (
+                        <button
+                          onClick={() => window.open("/shop", "_blank")}
+                          className="p-2 text-gray-400 hover:text-gray-600"
+                          title="View page"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Football Page */}
+                  <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <span className="text-lg">⚽</span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">Football</h4>
+                        <p className="text-sm text-gray-500">/shop/football</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Edit football category page content
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          const existingPage = shopPages.find(p => p.slug === "shop/football");
+                          setEditingPage(existingPage || {
+                            slug: "shop/football",
+                            title: "Football",
+                            type: "shop-category",
+                            isActive: true,
+                            sections: [],
+                          });
+                          setIsDialogOpen(true);
+                        }}
+                        className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                      >
+                        {shopPages.find(p => p.slug === "shop/football") ? "Edit" : "Create"} Football Page
+                      </button>
+                      {shopPages.find(p => p.slug === "shop/football") && (
+                        <button
+                          onClick={() => window.open("/shop/football", "_blank")}
+                          className="p-2 text-gray-400 hover:text-gray-600"
+                          title="View page"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* International Page */}
+                  <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <span className="text-lg">🌍</span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">International</h4>
+                        <p className="text-sm text-gray-500">/shop/international</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Edit international category page content
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          const existingPage = shopPages.find(p => p.slug === "shop/international");
+                          setEditingPage(existingPage || {
+                            slug: "shop/international",
+                            title: "International",
+                            type: "shop-category",
+                            isActive: true,
+                            sections: [],
+                          });
+                          setIsDialogOpen(true);
+                        }}
+                        className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium"
+                      >
+                        {shopPages.find(p => p.slug === "shop/international") ? "Edit" : "Create"} International Page
+                      </button>
+                      {shopPages.find(p => p.slug === "shop/international") && (
+                        <button
+                          onClick={() => window.open("/shop/international", "_blank")}
+                          className="p-2 text-gray-400 hover:text-gray-600"
+                          title="View page"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* NBA Page */}
+                  <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <span className="text-lg">🏀</span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">NBA</h4>
+                        <p className="text-sm text-gray-500">/shop/nba</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Edit NBA category page content
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          const existingPage = shopPages.find(p => p.slug === "shop/nba");
+                          setEditingPage(existingPage || {
+                            slug: "shop/nba",
+                            title: "NBA",
+                            type: "shop-category",
+                            isActive: true,
+                            sections: [],
+                          });
+                          setIsDialogOpen(true);
+                        }}
+                        className="flex-1 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium"
+                      >
+                        {shopPages.find(p => p.slug === "shop/nba") ? "Edit" : "Create"} NBA Page
+                      </button>
+                      {shopPages.find(p => p.slug === "shop/nba") && (
+                        <button
+                          onClick={() => window.open("/shop/nba", "_blank")}
+                          className="p-2 text-gray-400 hover:text-gray-600"
+                          title="View page"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* NFL Page */}
+                  <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                        <span className="text-lg">🏈</span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">NFL</h4>
+                        <p className="text-sm text-gray-500">/shop/nfl</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Edit NFL category page content
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          const existingPage = shopPages.find(p => p.slug === "shop/nfl");
+                          setEditingPage(existingPage || {
+                            slug: "shop/nfl",
+                            title: "NFL",
+                            type: "shop-category",
+                            isActive: true,
+                            sections: [],
+                          });
+                          setIsDialogOpen(true);
+                        }}
+                        className="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                      >
+                        {shopPages.find(p => p.slug === "shop/nfl") ? "Edit" : "Create"} NFL Page
+                      </button>
+                      {shopPages.find(p => p.slug === "shop/nfl") && (
+                        <button
+                          onClick={() => window.open("/shop/nfl", "_blank")}
+                          className="p-2 text-gray-400 hover:text-gray-600"
+                          title="View page"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Custom Page */}
+                  <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <span className="text-lg">👕</span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">Custom</h4>
+                        <p className="text-sm text-gray-500">/shop/custom</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Edit custom category page content
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          const existingPage = shopPages.find(p => p.slug === "shop/custom");
+                          setEditingPage(existingPage || {
+                            slug: "shop/custom",
+                            title: "Custom",
+                            type: "shop-category",
+                            isActive: true,
+                            sections: [],
+                          });
+                          setIsDialogOpen(true);
+                        }}
+                        className="flex-1 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
+                      >
+                        {shopPages.find(p => p.slug === "shop/custom") ? "Edit" : "Create"} Custom Page
+                      </button>
+                      {shopPages.find(p => p.slug === "shop/custom") && (
+                        <button
+                          onClick={() => window.open("/shop/custom", "_blank")}
+                          className="p-2 text-gray-400 hover:text-gray-600"
+                          title="View page"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {activeTab === "sections" && (
               <div className="space-y-6">

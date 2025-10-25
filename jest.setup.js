@@ -294,11 +294,35 @@ jest.mock("@/lib/server/prisma", () => {
     productMetrics: new Map(),
     processedWebhookEvents: new Map(),
     orderEvents: new Map(),
+    cartLines: new Map(),
+    carts: new Map(),
+    orderItems: new Map(),
+    paymentRecords: new Map(),
+    shipments: new Map(),
+    sizeVariants: new Map(),
+    reviews: new Map(),
+    productVariants: new Map(),
+    userBehaviors: new Map(),
+    productBundles: new Map(),
+    analyticsEvents: new Map(),
+    categoryAnalytics: new Map(),
+    productAnalytics: new Map(),
+    inventoryAlerts: new Map(),
+    inventoryItems: new Map(),
+    notifications: new Map(),
+    systemSettings: new Map(),
+    contentPages: new Map(),
+    contentSections: new Map(),
+    categoryCards: new Map(),
+    siteSettings: new Map(),
+    shopCategories: new Map(),
+    shopSubcategories: new Map(),
+    shopTeams: new Map(),
   };
 
   const createMockModel = (dataMap) => ({
     findMany: jest.fn().mockResolvedValue(Array.from(dataMap.values())),
-    findUnique: jest.fn().mockImplementation(({ where }) => {
+    findUnique: jest.fn().mockImplementation(({ where, include }) => {
       // Handle different where clauses
       if (where.code) {
         // For discount codes, search by code field
@@ -306,6 +330,62 @@ jest.mock("@/lib/server/prisma", () => {
           if (record.code === where.code) {
             return Promise.resolve(record);
           }
+        }
+        return Promise.resolve(null);
+      }
+      if (where.email) {
+        // For users, search by email field
+        for (const record of dataMap.values()) {
+          if (record.email === where.email) {
+            return Promise.resolve(record);
+          }
+        }
+        return Promise.resolve(null);
+      }
+      if (where.userId) {
+        // For carts, search by userId field and include lines
+        for (const record of dataMap.values()) {
+          if (record.userId === where.userId) {
+            // Get cart lines for this cart
+            const cartLines = Array.from(mockData.cartLines.values()).filter(
+              line => line.cartId === record.id
+            ).map(line => ({
+              ...line,
+              product: {
+                id: line.productId,
+                deletedAt: null,
+                isActive: true,
+                priceCents: line.priceCentsSnapshot,
+                name: "Test Product",
+                description: "Test Description",
+                sku: "TEST-SKU",
+                sizeVariants: []
+              }
+            }));
+            return Promise.resolve({
+              ...record,
+              lines: cartLines // Include actual cart lines
+            });
+          }
+        }
+        return Promise.resolve(null);
+      }
+      if (where.id) {
+        // For orders, include items and payments if requested
+        const record = dataMap.get(where.id);
+        if (record) {
+          const result = { ...record };
+          if (include?.items) {
+            result.items = Array.from(mockData.orderItems.values()).filter(
+              item => item.orderId === record.id
+            );
+          }
+          if (include?.payments) {
+            result.payments = Array.from(mockData.paymentRecords.values()).filter(
+              payment => payment.orderId === record.id
+            );
+          }
+          return Promise.resolve(result);
         }
         return Promise.resolve(null);
       }
@@ -332,6 +412,15 @@ jest.mock("@/lib/server/prisma", () => {
       const id = data.id || `mock-${Date.now()}-${Math.random()}`;
       const record = { id, ...data };
       dataMap.set(id, record);
+      // Also store by email if it exists (for user lookups)
+      if (data.email) {
+        dataMap.set(data.email, record);
+      }
+      // Handle cart creation with user connection
+      if (data.user && data.user.connect) {
+        record.userId = data.user.connect.id;
+        dataMap.set(data.user.connect.id, record);
+      }
       return Promise.resolve(record);
     }),
     update: jest.fn().mockImplementation(({ where, data }) => {
@@ -368,6 +457,15 @@ jest.mock("@/lib/server/prisma", () => {
       } else {
         const record = { id: key, ...create };
         dataMap.set(key, record);
+        // Handle cart creation with user connection
+        if (create.user && create.user.connect) {
+          record.userId = create.user.connect.id;
+          dataMap.set(create.user.connect.id, record);
+        }
+        // Also store by email if it exists (for user lookups)
+        if (create.email) {
+          dataMap.set(create.email, record);
+        }
         return Promise.resolve(record);
       }
     }),
@@ -379,60 +477,97 @@ jest.mock("@/lib/server/prisma", () => {
       $disconnect: jest.fn(),
       $queryRaw: jest.fn().mockResolvedValue([{ id: 1 }]),
       $executeRaw: jest.fn(),
-      $transaction: jest.fn().mockImplementation((callback) =>
-        callback({
-          user: createMockModel(mockData.users),
-          product: createMockModel(mockData.products),
-          discountCode: createMockModel(mockData.discountCodes),
-          order: createMockModel(mockData.orders),
-          category: createMockModel(mockData.categories),
-          brand: createMockModel(mockData.brands),
-          address: createMockModel(mockData.addresses),
-          emailVerificationToken: createMockModel(
-            mockData.emailVerificationTokens
-          ),
-          passwordResetToken: createMockModel(mockData.passwordResetTokens),
-          wishlistItem: createMockModel(mockData.wishlistItems),
-          wishlist: createMockModel(mockData.wishlists),
-          productImage: createMockModel(mockData.productImages),
-          productMetrics: createMockModel(mockData.productMetrics),
-          processedWebhookEvent: createMockModel(
-            mockData.processedWebhookEvents
-          ),
-          orderEvent: createMockModel(mockData.orderEvents),
-          cart: createMockModel(new Map()),
-          cartLine: createMockModel(new Map()),
-          orderItem: createMockModel(new Map()),
-          orderEvent: createMockModel(new Map()),
-          paymentRecord: createMockModel(new Map()),
-          shipment: createMockModel(new Map()),
-          sizeVariant: createMockModel(new Map()),
-          review: createMockModel(new Map()),
-          emailVerificationToken: createMockModel(new Map()),
-          wishlistItem: createMockModel(new Map()),
-          wishlist: createMockModel(new Map()),
-          productImage: createMockModel(new Map()),
-          productMetrics: createMockModel(new Map()),
-          processedWebhookEvent: createMockModel(new Map()),
-          address: createMockModel(new Map()),
-          passwordResetToken: createMockModel(new Map()),
-        })
-      ),
+      $transaction: jest.fn().mockImplementation((operations) => {
+        // Handle both callback-style and array-style transactions
+        if (typeof operations === 'function') {
+          return operations({
+            user: createMockModel(mockData.users),
+            product: createMockModel(mockData.products),
+            discountCode: createMockModel(mockData.discountCodes),
+            order: createMockModel(mockData.orders),
+            category: createMockModel(mockData.categories),
+            brand: createMockModel(mockData.brands),
+            address: createMockModel(mockData.addresses),
+            emailVerificationToken: createMockModel(mockData.emailVerificationTokens),
+            passwordResetToken: createMockModel(mockData.passwordResetTokens),
+            wishlistItem: createMockModel(mockData.wishlistItems),
+            wishlist: createMockModel(mockData.wishlists),
+            productImage: createMockModel(mockData.productImages),
+            productMetrics: createMockModel(mockData.productMetrics),
+            processedWebhookEvent: createMockModel(mockData.processedWebhookEvents),
+            orderEvent: createMockModel(mockData.orderEvents),
+            cart: createMockModel(mockData.carts),
+            cartLine: createMockModel(mockData.cartLines),
+            orderItem: createMockModel(mockData.orderItems),
+            paymentRecord: createMockModel(mockData.paymentRecords),
+            shipment: createMockModel(mockData.shipments),
+            sizeVariant: createMockModel(mockData.sizeVariants),
+            review: createMockModel(mockData.reviews),
+            productVariant: createMockModel(mockData.productVariants),
+            userBehavior: createMockModel(mockData.userBehaviors),
+            productBundle: createMockModel(mockData.productBundles),
+            analyticsEvent: createMockModel(mockData.analyticsEvents),
+            categoryAnalytics: createMockModel(mockData.categoryAnalytics),
+            productAnalytics: createMockModel(mockData.productAnalytics),
+            inventoryAlert: createMockModel(mockData.inventoryAlerts),
+            inventoryItem: createMockModel(mockData.inventoryItems),
+            notification: createMockModel(mockData.notifications),
+            systemSetting: createMockModel(mockData.systemSettings),
+            contentPage: createMockModel(mockData.contentPages),
+            contentSection: createMockModel(mockData.contentSections),
+            categoryCard: createMockModel(mockData.categoryCards),
+            siteSetting: createMockModel(mockData.siteSettings),
+            shopCategory: createMockModel(mockData.shopCategories),
+            shopSubcategory: createMockModel(mockData.shopSubcategories),
+            shopTeam: createMockModel(mockData.shopTeams),
+          });
+        } else {
+          // Handle array-style transactions (like in password reset)
+          return Promise.all(operations.map(op => {
+            // Mock the operations that are called in the password reset transaction
+            return Promise.resolve({});
+          }));
+        }
+      }),
       user: createMockModel(mockData.users),
       product: createMockModel(mockData.products),
       discountCode: createMockModel(mockData.discountCodes),
       order: createMockModel(mockData.orders),
       category: createMockModel(mockData.categories),
       brand: createMockModel(mockData.brands),
-      cart: createMockModel(new Map()),
-      cartLine: createMockModel(new Map()),
-      orderItem: createMockModel(new Map()),
-      orderEvent: createMockModel(new Map()),
-      paymentRecord: createMockModel(new Map()),
-      shipment: createMockModel(new Map()),
-      sizeVariant: createMockModel(new Map()),
-      review: createMockModel(new Map()),
-      emailVerificationToken: createMockModel(new Map()),
+      address: createMockModel(mockData.addresses),
+      emailVerificationToken: createMockModel(mockData.emailVerificationTokens),
+      passwordResetToken: createMockModel(mockData.passwordResetTokens),
+      wishlistItem: createMockModel(mockData.wishlistItems),
+      wishlist: createMockModel(mockData.wishlists),
+      productImage: createMockModel(mockData.productImages),
+      productMetrics: createMockModel(mockData.productMetrics),
+      processedWebhookEvent: createMockModel(mockData.processedWebhookEvents),
+      orderEvent: createMockModel(mockData.orderEvents),
+      cart: createMockModel(mockData.carts),
+      cartLine: createMockModel(mockData.cartLines),
+      orderItem: createMockModel(mockData.orderItems),
+      paymentRecord: createMockModel(mockData.paymentRecords),
+      shipment: createMockModel(mockData.shipments),
+      sizeVariant: createMockModel(mockData.sizeVariants),
+      review: createMockModel(mockData.reviews),
+      productVariant: createMockModel(mockData.productVariants),
+      userBehavior: createMockModel(mockData.userBehaviors),
+      productBundle: createMockModel(mockData.productBundles),
+      analyticsEvent: createMockModel(mockData.analyticsEvents),
+      categoryAnalytics: createMockModel(mockData.categoryAnalytics),
+      productAnalytics: createMockModel(mockData.productAnalytics),
+      inventoryAlert: createMockModel(mockData.inventoryAlerts),
+      inventoryItem: createMockModel(mockData.inventoryItems),
+      notification: createMockModel(mockData.notifications),
+      systemSetting: createMockModel(mockData.systemSettings),
+      contentPage: createMockModel(mockData.contentPages),
+      contentSection: createMockModel(mockData.contentSections),
+      categoryCard: createMockModel(mockData.categoryCards),
+      siteSetting: createMockModel(mockData.siteSettings),
+      shopCategory: createMockModel(mockData.shopCategories),
+      shopSubcategory: createMockModel(mockData.shopSubcategories),
+      shopTeam: createMockModel(mockData.shopTeams),
     },
   };
 });
@@ -442,9 +577,62 @@ jest.mock("@/lib/server/prismaEx", () => ({
   prismaX: {
     orderEvent: {
       deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
+      findMany: jest.fn().mockResolvedValue([]),
+      findUnique: jest.fn().mockResolvedValue(null),
+      create: jest.fn().mockResolvedValue({ id: "mock-id" }),
+      update: jest.fn().mockResolvedValue({ id: "mock-id" }),
+      delete: jest.fn().mockResolvedValue({ id: "mock-id" }),
     },
     passwordResetToken: {
       deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
+      findMany: jest.fn().mockResolvedValue([]),
+      findUnique: jest.fn().mockImplementation(({ where }) => {
+        // Mock implementation for password reset tokens
+        if (where.token) {
+          return Promise.resolve({
+            id: "mock-token-id",
+            token: where.token,
+            userId: "mock-user-id",
+            expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes from now
+            usedAt: null,
+            createdAt: new Date(),
+          });
+        }
+        return Promise.resolve(null);
+      }),
+      create: jest.fn().mockImplementation(({ data }) => {
+        return Promise.resolve({
+          id: "mock-token-id",
+          ...data,
+          createdAt: new Date(),
+        });
+      }),
+      update: jest.fn().mockImplementation(({ where, data }) => {
+        return Promise.resolve({
+          id: "mock-token-id",
+          token: where.token,
+          userId: "mock-user-id",
+          expiresAt: new Date(Date.now() + 30 * 60 * 1000),
+          ...data,
+        });
+      }),
+      delete: jest.fn().mockResolvedValue({ id: "mock-id" }),
+    },
+    productImage: {
+      deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
+      findMany: jest.fn().mockResolvedValue([]),
+      findUnique: jest.fn().mockResolvedValue(null),
+      create: jest.fn().mockResolvedValue({ id: "mock-id" }),
+      update: jest.fn().mockResolvedValue({ id: "mock-id" }),
+      delete: jest.fn().mockResolvedValue({ id: "mock-id" }),
+    },
+    address: {
+      deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
+      findMany: jest.fn().mockResolvedValue([]),
+      findUnique: jest.fn().mockResolvedValue(null),
+      create: jest.fn().mockResolvedValue({ id: "mock-id" }),
+      update: jest.fn().mockResolvedValue({ id: "mock-id" }),
+      delete: jest.fn().mockResolvedValue({ id: "mock-id" }),
     },
   },
 }));
@@ -470,6 +658,33 @@ jest.mock("next/server", () => ({
     redirect: jest.fn(),
     rewrite: jest.fn(),
   },
+}));
+
+// Mock address validation
+jest.mock("@/lib/server/address/validateAddress", () => ({
+  validateAndNormalizeAddress: jest.fn().mockResolvedValue({
+    valid: true,
+    normalized: null
+  }),
+}));
+
+// Mock auth functions
+jest.mock("@/lib/server/auth", () => ({
+  hashPassword: jest.fn().mockResolvedValue("hashed-password"),
+  verifyPassword: jest.fn().mockResolvedValue(true),
+}));
+
+// Mock mailer
+jest.mock("@/lib/server/mailer", () => ({
+  getMailer: jest.fn().mockReturnValue({
+    send: jest.fn().mockResolvedValue({}),
+  }),
+  buildPasswordResetHtml: jest.fn().mockReturnValue("<html>Reset password</html>"),
+  buildOrderConfirmationHtml: jest.fn().mockReturnValue("<html>Order confirmation</html>"),
+  buildPaymentReceiptHtml: jest.fn().mockReturnValue("<html>Payment receipt</html>"),
+  sendEmailVerification: jest.fn().mockResolvedValue({}),
+  sendOrderConfirmation: jest.fn().mockResolvedValue({}),
+  sendPaymentReceipt: jest.fn().mockResolvedValue({}),
 }));
 
 // Mock NextAuth

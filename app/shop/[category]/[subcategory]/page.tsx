@@ -1,11 +1,8 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useWishlist, useCart } from "@/components/providers/CartProvider";
-import { useToast } from "@/components/providers/ToastProvider";
-import { ClientPrice } from "@/components/ui/ClientPrice";
-import { lineIdFor } from "@/lib/types";
 import Image from "next/image";
+import { useState, useEffect } from "react";
+import { InteractiveProductCard } from "@/components/product/InteractiveProductCard";
 
 interface Product {
   id: string;
@@ -39,9 +36,6 @@ export default function ShopCategoryPage({
 }: {
   params: { category: string; subcategory: string };
 }) {
-  const { toggle, has } = useWishlist();
-  const { addItem } = useCart();
-  const { push } = useToast();
   const [category, setCategory] = useState<ShopCategory | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -208,92 +202,19 @@ export default function ShopCategoryPage({
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {category.products.map((product) => (
-            <div
+            <InteractiveProductCard
               key={product.id}
-              className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden hover:shadow-lg hover:shadow-gray-900/20 transition-all duration-200 group"
-            >
-              {/* Product Image */}
-              <div className="aspect-square bg-gray-700 relative overflow-hidden">
-                {product.image ? (
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-200"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-gray-400 font-carbon">No Image</span>
-                  </div>
-                )}
-
-                {/* Wishlist Button */}
-                <button
-                  onClick={() =>
-                    toggle({
-                      productId: product.id,
-                      name: product.name,
-                      priceCents: product.priceCents,
-                      image: product.image || "/placeholder.svg",
-                      size: product.sizes?.[0] || "One Size",
-                    })
-                  }
-                  className="absolute top-3 right-3 p-2 bg-black/50 rounded-full hover:bg-black/70 transition-colors"
-                >
-                  <span
-                    className={`text-lg ${
-                      has(
-                        lineIdFor(product.id, product.sizes?.[0] || "One Size")
-                      )
-                        ? "text-red-500"
-                        : "text-white"
-                    }`}
-                  >
-                    {has(
-                      lineIdFor(product.id, product.sizes?.[0] || "One Size")
-                    )
-                      ? "♥"
-                      : "♡"}
-                  </span>
-                </button>
-              </div>
-
-              {/* Product Info */}
-              <div className="p-4">
-                <h3 className="font-bold text-white mb-2 font-carbon group-hover:text-gray-300 transition-colors">
-                  {product.name}
-                </h3>
-
-                {product.category && (
-                  <p className="text-sm text-gray-400 mb-2 font-carbon">
-                    {product.category.name}
-                  </p>
-                )}
-
-                <div className="flex items-center justify-between">
-                  <ClientPrice
-                    cents={product.priceCents}
-                    className="text-lg font-bold text-white font-carbon"
-                  />
-
-                  <button
-                    onClick={() => {
-                      addItem({
-                        productId: product.id,
-                        name: product.name,
-                        priceCents: product.priceCents,
-                        image: product.image || "/placeholder.svg",
-                        size: product.sizes?.[0] || "One Size",
-                      });
-                      push({ message: "Added to bag!", type: "success" });
-                    }}
-                    className="bg-white text-black px-4 py-2 rounded hover:bg-gray-100 transition-colors font-bold font-carbon uppercase tracking-wider text-sm"
-                  >
-                    Add to Bag
-                  </button>
-                </div>
-              </div>
-            </div>
+              product={{
+                id: product.id,
+                name: product.name,
+                priceCents: product.priceCents,
+                image: product.image || "/placeholder.svg",
+                category: product.category,
+                sizes: product.sizes,
+              }}
+              variant="square"
+              showCategory={true}
+            />
           ))}
         </div>
 

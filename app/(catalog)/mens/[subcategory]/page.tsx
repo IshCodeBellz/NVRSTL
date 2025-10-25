@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/server/prisma";
-import { formatPriceCents } from "@/lib/money";
+import { ProductCard } from "@/components/product/ProductCard";
 
 export const dynamic = "force-dynamic";
 
@@ -140,48 +140,20 @@ export default async function MensSubcategoryPage({
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((product) => (
-              <Link
-                href={`/product/${product.id}`}
+              <ProductCard
                 key={product.id}
-                className="group block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-gray-300"
-              >
-                <div className="aspect-square bg-gray-100 relative overflow-hidden">
-                  {product.images[0] ? (
-                    <Image
-                      src={product.images[0].url}
-                      alt={product.images[0].alt || product.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      No Image
-                    </div>
-                  )}
-                </div>
-                <div className="p-4">
-                  <h3 className="font-medium text-gray-900 mb-1 line-clamp-2">
-                    {product.name}
-                  </h3>
-                  {product.brand && (
-                    <p className="text-sm text-gray-500 mb-2">
-                      {product.brand.name}
-                    </p>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-semibold text-gray-900">
-                        {formatPriceCents(product.priceCents)}
-                      </span>
-                      {product.comparePriceCents && (
-                        <span className="text-sm text-gray-500 line-through">
-                          {formatPriceCents(product.comparePriceCents)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Link>
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  priceCents: product.priceCents,
+                  image: product.images[0]?.url || "",
+                  images: product.images,
+                  brand: product.brand,
+                }}
+                variant="square"
+                theme="light"
+                showBrand={true}
+              />
             ))}
           </div>
         ) : (

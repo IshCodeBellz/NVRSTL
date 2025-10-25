@@ -1,8 +1,6 @@
 import { SubcategoriesGrid } from "@/components/layout/SubcategoriesGrid";
 import { prisma } from "@/lib/server/prisma";
-import Link from "next/link";
-import Image from "next/image";
-import { ClientPrice } from "@/components/ui/ClientPrice";
+import { ProductCard } from "@/components/product/ProductCard";
 import NextDynamic from "next/dynamic";
 
 const SearchFilters = NextDynamic(
@@ -190,39 +188,20 @@ export default async function WomensPage({
               {products.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
                   {products.map((p) => (
-                    <Link
-                      href={`/product/${p.id}`}
+                    <ProductCard
                       key={p.id}
-                      className="group block bg-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:border-gray-600 transition-all duration-300 hover:shadow-2xl"
-                    >
-                      <div className="aspect-square bg-gray-700 relative overflow-hidden">
-                        {p.images[0]?.url ? (
-                          <Image
-                            src={p.images[0].url}
-                            alt={p.images[0].alt || p.name}
-                            fill
-                            className="object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400">
-                            No Image
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-bold text-white line-clamp-2 mb-2 font-carbon uppercase tracking-wide text-sm">
-                          {p.name}
-                        </h3>
-                        {p.brand?.name && (
-                          <p className="text-xs text-gray-400 mb-3 font-carbon uppercase tracking-wider">
-                            {p.brand.name}
-                          </p>
-                        )}
-                        <div className="text-sm font-bold text-white">
-                          <ClientPrice cents={p.priceCents} />
-                        </div>
-                      </div>
-                    </Link>
+                      product={{
+                        id: p.id,
+                        name: p.name,
+                        priceCents: p.priceCents,
+                        image: p.images[0]?.url || "",
+                        images: p.images,
+                        brand: p.brand,
+                      }}
+                      variant="square"
+                      theme="dark"
+                      showBrand={true}
+                    />
                   ))}
                 </div>
               ) : (

@@ -19,6 +19,7 @@ import {
 import { LogoManager } from "@/components/admin/cms/LogoManager";
 import { CategorySectionData, CategoryCardData } from "@/lib/server/cmsService";
 import Image from "next/image";
+import Link from "next/link";
 
 interface ContentSection {
   id?: string;
@@ -381,6 +382,14 @@ export function CMSManagement() {
               <p className="text-gray-600 mt-1">
                 Manage your website content and settings
               </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/admin"
+                className="text-sm rounded bg-neutral-200 text-neutral-900 px-3 py-2 hover:bg-neutral-300"
+              >
+                Back to Dashboard
+              </Link>
             </div>
           </div>
         </div>

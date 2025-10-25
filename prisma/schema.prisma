@@ -84,6 +84,9 @@ model Product {
   // Jersey-specific flags and config (optional)
   isJersey         Boolean @default(false)
   jerseyConfig     Json?   // JSON config of available options (patches, sleeveAds, fonts, price add-ons)
+  // Shop team relationship
+  teamId           String?
+  team             ShopTeam? @relation(fields: [teamId], references: [id], onDelete: SetNull)
 
   @@index([categoryId])
   @@index([brandId])
@@ -91,6 +94,7 @@ model Product {
   @@index([isActive])
   @@index([isFeatured])
   @@index([gender])
+  @@index([teamId])
 }
 
 model ProductImage {
@@ -1237,6 +1241,7 @@ model ShopTeam {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   subcategory   ShopSubcategory @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+  products      Product[]
 
   @@unique([subcategoryId, slug])
   @@index([subcategoryId])

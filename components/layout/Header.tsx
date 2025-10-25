@@ -674,24 +674,27 @@ export function Header() {
 
                   {/* Subcategories */}
                   <div className="pt-3 border-t border-gray-800">
-                    <p className="text-[10px] font-bold tracking-wide text-gray-400 uppercase mb-2 font-carbon">
-                      Popular Categories
+                    <p className="text-center text-sm font-bold tracking-wide text-gray-400 uppercase mb-4 font-carbon">
+                      POPULAR CATEGORIES
                     </p>
-                    <div className="grid grid-cols-2 gap-1.5 text-[13px]">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
                       {[
-                        { href: "/women/dresses", label: "Women · Dresses" },
+                        { href: "/shop/football", label: "⚽ FOOTBALL" },
                         {
-                          href: "/women/outerwear",
-                          label: "Women · Outerwear",
+                          href: "/shop/nba",
+                          label: "🏀 NBA",
                         },
-                        { href: "/men/outerwear", label: "Men · Outerwear" },
-                        { href: "/men/denim", label: "Men · Denim" },
+                        { href: "/shop/nfl", label: "🏈 NFL" },
+                        {
+                          href: "/shop/international",
+                          label: "🌍 INTERNATIONAL",
+                        },
                       ].map((item) => (
                         <Link
                           key={item.href}
                           href={item.href}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="px-2 py-1 rounded hover:bg-gray-800 border border-transparent focus:outline-none focus:ring-2 focus:ring-gray-600 text-gray-400 hover:text-white transition-colors font-carbon uppercase tracking-wider text-xs"
+                          className="text-center text-gray-400 hover:text-white transition-colors font-carbon uppercase tracking-wider text-sm py-2"
                         >
                           {item.label}
                         </Link>

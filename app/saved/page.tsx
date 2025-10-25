@@ -1,10 +1,9 @@
 "use client";
 import { useState } from "react";
 import { useWishlist, useCart } from "@/components/providers/CartProvider";
-import { ClientPrice } from "@/components/ui/ClientPrice";
-import Image from "next/image";
 import Link from "next/link";
-import { Heart, ShoppingBag, Trash2, Plus, X } from "lucide-react";
+import { SavedProductCard } from "@/components/product/SavedProductCard";
+import { Heart, ShoppingBag, Trash2, Plus } from "lucide-react";
 
 export default function SavedPage() {
   const { items, remove, moveToCart, clear } = useWishlist();
@@ -63,7 +62,7 @@ export default function SavedPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="text-sm border border-neutral-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-400 bg-white"
+                    className="text-sm border border-neutral-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-400 bg-white text-black"
                   >
                     <option value="newest">Newest First</option>
                     <option value="oldest">Oldest First</option>
@@ -125,67 +124,13 @@ export default function SavedPage() {
             {/* Items Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {sortedItems.map((w) => (
-                <div
+                <SavedProductCard
                   key={w.id}
-                  className="group relative bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 flex flex-col border border-gray-700"
-                >
-                  <Link href={`/product/${w.id}`} className="block">
-                    <div className="relative aspect-[3/4] bg-gray-700">
-                      <Image
-                        src={w.image}
-                        alt={w.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
-                      />
-                    </div>
-                  </Link>
-
-                  <div className="p-4 flex-1 flex flex-col">
-                    <Link href={`/product/${w.id}`} className="block flex-1">
-                      <h3 className="font-medium text-sm text-white line-clamp-2 leading-tight hover:text-gray-300 transition-colors font-carbon">
-                        {w.name}
-                      </h3>
-                    </Link>
-
-                    {w.size && (
-                      <p className="text-xs text-gray-400 mt-1">
-                        Size: {w.size}
-                      </p>
-                    )}
-
-                    <div className="mt-2">
-                      <ClientPrice
-                        cents={w.priceCents}
-                        className="text-sm font-semibold text-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="p-4 pt-0 space-y-2">
-                    <button
-                      onClick={() => moveToCart(w.id, addItem)}
-                      className="w-full bg-white text-black py-2 rounded-lg text-sm hover:bg-gray-100 transition-colors font-medium font-carbon uppercase tracking-wider"
-                    >
-                      Add to bag
-                    </button>
-                    <button
-                      onClick={() => remove(w.id)}
-                      className="w-full border border-gray-600 text-gray-300 py-2 rounded-lg text-sm hover:bg-gray-700 transition-colors font-medium"
-                    >
-                      Remove
-                    </button>
-                  </div>
-
-                  {/* Quick actions */}
-                  <button
-                    onClick={() => remove(w.id)}
-                    className="absolute top-2 right-2 w-8 h-8 bg-gray-800/90 hover:bg-gray-800 rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity border border-gray-600"
-                    aria-label="Remove from wishlist"
-                  >
-                    <X className="w-4 h-4 text-gray-300" />
-                  </button>
-                </div>
+                  item={w}
+                  onRemove={remove}
+                  onMoveToCart={moveToCart}
+                  addItem={addItem}
+                />
               ))}
             </div>
 

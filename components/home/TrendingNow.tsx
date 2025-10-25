@@ -1,7 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
 import { prisma } from "@/lib/server/prisma";
-import { ClientPrice } from "@/components/ui/ClientPrice";
+import { InteractiveProductCard } from "@/components/product/InteractiveProductCard";
 
 // Basic trending scoring with time decay
 const HALF_LIFE_HOURS = 72;
@@ -150,49 +148,21 @@ export async function TrendingNow() {
           </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-          {items.map(
-            (
-              p: {
-                id: string;
-                name: string;
-                priceCents: number;
-                image: string;
-                fallback?: boolean;
-              },
-              i: number
-            ) => (
-              <Link
-                key={p.id}
-                href={`/product/${p.id}`}
-                className="group relative bg-gray-800 aspect-[3/4] overflow-hidden rounded-lg border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl hover:shadow-gray-900/50"
-              >
-                {!p.fallback && (
-                  <div className="absolute top-3 left-3 z-10 text-xs font-bold bg-white text-black px-3 py-1.5 rounded-full shadow-lg font-carbon">
-                    #{i + 1}
-                  </div>
-                )}
-                <Image
-                  src={p.image}
-                  alt={p.name}
-                  fill
-                  sizes="(max-width:768px) 50vw, (max-width:1200px) 20vw, 15vw"
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/95 via-black/60 to-transparent">
-                  <div className="font-bold text-white text-sm truncate font-carbon uppercase tracking-wide mb-2">
-                    {p.name}
-                  </div>
-                  <div className="text-white">
-                    <ClientPrice
-                      cents={p.priceCents}
-                      size="sm"
-                      className="text-white font-bold font-carbon"
-                    />
-                  </div>
-                </div>
-              </Link>
-            )
-          )}
+          {items.map((p, i) => (
+            <InteractiveProductCard
+              key={p.id}
+              product={{
+                id: p.id,
+                name: p.name,
+                priceCents: p.priceCents,
+                image: p.image,
+              }}
+              variant="portrait"
+              showRanking={!p.fallback}
+              ranking={i + 1}
+              showActions={false}
+            />
+          ))}
         </div>
       </div>
     </section>

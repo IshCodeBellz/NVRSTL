@@ -13,7 +13,7 @@ export async function GET(
     const subcategorySlug = params.subcategory;
     const teamSlug = params.team;
 
-    // Find the team in the database
+    // Find the team in the database with products
     const team = await prisma.shopTeam.findFirst({
       where: {
         slug: teamSlug,
@@ -30,6 +30,21 @@ export async function GET(
             category: true,
           },
         },
+        products: {
+          where: {
+            isActive: true,
+          },
+          include: {
+            images: {
+              orderBy: { position: "asc" },
+            },
+            brand: true,
+            sizeVariants: true,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
 
@@ -42,7 +57,18 @@ export async function GET(
       name: team.name,
       description: team.description,
       logoUrl: team.logoUrl,
-      products: [], // TODO: Get actual products for this team
+      products: team.products.map((product) => ({
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        priceCents: product.priceCents,
+        image: product.images[0]?.url || "/placeholder.svg",
+        images: product.images.map((img) => img.url),
+        brand: product.brand?.name,
+        sizes: product.sizeVariants.map((size) => size.label),
+        isJersey: product.isJersey,
+        jerseyConfig: product.jerseyConfig,
+      })),
     };
 
     return NextResponse.json({

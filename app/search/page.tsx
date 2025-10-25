@@ -1,9 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { ClientPrice } from "@/components/ui/ClientPrice";
+import { ProductCard } from "@/components/product/ProductCard";
 
 interface SearchProduct {
   id: string;
@@ -141,29 +139,21 @@ export default function SearchPage() {
             </div>
           )}
           {data.items.length > 0 && (
-            <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
               {data.items.map((p: SearchProduct) => (
-                <li key={p.id} className="group">
-                  <Link href={`/product/${p.id}`} className="block">
-                    <div className="relative aspect-[3/4] bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl">
-                      <Image
-                        src={p.image}
-                        alt={p.name}
-                        fill
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                    </div>
-                    <p className="mt-3 text-sm leading-tight line-clamp-2 font-bold min-h-[2.1em] text-white font-carbon uppercase tracking-wide">
-                      {p.name}
-                    </p>
-                    <p className="text-sm font-bold text-white">
-                      <ClientPrice cents={p.priceCents} size="xs" />
-                    </p>
-                  </Link>
-                </li>
+                <ProductCard
+                  key={p.id}
+                  product={{
+                    id: p.id,
+                    name: p.name,
+                    priceCents: p.priceCents,
+                    image: p.image,
+                  }}
+                  variant="portrait"
+                  theme="dark"
+                />
               ))}
-            </ul>
+            </div>
           )}
         </main>
       </div>

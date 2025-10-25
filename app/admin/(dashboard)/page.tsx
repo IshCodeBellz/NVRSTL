@@ -137,6 +137,10 @@ export default async function AdminHomePage() {
           <div className="p-6">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
               <ActionLink href="/admin/products" text="Manage Products" />
+              <ActionLink
+                href="/admin/product-teams"
+                text="Product-Team Links"
+              />
               <ActionLink href="/admin/brands" text="Manage Brands" />
               <ActionLink href="/admin/categories" text="Manage Categories" />
               <ActionLink href="/admin/cms" text="Content Management" />

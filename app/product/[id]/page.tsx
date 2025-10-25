@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import ProductClient from "./ProductClient";
 import { ProductReviews } from "@/components/product/ProductReviews";
+import { ProductInfoSections } from "@/components/product/ProductInfoSections";
 
 import { ClientPrice } from "@/components/ui/ClientPrice";
 
@@ -418,12 +419,13 @@ export default async function ProductPage({
             />
           </p>
         </div>
-        <p className="text-sm leading-relaxed text-neutral-700 max-w-prose">
-          {product.description}
-        </p>
         <Suspense>
           <ProductClient product={clientProduct} />
         </Suspense>
+
+        {/* Product Info Sections */}
+        <ProductInfoSections description={product.description} />
+
         <div className="text-xs text-neutral-500 space-y-2">
           <p>Free delivery and returns (Ts&Cs apply).</p>
           <p>100 day returns.</p>

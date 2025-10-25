@@ -1,11 +1,6 @@
 "use client";
-import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
-import { useCart, useWishlist } from "@/components/providers/CartProvider";
-import { lineIdFor } from "@/lib/types";
-import Image from "next/image";
-import { useToast } from "@/components/providers/ToastProvider";
-import { ClientPrice } from "@/components/ui/ClientPrice";
+import { InteractiveProductCard } from "@/components/product/InteractiveProductCard";
 import { IsolatedSearchInput } from "@/components/ui/IsolatedSearchInput";
 
 // "Drops" shows the latest products by createdAt desc (reuses /api/products ordering)
@@ -24,9 +19,6 @@ interface Product {
 }
 
 export default function DropsPage() {
-  const { toggle, has } = useWishlist();
-  const { addItem } = useCart();
-  const { push } = useToast();
   const [items, setItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -176,152 +168,15 @@ export default function DropsPage() {
                   </div>
                 </div>
               ))
-            : items.map((p) => {
-                const id = lineIdFor(p.id);
-                const inWish = has(id);
-                const hasSizes = Array.isArray(p.sizes) && p.sizes.length > 0;
-                return (
-                  <div
-                    key={p.id}
-                    className="group relative bg-gray-800 aspect-[3/4] overflow-hidden rounded-lg flex flex-col border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl hover:shadow-gray-900/50"
-                  >
-                    <Link
-                      href={`/product/${p.id}`}
-                      className="absolute inset-0"
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <Image
-                        src={p.image}
-                        alt={p.name}
-                        width={400}
-                        height={500}
-                        className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                      />
-                    </Link>
-                    <div className="absolute top-3 right-3 flex flex-col gap-2">
-                      <button
-                        onClick={() => {
-                          const already = inWish;
-                          toggle({
-                            productId: p.id,
-                            name: p.name,
-                            priceCents: p.priceCents,
-                            image: p.image,
-                          });
-                          push({
-                            type: already ? "info" : "success",
-                            message: already ? "Removed from saved" : "Saved",
-                          });
-                        }}
-                        className={`rounded-full h-9 w-9 text-sm font-bold flex items-center justify-center backdrop-blur bg-white/90 border shadow-lg transition-all duration-200 hover:scale-110 ${
-                          inWish
-                            ? "border-red-500 text-red-500"
-                            : "border-gray-300 text-gray-600 hover:border-red-400 hover:text-red-400"
-                        }`}
-                      >
-                        {inWish ? "♥" : "♡"}
-                      </button>
-                      <div className="relative">
-                        <button
-                          onClick={(e) => {
-                            if (hasSizes) {
-                              // Open size chooser popover (toggle) instead of immediate add
-                              const host = (e.currentTarget
-                                .parentElement as HTMLElement)!.querySelector<HTMLElement>(
-                                "[data-size-popover]"
-                              );
-                              if (host) host.toggleAttribute("data-open");
-                              return;
-                            }
-                            addItem(
-                              {
-                                productId: p.id,
-                                name: p.name,
-                                priceCents: p.priceCents,
-                                image: p.image,
-                              },
-                              1
-                            );
-                            push({ type: "success", message: "Added to bag" });
-                          }}
-                          className="rounded-full h-9 w-9 text-lg leading-none font-bold flex items-center justify-center backdrop-blur bg-white/90 border border-gray-300 text-gray-600 shadow-lg transition-all duration-200 hover:scale-110 hover:border-green-500 hover:text-green-600"
-                          aria-label={hasSizes ? "Choose size" : "Add to bag"}
-                        >
-                          +
-                        </button>
-                        {hasSizes && (
-                          <div
-                            data-size-popover
-                            className="absolute top-9 right-0 z-20 hidden data-[open]:flex flex-col gap-1 bg-white shadow-lg border border-neutral-200 rounded p-2 min-w-[120px]"
-                          >
-                            <div className="text-[10px] uppercase tracking-wide font-semibold text-neutral-500 pb-1 border-b mb-1">
-                              Select size
-                            </div>
-                            <div className="flex flex-wrap gap-1">
-                              {p.sizes.map((s: string) => (
-                                <button
-                                  key={s}
-                                  onClick={() => {
-                                    addItem(
-                                      {
-                                        productId: p.id,
-                                        name: p.name,
-                                        priceCents: p.priceCents,
-                                        image: p.image,
-                                        size: s,
-                                      },
-                                      1
-                                    );
-                                    push({
-                                      type: "success",
-                                      message: `Added ${s}`,
-                                    });
-                                    const host =
-                                      (document.querySelector(
-                                        `[data-size-popover][data-open]`
-                                      ) as HTMLElement) || null;
-                                    host?.removeAttribute("data-open");
-                                  }}
-                                  className="px-2 py-1 text-[11px] rounded border border-neutral-300 hover:bg-neutral-100 active:bg-neutral-200"
-                                >
-                                  {s}
-                                </button>
-                              ))}
-                            </div>
-                            <button
-                              onClick={() => {
-                                const host =
-                                  (document.querySelector(
-                                    `[data-size-popover][data-open]`
-                                  ) as HTMLElement) || null;
-                                host?.removeAttribute("data-open");
-                              }}
-                              className="mt-2 text-[10px] text-neutral-500 hover:text-neutral-700"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/95 via-black/60 to-transparent text-white">
-                      <div
-                        className="font-bold text-sm truncate font-carbon uppercase tracking-wide mb-2"
-                        title={p.name}
-                      >
-                        {p.name}
-                      </div>
-                      <div className="text-white">
-                        <ClientPrice
-                          cents={p.priceCents}
-                          size="sm"
-                          className="text-white font-bold font-carbon"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+            : items.map((p) => (
+                <InteractiveProductCard
+                  key={p.id}
+                  product={p}
+                  variant="portrait"
+                  showBrand={true}
+                  showCategory={true}
+                />
+              ))}
         </div>
         {totalPages > 1 && (
           <div className="flex items-center gap-4 justify-center pt-4">

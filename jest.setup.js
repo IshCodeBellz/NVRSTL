@@ -611,7 +611,7 @@ const createMockModel = (dataMap) => ({
       // Return first record if no where clause
       return Promise.resolve(Array.from(dataMap.values())[0] || null);
     }
-    if (where && where.orderId) {
+    if (where.orderId) {
       // For payment records, search by orderId field
       for (const record of dataMap.values()) {
         if (record.orderId === where.orderId) {

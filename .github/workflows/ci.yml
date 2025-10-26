@@ -209,7 +209,7 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
 
       - name: Run database tests
-        run: npm run test:db || echo "Database tests failed but continuing CI pipeline"
+        run: npm run test:db
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           NODE_ENV: test

@@ -266,7 +266,7 @@ jobs:
           done
 
       - name: Run E2E tests
-        run: npm run test:e2e || echo "E2E tests failed but continuing CI pipeline"
+        run: npm run test:e2e
         env:
           BASE_URL: http://localhost:3000
           CI: true

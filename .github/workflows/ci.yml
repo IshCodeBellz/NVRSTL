@@ -101,7 +101,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://test:test@localhost:5432/test' }}
 
       - name: Run unit tests with coverage
-        run: npm run test:ci || echo "Tests failed but continuing CI pipeline"
+        run: npm run test:ci
         env:
           NODE_ENV: test
           DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://test:test@localhost:5432/test' }}

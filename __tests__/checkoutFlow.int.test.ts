@@ -9,6 +9,7 @@ import * as intentRoute from "@/app/api/payments/intent/route";
 import * as webhookRoute from "@/app/api/payments/webhook/route";
 import * as noteRoute from "@/app/api/admin/orders/[id]/note/route";
 import { NextRequest } from "next/server";
+import { resetDb } from "../tests/helpers/testServer";
 
 function buildReq(
   method: string,
@@ -38,13 +39,8 @@ async function seedProduct(name: string, sku: string, priceCents = 5000) {
 
 describe("checkout payment flow", () => {
   const userId = "test-user-checkout-flow";
-  beforeAll(async () => {
-    await prisma.orderItem.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.cartLine.deleteMany();
-    await prisma.cart.deleteMany();
-    await prisma.productImage.deleteMany();
-    await prisma.product.deleteMany();
+  beforeEach(async () => {
+    await resetDb();
   });
 
   it("creates order, payment intent, and finalizes via webhook", async () => {

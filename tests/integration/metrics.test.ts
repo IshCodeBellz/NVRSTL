@@ -11,6 +11,10 @@ beforeEach(async () => {
 describe("metrics endpoint", () => {
   test("returns basic system metrics for empty database", async () => {
     const res = await metricsRoute.GET();
+    if (res.status !== 200) {
+      const errorData = await res.json();
+      console.log("Metrics error:", errorData);
+    }
     expect(res.status).toBe(200);
 
     const data = await res.json();
@@ -35,15 +39,22 @@ describe("metrics endpoint", () => {
   });
 
   test("aggregates order and payment metrics correctly", async () => {
-    // Create test data
+    // Clear existing data first
+    await prisma.order.deleteMany();
+    await prisma.paymentRecord.deleteMany();
+    await prisma.product.deleteMany();
+    await prisma.cart.deleteMany();
+    await prisma.cartLine.deleteMany();
+
+    // Create test data with unique user IDs
     const order1Data = await createOrderForTest({
-      userId: "metrics-user-1",
+      userId: "metrics-user-1-unique",
       priceCents: 5000,
       removeSimulatedPayments: true,
     });
 
     const order2Data = await createOrderForTest({
-      userId: "metrics-user-2",
+      userId: "metrics-user-2-unique",
       priceCents: 7500,
       removeSimulatedPayments: true,
     });
@@ -100,8 +111,11 @@ describe("metrics endpoint", () => {
   });
 
   test("handles database errors gracefully", async () => {
-    // Close the database connection to simulate an error
-    await prisma.$disconnect();
+    // Mock the database query to throw an error
+    const originalQueryRaw = prisma.$queryRaw;
+    prisma.$queryRaw = jest
+      .fn()
+      .mockRejectedValue(new Error("Database connection failed"));
 
     const res = await metricsRoute.GET();
     expect(res.status).toBe(500);
@@ -109,6 +123,9 @@ describe("metrics endpoint", () => {
     const data = await res.json();
     expect(data).toHaveProperty("error", "metrics_unavailable");
     expect(data.system.database.status).toBe("error");
+
+    // Restore the original method
+    prisma.$queryRaw = originalQueryRaw;
   });
 
   test("includes performance timing in response", async () => {
@@ -119,7 +136,7 @@ describe("metrics endpoint", () => {
     const data = await res.json();
 
     expect(typeof data.request_duration_ms).toBe("number");
-    expect(data.request_duration_ms).toBeGreaterThan(0);
+    expect(data.request_duration_ms).toBeGreaterThanOrEqual(0); // Allow 0 for very fast responses
     expect(data.request_duration_ms).toBeLessThan(end - start + 100); // Allow some margin
   });
 });

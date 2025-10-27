@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/server/prisma";
 import { prismaX } from "@/lib/server/prismaEx";
+import { invokePOST } from "@/tests/helpers/testServer";
 
 async function seedBasicOrder(userId: string) {
   const p = await prisma.product.create({
@@ -46,15 +47,16 @@ describe("payment retry endpoint", () => {
   });
   it("creates a new payment record and event", async () => {
     const { order } = await seedBasicOrder(userId);
-    const res = await fetch("http://localhost:3000/api/payments/retry", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-test-user": userId },
-      body: JSON.stringify({ orderId: order.id }),
-    });
+    const res = await invokePOST(
+      require("@/app/api/payments/retry/route"),
+      "/api/payments/retry",
+      { orderId: order.id },
+      { "x-test-user": userId }
+    );
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.paymentId).toBeTruthy();
-    const events: any[] = await prismaX.orderEvent.findMany({
+    const events: any[] = await prisma.orderEvent.findMany({
       where: { orderId: order.id },
     });
     expect(events.some((e) => e.kind === "PAYMENT_UPDATE")).toBe(true);
@@ -66,11 +68,12 @@ describe("payment retry endpoint", () => {
       where: { id: order.id },
       data: { status: "PAID" },
     });
-    const res = await fetch("http://localhost:3000/api/payments/retry", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-test-user": userId },
-      body: JSON.stringify({ orderId: order.id }),
-    });
+    const res = await invokePOST(
+      require("@/app/api/payments/retry/route"),
+      "/api/payments/retry",
+      { orderId: order.id },
+      { "x-test-user": userId }
+    );
     expect(res.status).toBe(400);
     const data = await res.json();
     expect(data.error).toBe("not_retryable");

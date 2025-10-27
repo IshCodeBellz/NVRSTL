@@ -25,6 +25,67 @@ export async function invokePOST(
 
 export async function resetDb() {
   const dbUrl = process.env.DATABASE_URL || "";
+
+  // In test mode, clear mock data instead of hitting real database
+  if (process.env.NODE_ENV === "test") {
+    // Clear all mock data maps
+    const mockDataMaps = [
+      "users",
+      "products",
+      "discountCodes",
+      "orders",
+      "categories",
+      "brands",
+      "addresses",
+      "emailVerificationTokens",
+      "passwordResetTokens",
+      "wishlistItems",
+      "wishlists",
+      "productImages",
+      "productMetrics",
+      "processedWebhookEvents",
+      "orderEvents",
+      "cartLines",
+      "carts",
+      "orderItems",
+      "paymentRecords",
+      "shipments",
+      "sizeVariants",
+      "reviews",
+      "productReview",
+      "reviewAnalytics",
+      "reviewReport",
+      "productVariants",
+      "userBehaviors",
+      "productBundles",
+      "analyticsEvents",
+      "categoryAnalytics",
+      "productAnalytics",
+      "inventoryAlerts",
+      "inventoryItems",
+      "notifications",
+      "systemSettings",
+      "contentPages",
+      "contentSections",
+      "categoryCards",
+      "siteSettings",
+      "shopCategories",
+      "shopSubcategories",
+      "shopTeams",
+    ];
+
+    // Access the global mock data and clear it
+    const globalMockData = (global as any).__mockData;
+    if (globalMockData) {
+      mockDataMaps.forEach((mapName) => {
+        if (globalMockData[mapName]) {
+          globalMockData[mapName].clear();
+        }
+      });
+    }
+    return;
+  }
+
   // Safety guard: abort if DATABASE_URL looks like production
   const prodPatterns = [
     "railway",

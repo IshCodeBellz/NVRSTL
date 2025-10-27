@@ -106,7 +106,6 @@ jobs:
           NODE_ENV: test
           DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://test:test@localhost:5432/test' }}
           CI: true
-        continue-on-error: true
 
       - name: Upload test coverage
         uses: codecov/codecov-action@v3
@@ -214,7 +213,6 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           NODE_ENV: test
           CI: true
-        continue-on-error: true
 
       - name: Test database connection
         run: |
@@ -270,7 +268,6 @@ jobs:
         env:
           BASE_URL: http://localhost:3000
           CI: true
-        continue-on-error: true
 
   # Performance Tests
   performance-tests:
@@ -322,7 +319,6 @@ jobs:
           configPath: "./lighthouse.config.js"
           uploadArtifacts: true
           temporaryPublicStorage: true
-        continue-on-error: true
 
   # Deploy to Staging
   deploy-staging:

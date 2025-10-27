@@ -293,7 +293,8 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-files-18
+          pattern: build-files-*
+          merge-multiple: true
           path: .next/
 
       - name: Start application for performance testing

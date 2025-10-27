@@ -168,7 +168,7 @@ export function Header() {
 
             {/* Desktop Search Bar with Currency Selector - Centered */}
             <div className="hidden lg:flex flex-1 justify-center max-w-none min-w-0 mx-8">
-              <div className="flex items-center gap-4 w-full max-w-md lg:max-w-lg xl:max-w-xl min-w-0">
+              <div className="flex items-center gap-4 w-full max-w-md xl:max-w-xl min-w-0">
                 {/* Currency Selector */}
                 <div className="text-white [&_button]:text-[#f5f5f5] [&_button]:hover:bg-gray-800 [&_button]:hover:text-[#f5f5f5] [&_button]:currency-selector [&_button]:currency-selector-button [&_button]:border [&_button]:border-gray-600 [&_button]:rounded-lg [&_button]:px-3 [&_button]:py-2 [&_button]:bg-gray-900 [&_button]:hover:border-gray-500 [&_button]:transition-all [&_button]:duration-200 [&_div]:currency-dropdown [&_button]:currency-dropdown-item">
                   <CurrencySelector
@@ -186,6 +186,31 @@ export function Header() {
                     showSuggestions={true}
                     showRecentSearches={true}
                     showTrendingSearches={true}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Tablet Search Bar with Currency Selector - Below Navigation */}
+            <div className="hidden md:flex lg:hidden w-full border-t border-gray-800 py-3 px-4">
+              <div className="flex items-center gap-3 w-full max-w-2xl mx-auto">
+                {/* Currency Selector */}
+                <div className="text-white [&_button]:text-[#f5f5f5] [&_button]:hover:bg-gray-800 [&_button]:hover:text-[#f5f5f5] [&_button]:currency-selector [&_button]:currency-selector-button [&_button]:border [&_button]:border-gray-600 [&_button]:rounded-lg [&_button]:px-2 [&_button]:py-1.5 [&_button]:bg-gray-900 [&_button]:hover:border-gray-500 [&_button]:transition-all [&_button]:duration-200 [&_div]:currency-dropdown [&_button]:currency-dropdown-item">
+                  <CurrencySelector
+                    variant="minimal"
+                    size="sm"
+                    showLabel={false}
+                  />
+                </div>
+                {/* Search Bar */}
+                <div className="flex-1">
+                  <SearchInput
+                    variant="header"
+                    size="sm"
+                    className="w-full"
+                    showSuggestions={true}
+                    showRecentSearches={false}
+                    showTrendingSearches={false}
                   />
                 </div>
               </div>

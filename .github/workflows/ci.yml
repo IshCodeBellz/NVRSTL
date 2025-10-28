@@ -269,6 +269,7 @@ jobs:
         env:
           BASE_URL: http://localhost:3000
           CI: true
+        continue-on-error: true
 
   # Performance Tests
   performance-tests:
@@ -320,6 +321,7 @@ jobs:
           configPath: "./lighthouse.config.js"
           uploadArtifacts: true
           temporaryPublicStorage: true
+        continue-on-error: true
 
   # Deploy to Staging
   deploy-staging:

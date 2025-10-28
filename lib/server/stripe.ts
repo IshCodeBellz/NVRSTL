@@ -15,6 +15,7 @@ export function getStripe(): Stripe | null {
   const isPlaceholder =
     /sk_(test|live)_fake/i.test(key) || key.includes("fake_key_for_ci");
   if (isPlaceholder) return null;
-  _stripe = new Stripe(key, { apiVersion: "2024-06-20" });
+  // Use SDK default API version to avoid type mismatches across package updates
+  _stripe = new Stripe(key);
   return _stripe;
 }

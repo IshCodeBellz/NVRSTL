@@ -321,7 +321,6 @@ jobs:
           configPath: "./lighthouse.config.js"
           uploadArtifacts: true
           temporaryPublicStorage: true
-        continue-on-error: true
 
   # Deploy to Staging
   deploy-staging:

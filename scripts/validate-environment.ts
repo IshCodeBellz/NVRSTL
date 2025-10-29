@@ -7,7 +7,7 @@ import {
 } from "../lib/server/config/validateEnv.js";
 
 async function runEnvironmentValidation() {
-  console.log("🔍 DY Official - Production Environment Validation");
+  console.log("🔍 NVRSTL - Production Environment Validation");
   console.log("=".repeat(60));
 
   const result = validateProductionEnvironment();
@@ -100,11 +100,20 @@ async function runEnvironmentValidation() {
   );
   console.log(
     `   Email Service: ${
-      process.env.RESEND_API_KEY || process.env.SENDGRID_API_KEY
+      process.env.MAILERSEND_API_KEY ||
+      process.env.RESEND_API_KEY ||
+      process.env.SENDGRID_API_KEY
         ? "✅ Configured"
         : "❌ Not configured"
     }`
   );
+  if (process.env.MAILERSEND_API_KEY) {
+    console.log(`      Provider: MailerSend`);
+  } else if (process.env.RESEND_API_KEY) {
+    console.log(`      Provider: Resend`);
+  } else if (process.env.SENDGRID_API_KEY) {
+    console.log(`      Provider: SendGrid`);
+  }
   console.log(
     `   SMS Service: ${
       process.env.TWILIO_ACCOUNT_SID ? "✅ Configured" : "⚠️  Not configured"

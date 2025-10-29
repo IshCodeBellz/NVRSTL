@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptionsEnhanced } from "@/lib/server/authOptionsEnhanced";
 import { prisma } from "@/lib/server/prisma";
 import Link from "next/link";
+import { SyncPaymentButton } from "@/components/admin/orders/SyncPaymentButton";
 
 export const dynamic = "force-dynamic";
 
@@ -24,12 +25,17 @@ export default async function AdminOrdersPage({
   const session = await getServerSession(authOptionsEnhanced);
   const isAdmin = (session?.user as { isAdmin: boolean })?.isAdmin;
   if (!isAdmin) return <div className="p-6">Unauthorized</div>;
-  // Default to PAID when no status is provided to highlight orders ready to fulfill
+
   const statusParam = searchParams?.status;
-  const status =
-    statusParam && ALLOWED.includes(statusParam) ? statusParam : "PAID";
+  // If status param is "all" or not provided, show all orders
+  // Otherwise filter by the selected status
+  const filterStatus =
+    statusParam && statusParam !== "all" && ALLOWED.includes(statusParam)
+      ? statusParam
+      : undefined;
+
   const orders = await prisma.order.findMany({
-    where: { status: status || undefined },
+    where: filterStatus ? { status: filterStatus } : {},
     orderBy: { createdAt: "desc" },
     take: 100,
     select: {
@@ -82,7 +88,11 @@ export default async function AdminOrdersPage({
           <div className="flex gap-2 flex-wrap text-sm">
             <Link
               href="/admin/orders"
-              className={statusParam ? "" : "font-semibold underline"}
+              className={
+                !statusParam || statusParam === "all"
+                  ? "font-semibold underline px-3 py-1 bg-blue-100 text-blue-800 rounded"
+                  : "px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
+              }
             >
               All
             </Link>
@@ -91,7 +101,7 @@ export default async function AdminOrdersPage({
                 key={s}
                 href={`/admin/orders?status=${s}`}
                 className={
-                  status === s
+                  filterStatus === s
                     ? "font-semibold underline px-3 py-1 bg-blue-100 text-blue-800 rounded"
                     : "px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded"
                 }
@@ -185,7 +195,12 @@ export default async function AdminOrdersPage({
                           : "-"}
                       </td>
                       <td className="py-4 px-6">
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center flex-wrap">
+                          {/* Sync from Stripe button for AWAITING_PAYMENT orders */}
+                          <SyncPaymentButton
+                            orderId={o.id}
+                            currentStatus={o.status}
+                          />
                           {/* Quick start fulfillment when order is PAID */}
                           {o.status === "PAID" && (
                             <form

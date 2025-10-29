@@ -16,7 +16,11 @@ export function generateTokenString(): string {
 }
 
 export async function createPasswordResetToken(email: string) {
-  const user = await prisma.user.findUnique({ where: { email } });
+  // Normalize email to lowercase for case-insensitive lookup
+  const normalizedEmail = email.toLowerCase().trim();
+  const user = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+  });
   if (!user) return null; // do not leak existence in caller response
   const token = generateTokenString();
   const expiresAt = new Date(Date.now() + ttlMinutes() * 60_000);
@@ -53,7 +57,15 @@ export async function consumePasswordResetToken(
   if (!user) return { ok: false as const, reason: "invalid" };
   const passwordHash = await hashPassword(newPassword);
   await prisma.$transaction([
-    prisma.user.update({ where: { id: user.id }, data: { passwordHash } }),
+    prisma.user.update({
+      where: { id: user.id },
+      data: {
+        passwordHash,
+        // Unlock account after successful password reset
+        failedLoginAttempts: 0,
+        lockedAt: null,
+      },
+    }),
     prismaX.passwordResetToken.update({
       where: { token },
       data: { usedAt: now },

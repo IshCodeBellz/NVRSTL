@@ -2,14 +2,14 @@
 
 ## Overview
 
-NVRSTL uses **Resend** as the production email service provider with comprehensive email templates for all user communications.
+NVRSTL uses **MailerSend** as the production email service provider with comprehensive email templates for all user communications.
 
 ## ✅ Current Production Status
 
-- **Provider**: Resend (configured and ready)
-- **Domain**: nvrstl.com
+- **Provider**: MailerSend (configured and ready)
+- **Domain**: nvrstl.co.uk (must be verified in MailerSend dashboard)
 - **Templates**: 5 professional email templates implemented
-- **Fallback**: Console logging when API key unavailable
+- **Fallback**: Console logging when API key unavailable or in test/dev mode
 
 ## 🔧 Environment Configuration
 
@@ -17,8 +17,9 @@ NVRSTL uses **Resend** as the production email service provider with comprehensi
 
 ```bash
 # Email Service Configuration
-EMAIL_FROM="NVRSTL <no-reply@nvrstl.com>"
-RESEND_API_KEY="yre_5X19u9fh_HvLJgzHZHskBKV2FGMKr6HtS"
+EMAIL_FROM="nvrstl <no-reply@nvrstl.co.uk>"
+EMAIL_FROM_NAME="NVRSTL"
+MAILERSEND_API_KEY="mlsn.xxxxxxxxxxxxx"
 ```
 
 ### Deployment Platform Setup
@@ -154,28 +155,47 @@ console.error("[MAIL:resend_error]", status, body);
 
 ### Email Not Sending
 
-1. Check RESEND_API_KEY is set correctly
-2. Verify EMAIL_FROM domain is configured
-3. Check Resend dashboard for errors
+1. Check `MAILERSEND_API_KEY` is set correctly
+2. Verify `EMAIL_FROM` domain is configured and verified in MailerSend dashboard
+3. Check MailerSend dashboard for errors and account status
 4. Review application logs for send attempts
+5. Verify sender domain is properly verified in MailerSend
+
+### Domain Verification Error (#MS42212)
+
+**Error Message**: "The recipient domain X must be one of the verified domains"
+
+This error occurs when:
+
+1. **MailerSend account is in test/sandbox mode**: Test accounts may restrict sending to unverified recipient domains
+2. **Domain restrictions are enabled**: Check MailerSend dashboard → Settings → Domain restrictions
+3. **Sender domain not verified**: The `EMAIL_FROM` domain must be fully verified in MailerSend
+
+**Solutions**:
+
+1. **Verify sender domain**: In MailerSend dashboard, go to "Domains" and complete DNS verification for your sender domain (`nvrstl.co.uk`)
+2. **Check account mode**: Ensure your MailerSend account is not restricted to test mode
+3. **Review domain settings**: In MailerSend dashboard, disable any "recipient domain restrictions" if enabled
+4. **Contact MailerSend support**: If the account should allow sending to any domain, contact support to enable this
 
 ### Emails Going to Spam
 
-1. Verify domain authentication (SPF/DKIM)
-2. Check sender reputation
+1. Verify domain authentication (SPF/DKIM/DMARC) in MailerSend dashboard
+2. Check sender reputation in MailerSend analytics
 3. Review email content for spam triggers
-4. Monitor Resend delivery metrics
+4. Monitor MailerSend delivery metrics
 
 ### Development vs Production
 
-- **Development**: Console logging (no API key)
-- **Production**: Resend API (with API key)
-- **Testing**: Use test email addresses
+- **Development**: Console logging (no API key or NODE_ENV !== production)
+- **Production**: MailerSend API (with `MAILERSEND_API_KEY` and `NODE_ENV=production`)
+- **Testing**: Use test email addresses or MailerSend test mode
 
 ## 📋 Checklist for Production
 
-- [x] Resend API key configured
+- [x] MailerSend API key configured
 - [x] EMAIL_FROM address set
+- [ ] Sender domain verified in MailerSend dashboard
 - [x] Templates implemented and tested
 - [x] Error handling implemented
 - [x] Fallback logging configured

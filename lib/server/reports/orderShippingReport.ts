@@ -105,8 +105,7 @@ export async function sendDailyOrderShippingReport(date = new Date()) {
   const recipients = (
     process.env.ADMIN_EMAIL_RECIPIENTS ||
     process.env.ALERT_EMAIL_RECIPIENTS ||
-    // Default to business inbox if not configured
-    "info@nvrstl.co.uk"
+    ""
   )
     .split(",")
     .map((s) => s.trim())

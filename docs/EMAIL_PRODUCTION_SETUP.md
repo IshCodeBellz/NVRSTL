@@ -17,7 +17,7 @@ NVRSTL uses **MailerSend** as the production email service provider with compreh
 
 ```bash
 # Email Service Configuration
-EMAIL_FROM="nvrstl <no-reply@nvrstl.co.uk>"
+EMAIL_FROM="NVRSTL <no-reply@nvrstl.co.uk>"
 EMAIL_FROM_NAME="NVRSTL"
 MAILERSEND_API_KEY="mlsn.xxxxxxxxxxxxx"
 ```

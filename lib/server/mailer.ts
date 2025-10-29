@@ -1,48 +1,97 @@
-// Simple email abstraction placeholder. Replace with real provider (e.g., Resend, SendGrid, SES)
+// Simple email abstraction with MailerSend provider in production
 import type { Order, User } from "@prisma/client";
 import { formatPriceCents } from "@/lib/money";
 import type { JerseyCustomization } from "@/lib/types";
 
-// Production provider integration (Resend) with graceful fallback.
+// Production provider integration (MailerSend) with graceful fallback.
 interface ProviderDriver {
   send(opts: {
     to: string;
     subject: string;
     text: string;
     html: string;
+    attachments?: Array<{ filename: string; content: string }>; // base64
   }): Promise<void>;
 }
 
-class ResendDriver implements ProviderDriver {
-  #apiKey: string;
-  constructor(apiKey: string) {
-    this.#apiKey = apiKey;
+class MailerSendDriver implements ProviderDriver {
+  #mailer: any;
+  #fromEmail: string;
+  #fromName: string;
+  constructor(apiKey: string, fromEmail: string, fromName: string) {
+    // Lazy import to avoid adding heavy deps to tests until used
+    const { MailerSend } = require("mailersend");
+    this.#mailer = new MailerSend({ apiKey });
+    this.#fromEmail = fromEmail;
+    this.#fromName = fromName;
   }
   async send(opts: {
     to: string;
     subject: string;
     text: string;
     html: string;
+    attachments?: Array<{ filename: string; content: string }>;
   }) {
-    // Minimal direct REST call to avoid adding dependency; could swap to official SDK later.
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.#apiKey}`,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        from: process.env.EMAIL_FROM || "noreply@example.com",
-        to: opts.to,
-        subject: opts.subject,
-        html: opts.html,
-        text: opts.text,
-      }),
-    });
-    if (!res.ok) {
-      const body = await res.text();
-      console.error("[MAIL:resend_error]", res.status, body);
-      throw new Error(`Resend send failed ${res.status}`);
+    const {
+      EmailParams,
+      Sender,
+      Recipient,
+      Attachment,
+    } = require("mailersend");
+    const from = new Sender(this.#fromEmail, this.#fromName || undefined);
+    const recipients = [new Recipient(opts.to, undefined)];
+
+    const emailParams = new EmailParams()
+      .setFrom(from)
+      .setTo(recipients)
+      .setSubject(opts.subject)
+      .setText(opts.text)
+      .setHtml(opts.html);
+
+    // Attachments (CSV reports, etc.)
+    if (Array.isArray(opts.attachments) && opts.attachments.length > 0) {
+      try {
+        const atts = opts.attachments.map(
+          (a) =>
+            // MailerSend expects base64-encoded content
+            new Attachment({
+              filename: a.filename,
+              content: a.content,
+            })
+        );
+        emailParams.setAttachments?.(atts);
+      } catch {
+        // Fallback if Attachment class signature changes - set raw
+        const atts = opts.attachments.map((a) => ({
+          filename: a.filename,
+          content: a.content,
+        }));
+        (emailParams as any).attachments = atts;
+      }
+    }
+
+    try {
+      await this.#mailer.email.send(emailParams);
+    } catch (err: any) {
+      console.error("[MAIL:mailersend_error]", err);
+
+      // Check if it's a MailerSend API error
+      if (err?.body?.message || err?.response?.body?.message) {
+        const errorMsg = err.body?.message || err.response?.body?.message;
+        const statusCode = err.statusCode || err.response?.statusCode;
+
+        // Check for domain verification errors
+        if (errorMsg?.includes("verified domains") || statusCode === 422) {
+          console.error(
+            "[MAIL:mailersend_error] Domain verification issue. This might mean:",
+            "1. MailerSend account is in sandbox/test mode",
+            "2. Recipient domain restrictions are enabled",
+            "3. Sender domain is not properly verified in MailerSend dashboard"
+          );
+        }
+      }
+
+      throw err;
     }
   }
 }
@@ -53,6 +102,11 @@ export interface Mailer {
     subject: string;
     text: string;
     html?: string;
+    attachments?: Array<{
+      filename: string;
+      content: string;
+      contentType?: string;
+    }>;
   }): Promise<void>;
 }
 
@@ -62,6 +116,11 @@ class ConsoleMailer implements Mailer {
     subject: string;
     text: string;
     html?: string;
+    attachments?: Array<{
+      filename: string;
+      content: string;
+      contentType?: string;
+    }>;
   }) {
     console.log("[MAIL:send]", JSON.stringify(opts, null, 2));
   }
@@ -73,12 +132,32 @@ export function getMailer(): Mailer {
   // In CI or test environments, avoid hitting external APIs.
   const isCiOrTest =
     process.env.CI === "true" || process.env.NODE_ENV === "test";
-  if (!isCiOrTest && process.env.RESEND_API_KEY) {
-    const driver = new ResendDriver(process.env.RESEND_API_KEY);
+  if (!isCiOrTest && process.env.MAILERSEND_API_KEY) {
+    const fromEmail = process.env.EMAIL_FROM || "noreply@nvrstl.com";
+    const fromName = process.env.EMAIL_FROM_NAME || "NVRSTL";
+    const driver = new MailerSendDriver(
+      process.env.MAILERSEND_API_KEY,
+      fromEmail,
+      fromName
+    );
     _mailer = {
       async send(o) {
         const html = o.html || `<pre>${o.text}</pre>`;
-        await driver.send({ to: o.to, subject: o.subject, text: o.text, html });
+        const attachments = Array.isArray(o.attachments)
+          ? o.attachments.map((a) => ({
+              filename: a.filename,
+              content: Buffer.isBuffer((a as any).content)
+                ? (a as any).content.toString("base64")
+                : Buffer.from(String((a as any).content)).toString("base64"),
+            }))
+          : undefined;
+        await driver.send({
+          to: o.to,
+          subject: o.subject,
+          text: o.text,
+          html,
+          attachments,
+        });
       },
     };
   } else {
@@ -97,6 +176,11 @@ function baseLayout(title: string, bodyHtml: string) {
     <tr><td style="padding:16px 20px;font-size:11px;color:#666;background:#f5f5f5;">This email was sent automatically. If you have questions reply to this address.</td></tr>
   </table>
   </body></html>`;
+}
+
+// Exported helper to render any email content inside the site theme layout
+export function renderEmailLayout(title: string, bodyHtml: string): string {
+  return baseLayout(title, bodyHtml);
 }
 
 // Legacy minimal confirmation (kept for backward compatibility)
@@ -168,7 +252,6 @@ function describeCustomizations(
   customizations?: JerseyCustomization | null
 ): string[] {
   if (!customizations) return [];
-  /* eslint-disable-next-line */
   const c: Record<string, unknown> = customizations as any;
   const pretty = (s?: string) =>
     (s || "none").replace(/_/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());

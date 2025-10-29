@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/server/prisma";
-import { getMailer } from "@/lib/server/mailer";
+import { getMailer, renderEmailLayout } from "@/lib/server/mailer";
 import { OrderEventService } from "@/lib/server/orderEventService";
 import {
   buildRichOrderConfirmationHtml,
@@ -562,10 +562,23 @@ DY Official System
       });
     };
 
+    const subject = processText(template.subject);
+    const textContent = processText(template.textContent);
+    let htmlContent = processText(template.htmlContent);
+
+    // Wrap certain templates in the branded email layout
+    if (
+      template.id === "ORDER_SHIPPED" ||
+      template.id === "ORDER_DELIVERED" ||
+      template.id === "ORDER_PROCESSING"
+    ) {
+      htmlContent = renderEmailLayout(subject, htmlContent);
+    }
+
     return {
-      subject: processText(template.subject),
-      textContent: processText(template.textContent),
-      htmlContent: processText(template.htmlContent),
+      subject,
+      textContent,
+      htmlContent,
       smsContent: template.smsContent
         ? processText(template.smsContent)
         : undefined,

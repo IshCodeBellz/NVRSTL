@@ -34,8 +34,15 @@ async function processPaymentWebhook(event: WebhookEvent): Promise<void> {
   });
   if (!payment) {
     // Unknown payment intent - not an error for webhook processing
+    logger.warn(
+      `Webhook received for unknown payment intent: ${paymentIntentId}`
+    );
     return;
   }
+
+  logger.info(
+    `Webhook processing payment: ${payment.id} for order: ${payment.orderId}, status: ${status}`
+  );
 
   const order = await prisma.order.findUnique({
     where: { id: payment.orderId },
@@ -70,6 +77,10 @@ async function processPaymentWebhook(event: WebhookEvent): Promise<void> {
         if (cart) await tx.cartLine.deleteMany({ where: { cartId: cart.id } });
       }
     });
+
+    logger.info(
+      `✅ Webhook: Successfully updated order ${order.id} to PAID from payment ${payment.id}`
+    );
 
     // Create enhanced payment success event
     await OrderEventService.createPaymentEvent(order.id, "PAYMENT_SUCCEEDED", {

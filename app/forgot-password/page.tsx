@@ -1,13 +1,17 @@
 "use client";
 export const dynamic = "force-dynamic";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { AlertTriangle } from "lucide-react";
 
-export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
+function ForgotPasswordForm() {
+  const searchParams = useSearchParams();
+  const [email, setEmail] = useState(searchParams?.get("email") || "");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isLocked = searchParams?.get("locked") === "true";
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -91,6 +95,24 @@ export default function ForgotPasswordPage() {
         </p>
       </div>
 
+      {/* Account Locked Warning */}
+      {isLocked && (
+        <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md">
+          <div className="flex items-start space-x-3">
+            <AlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-yellow-800 dark:text-yellow-300">
+              <p className="font-medium">Account Temporarily Locked</p>
+              <p className="mt-1">
+                Your account has been temporarily locked due to multiple failed
+                login attempts. Please reset your password to unlock your
+                account. The account will be automatically unlocked after the
+                password is reset.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-1">
           <label className="text-sm font-medium">Email address</label>
@@ -140,5 +162,15 @@ export default function ForgotPasswordPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function ForgotPasswordPage() {
+  return (
+    <Suspense
+      fallback={<div className="max-w-md mx-auto px-4 py-12">Loading...</div>}
+    >
+      <ForgotPasswordForm />
+    </Suspense>
   );
 }

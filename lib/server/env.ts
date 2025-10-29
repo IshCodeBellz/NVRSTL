@@ -12,7 +12,9 @@ export interface EnvSnapshot {
   STRIPE_SECRET_KEY?: string;
   STRIPE_WEBHOOK_SECRET?: string;
   EMAIL_FROM?: string;
+  MAILERSEND_API_KEY?: string;
   RESEND_API_KEY?: string;
+  SENDGRID_API_KEY?: string;
   NODE_ENV?: string;
   PASSWORD_RESET_TOKEN_TTL_MINUTES?: string; // optional override, defaults to 30
 }
@@ -26,7 +28,9 @@ export function snapshotEnv(): EnvSnapshot {
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     EMAIL_FROM: process.env.EMAIL_FROM,
+    MAILERSEND_API_KEY: process.env.MAILERSEND_API_KEY,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
+    SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
     NODE_ENV: process.env.NODE_ENV,
     PASSWORD_RESET_TOKEN_TTL_MINUTES:
       process.env.PASSWORD_RESET_TOKEN_TTL_MINUTES,
@@ -91,10 +95,10 @@ export function validateEnv(): EnvIssue[] {
   }
 
   // Email provider
-  if (!env.RESEND_API_KEY) {
+  if (!env.MAILERSEND_API_KEY && !env.RESEND_API_KEY && !env.SENDGRID_API_KEY) {
     push(
-      "RESEND_API_KEY",
-      "Transactional emails disabled (no RESEND_API_KEY). Fallback is console log.",
+      "MAILERSEND_API_KEY",
+      "Transactional emails disabled (no MAILERSEND_API_KEY, RESEND_API_KEY, or SENDGRID_API_KEY). Fallback is console log.",
       "warn"
     );
   }

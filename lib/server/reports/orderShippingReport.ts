@@ -105,8 +105,6 @@ export async function sendDailyOrderShippingReport(date = new Date()) {
   const recipients = (
     process.env.ADMIN_EMAIL_RECIPIENTS ||
     process.env.ALERT_EMAIL_RECIPIENTS ||
-    // Fallback for test runs or simple setups
-    process.env.MAIL_TO ||
     ""
   )
     .split(",")

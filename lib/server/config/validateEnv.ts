@@ -28,6 +28,7 @@ const ProductionEnvSchema = z.object({
   SENTRY_DSN: z.string().url("Invalid Sentry DSN").optional(),
 
   // Notifications (at least email required)
+  MAILERSEND_API_KEY: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
   SENDGRID_API_KEY: z.string().optional(),
 
@@ -75,10 +76,14 @@ export function validateProductionEnvironment(): ValidationResult {
     }
 
     // Check for email service
-    const hasEmail = !!(env.RESEND_API_KEY || env.SENDGRID_API_KEY);
+    const hasEmail = !!(
+      env.MAILERSEND_API_KEY ||
+      env.RESEND_API_KEY ||
+      env.SENDGRID_API_KEY
+    );
     if (!hasEmail) {
       result.errors.push(
-        "Email service must be configured (RESEND_API_KEY or SENDGRID_API_KEY)"
+        "Email service must be configured (MAILERSEND_API_KEY, RESEND_API_KEY, or SENDGRID_API_KEY)"
       );
       result.isValid = false;
     }

@@ -2,6 +2,7 @@
 import nodemailer from "nodemailer";
 import type Mail from "nodemailer/lib/mailer";
 import { Resend } from "resend";
+import { getMailer } from "@/lib/server/mailer";
 
 export interface EmailConfig {
   host: string;
@@ -35,6 +36,30 @@ export class EmailService {
   async sendEmail(message: EmailMessage): Promise<void> {
     const fromValue =
       process.env.EMAIL_FROM || process.env.SMTP_FROM || process.env.SMTP_USER;
+
+    // 0) Prefer MailerSend via unified mailer if configured
+    try {
+      if (process.env.MAILERSEND_API_KEY) {
+        const mailer = getMailer();
+        const to = Array.isArray(message.to) ? message.to[0] : message.to;
+        const attachments = message.attachments?.map((a) => ({
+          filename: a.filename || "attachment",
+          content: Buffer.isBuffer((a as any).content)
+            ? (a as any).content.toString("base64")
+            : Buffer.from(String((a as any).content || "")).toString("base64"),
+        }));
+        await mailer.send({
+          to,
+          subject: message.subject,
+          text: message.text || "",
+          html: message.html || `<pre>${message.text || ""}</pre>`,
+          attachments,
+        });
+        return;
+      }
+    } catch (msError) {
+      console.error("MailerSend via getMailer failed:", msError);
+    }
 
     // 1) Try SMTP first
     try {

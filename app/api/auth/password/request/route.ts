@@ -30,8 +30,26 @@ export async function POST(req: NextRequest) {
   const { email } = parsed.data;
   const created = await createPasswordResetToken(email);
   if (created) {
-    // Fire and forget but we await so tests can assert
-    await sendPasswordResetEmail(email, created.token);
+    try {
+      // Fire and forget but we await so tests can assert
+      await sendPasswordResetEmail(email, created.token);
+    } catch (error: any) {
+      // Log the error but don't expose it to the user (security best practice)
+      console.error("[PASSWORD_RESET] Failed to send email:", error);
+
+      // Check if it's a MailerSend domain verification error
+      const errorMsg =
+        error?.body?.message || error?.response?.body?.message || String(error);
+      if (errorMsg?.includes("verified domains") || error?.statusCode === 422) {
+        console.error(
+          "[PASSWORD_RESET] MailerSend configuration issue detected:",
+          "The recipient domain may need to be verified, or the account is in test mode."
+        );
+      }
+
+      // Still return success to avoid user enumeration, but log for admin review
+      // TODO: Consider setting up email delivery retry or alternative notification
+    }
   }
   // Always respond success to avoid user enumeration
   return NextResponse.json({ ok: true });

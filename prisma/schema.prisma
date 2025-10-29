@@ -293,6 +293,7 @@ model Order {
   paidAt                 DateTime?
   cancelledAt            DateTime?
   shippedAt              DateTime?
+  deliveredAt            DateTime?
   shippingAddressId      String?
   billingAddressId       String?
   discountCodeId         String?

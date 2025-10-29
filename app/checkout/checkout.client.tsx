@@ -78,7 +78,7 @@ export default function CheckoutClient() {
     city: "",
     region: "",
     postalCode: "",
-    country: "US",
+    country: "",
     phone: "",
   });
 
@@ -102,7 +102,7 @@ export default function CheckoutClient() {
             city: def.city || "",
             region: def.region || "",
             postalCode: def.postalCode || "",
-            country: def.country || "US",
+            country: def.country || "",
             phone: def.phone || "",
           });
         }
@@ -128,7 +128,7 @@ export default function CheckoutClient() {
       city: addr.city || "",
       region: addr.region || "",
       postalCode: addr.postalCode || "",
-      country: addr.country || "US",
+      country: addr.country || "",
       phone: addr.phone || "",
     });
   }
@@ -456,7 +456,7 @@ export default function CheckoutClient() {
                   city: "",
                   region: "",
                   postalCode: "",
-                  country: "US",
+                  country: "",
                   phone: "",
                 })
               }

@@ -40,9 +40,26 @@ function LoginForm() {
           )}&callbackUrl=${encodeURIComponent(callbackUrl)}`;
           router.push(mfaUrl);
           return;
-        } else if (res.error === "account_locked") {
+        } else if (
+          res.error === "ACCOUNT_LOCKED" ||
+          res.error === "account_locked"
+        ) {
+          // Redirect to reset password page when account is locked
+          router.push(
+            `/forgot-password?email=${encodeURIComponent(email)}&locked=true`
+          );
+          return;
+        } else if (res.error === "ONE_ATTEMPT_LEFT") {
           setError(
-            "Account temporarily locked due to multiple failed attempts. Please try again later."
+            "🚨 Final Warning: You have 1 login attempt remaining before your account will be locked. Please verify your credentials carefully or use password reset."
+          );
+        } else if (res.error === "TWO_ATTEMPTS_LEFT") {
+          setError(
+            "⚠️ Warning: You have 2 login attempts remaining before your account will be locked for security reasons. Please verify your credentials carefully."
+          );
+        } else if (res.error === "USER_NOT_FOUND") {
+          setError(
+            "No account found with this email address. Please register first or check your email address."
           );
         } else if (res.error === "email_not_verified") {
           setError("Please verify your email address before signing in.");
@@ -191,10 +208,54 @@ function LoginForm() {
 
         {/* Error Display */}
         {error && (
-          <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+          <div
+            className={`p-3 rounded-md ${
+              error.includes("1 login attempt remaining")
+                ? "bg-orange-50 dark:bg-orange-900/20 border-2 border-orange-300 dark:border-orange-700"
+                : error.includes("2 login attempts remaining")
+                ? "bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800"
+                : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
+            }`}
+          >
             <div className="flex items-start space-x-2">
-              <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
+              <AlertCircle
+                className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
+                  error.includes("1 login attempt remaining")
+                    ? "text-orange-600 dark:text-orange-400"
+                    : error.includes("2 login attempts remaining")
+                    ? "text-yellow-600 dark:text-yellow-400"
+                    : "text-red-600 dark:text-red-400"
+                }`}
+              />
+              <div className="flex-1">
+                <p
+                  className={`text-sm font-medium ${
+                    error.includes("1 login attempt remaining")
+                      ? "text-orange-800 dark:text-orange-300"
+                      : error.includes("2 login attempts remaining")
+                      ? "text-yellow-800 dark:text-yellow-300"
+                      : "text-red-800 dark:text-red-300"
+                  }`}
+                >
+                  {error}
+                </p>
+                {error.includes("1 login attempt remaining") && (
+                  <Link
+                    href={`/forgot-password?email=${encodeURIComponent(email)}`}
+                    className="text-sm text-orange-700 dark:text-orange-400 hover:underline mt-2 inline-block font-medium"
+                  >
+                    Reset password now →
+                  </Link>
+                )}
+                {error.includes("No account found") && (
+                  <Link
+                    href="/account/signup"
+                    className="text-sm text-blue-600 dark:text-blue-400 hover:underline mt-2 inline-block"
+                  >
+                    Create an account →
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         )}

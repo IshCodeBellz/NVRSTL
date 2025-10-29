@@ -44,9 +44,13 @@ export const authOptionsEnhanced: NextAuthOptions = {
         }
 
         try {
+          // Normalize email to lowercase for case-insensitive lookup
+          // (registration stores emails in lowercase, but users might type them differently)
+          const normalizedEmail = credentials.email.toLowerCase().trim();
+
           // Find user
           const user = await prisma.user.findUnique({
-            where: { email: credentials.email },
+            where: { email: normalizedEmail },
           });
 
           console.log(
@@ -67,7 +71,8 @@ export const authOptionsEnhanced: NextAuthOptions = {
                 SecurityService.extractSecurityContext(req as NextRequest)
               );
             }
-            return null;
+            // Throw specific error so frontend can show helpful message
+            throw new Error("USER_NOT_FOUND");
           }
 
           // Check if account is locked
@@ -75,9 +80,7 @@ export const authOptionsEnhanced: NextAuthOptions = {
             user.lockedAt &&
             user.lockedAt > new Date(Date.now() - 30 * 60 * 1000)
           ) {
-            throw new Error(
-              "Account temporarily locked due to security concerns"
-            );
+            throw new Error("ACCOUNT_LOCKED");
           }
 
           // Verify password
@@ -118,6 +121,21 @@ export const authOptionsEnhanced: NextAuthOptions = {
                   user.id
                 )
               );
+            }
+
+            // Check if account is now locked
+            if (updatedUser.lockedAt) {
+              throw new Error("ACCOUNT_LOCKED");
+            }
+
+            // Show countdown warnings for remaining attempts
+            // At 3 failed attempts: 2 attempts remaining
+            if (updatedUser.failedLoginAttempts === 3) {
+              throw new Error("TWO_ATTEMPTS_LEFT");
+            }
+            // At 4 failed attempts: 1 attempt remaining (last chance before lockout)
+            if (updatedUser.failedLoginAttempts === 4) {
+              throw new Error("ONE_ATTEMPT_LEFT");
             }
 
             return null;
@@ -167,6 +185,18 @@ export const authOptionsEnhanced: NextAuthOptions = {
         } catch (error) {
           console.error("Error:", error);
           console.error("Authentication error:", error);
+
+          // Re-throw specific errors so they can be handled by NextAuth
+          if (
+            error instanceof Error &&
+            (error.message === "ACCOUNT_LOCKED" ||
+              error.message === "TWO_ATTEMPTS_LEFT" ||
+              error.message === "ONE_ATTEMPT_LEFT" ||
+              error.message === "USER_NOT_FOUND")
+          ) {
+            throw error;
+          }
+
           return null;
         }
       },

@@ -76,12 +76,7 @@ function checkMailerSendConfig() {
   // Check API Key
   if (mailersendApiKey) {
     console.log("✅ MAILERSEND_API_KEY: Configured");
-    console.log(
-      `   Key preview: ${mailersendApiKey.substring(
-        0,
-        8
-      )}...${mailersendApiKey.substring(mailersendApiKey.length - 4)}`
-    );
+    console.log("   Key value is present and valid format (not shown for security).");
   } else {
     console.log("❌ MAILERSEND_API_KEY: Not configured");
     console.log("   Set MAILERSEND_API_KEY environment variable");

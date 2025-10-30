@@ -133,8 +133,8 @@ export class RuleBasedRateStrategy implements RateStrategy {
     let shippingRule: string | undefined;
     for (const r of SHIPPING_RULES) {
       if (r.match(draft)) {
-        shippingBase = r.baseCents;
-        perItem = r.perItemCents || 0;
+        shippingBase = r.baseCents ?? 0;
+        perItem = r.perItemCents ?? 0;
         shippingRule = r.label;
         break;
       }

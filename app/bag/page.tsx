@@ -17,7 +17,7 @@ import { ClientPrice } from "@/components/ui/ClientPrice";
 
 export default function BagPage() {
   const { items, subtotal, updateQty, removeItem, clear } = useCart();
-  const { formatPrice, convertPrice } = useCurrency();
+  const { formatPrice, convertPrice, currentCurrency } = useCurrency();
   const { status: authStatus } = useSession();
   const router = useRouter();
   const [checkingOut, setCheckingOut] = useState(false);
@@ -67,9 +67,14 @@ export default function BagPage() {
 
     useEffect(() => {
       if (!stripe) return;
+      // Align wallet country/currency with the shopper's selected currency
+      const walletCountry =
+        currentCurrency === "GBP" ? "GB" : currentCurrency === "EUR" ? "IE" : "US";
+      const walletCurrency = (currentCurrency || "USD").toLowerCase();
+
       const pr = stripe.paymentRequest({
-        country: "US",
-        currency: "usd",
+        country: walletCountry,
+        currency: walletCurrency,
         total: {
           label: "DY OFFICIALETTE",
           amount: Math.round(subtotal * 100),
@@ -117,7 +122,8 @@ export default function BagPage() {
                 line1: "Unknown",
                 city: "Unknown",
                 postalCode: "00000",
-                country: "US",
+                // Use a country aligned with the wallet currency so server currency matches
+                country: walletCountry,
               },
               idempotencyKey: crypto.randomUUID(),
               lines: items.map((i) => ({
@@ -157,7 +163,7 @@ export default function BagPage() {
           await ev.complete("fail");
         }
       });
-    }, [stripe, authStatus, items, subtotal, router, clear]);
+    }, [stripe, authStatus, items, subtotal, router, clear, currentCurrency]);
 
     if (!available || !prRef.current) return null;
     return (

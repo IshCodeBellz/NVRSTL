@@ -103,14 +103,15 @@ export const POST = withRequest(async function POST(req: NextRequest) {
         paymentIntentId: pi.id,
         reused: true,
       });
-    } catch {
+    } catch (err: any) {
       // existing placeholder (likely simulated) – create real intent then UPDATE record instead of creating duplicate
-      const intent = await stripe.paymentIntents.create({
-        amount: order.totalCents,
-        currency: order.currency.toLowerCase(),
-        metadata: { orderId: order.id },
-        automatic_payment_methods: { enabled: true },
-      });
+      try {
+        const intent = await stripe.paymentIntents.create({
+          amount: order.totalCents,
+          currency: order.currency.toLowerCase(),
+          metadata: { orderId: order.id },
+          automatic_payment_methods: { enabled: true },
+        });
       const stillExists = await prisma.paymentRecord.findUnique({
         where: { id: existingPayment.id },
       });
@@ -149,15 +150,39 @@ export const POST = withRequest(async function POST(req: NextRequest) {
         paymentIntentId: intent.id,
         upgraded: true,
       });
+      } catch (createErr: any) {
+        return NextResponse.json(
+          {
+            error: "stripe_error",
+            message:
+              createErr?.message ||
+              createErr?.raw?.message ||
+              "Failed to create payment intent",
+          },
+          { status: 400 }
+        );
+      }
     }
   }
 
-  const intent = await stripe.paymentIntents.create({
-    amount: order.totalCents,
-    currency: order.currency.toLowerCase(),
-    metadata: { orderId: order.id },
-    automatic_payment_methods: { enabled: true },
-  });
+  let intent;
+  try {
+    intent = await stripe.paymentIntents.create({
+      amount: order.totalCents,
+      currency: order.currency.toLowerCase(),
+      metadata: { orderId: order.id },
+      automatic_payment_methods: { enabled: true },
+    });
+  } catch (err: any) {
+    return NextResponse.json(
+      {
+        error: "stripe_error",
+        message:
+          err?.message || err?.raw?.message || "Failed to create payment intent",
+      },
+      { status: 400 }
+    );
+  }
 
   await prisma.paymentRecord.create({
     data: {

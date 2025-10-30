@@ -6,6 +6,7 @@ import type { Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import RestoreProductButton from "./restoreButton";
+import TriggerDailyReportButton from "./TriggerDailyReportButton";
 
 // Revalidate dashboard every 60s (counts + low stock); remove if you prefer fully dynamic.
 export const revalidate = 60;
@@ -157,6 +158,9 @@ export default async function AdminHomePage() {
               <ActionLink href="/admin/users/analytics" text="User Analytics" />
               <ActionLink href="/admin/security" text="Security" />
               <ActionLink href="/admin/settings" text="System Settings" />
+              <div className="col-span-2 md:col-span-2 lg:col-span-2">
+                <TriggerDailyReportButton />
+              </div>
             </div>
           </div>
         </div>

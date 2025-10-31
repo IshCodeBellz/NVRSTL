@@ -68,5 +68,5 @@ export async function POST(req: NextRequest) {
       endsAt: data.endsAt ? new Date(data.endsAt) : null,
     },
   });
-  return NextResponse.json(created);
+  return NextResponse.json({ code: created });
 }

@@ -44,8 +44,8 @@ export const POST = withRequest(async function POST(req: NextRequest) {
     where: { id: parsed.data.orderId, userId: uid },
   });
   if (!order) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  // Allow requesting intent only when the order is still PENDING
-  if (order.status !== "PENDING") {
+  // Allow requesting intent when order is PENDING or already AWAITING_PAYMENT (idempotent reuse)
+  if (order.status !== "PENDING" && order.status !== "AWAITING_PAYMENT") {
     return NextResponse.json(
       { error: "invalid_status", status: order.status },
       { status: 400 }
@@ -59,6 +59,13 @@ export const POST = withRequest(async function POST(req: NextRequest) {
       where: { orderId: order.id, provider: "STRIPE" },
     });
     if (existing) {
+      // Ensure order reflects awaiting payment state
+      if (order.status === "PENDING") {
+        await prisma.order.update({
+          where: { id: order.id },
+          data: { status: "AWAITING_PAYMENT" },
+        });
+      }
       return NextResponse.json({
         orderId: order.id,
         clientSecret: `${existing.providerRef}_secret`,
@@ -82,7 +89,13 @@ export const POST = withRequest(async function POST(req: NextRequest) {
         rawPayload: JSON.stringify({ simulated: true }),
       },
     });
-    // Keep order as PENDING in simulated mode as well
+    // Move order to AWAITING_PAYMENT when intent is created
+    if (order.status === "PENDING") {
+      await prisma.order.update({
+        where: { id: order.id },
+        data: { status: "AWAITING_PAYMENT" },
+      });
+    }
     return NextResponse.json({
       orderId: order.id,
       clientSecret: `${existing.providerRef}_secret`,
@@ -100,6 +113,13 @@ export const POST = withRequest(async function POST(req: NextRequest) {
       const pi = await stripe.paymentIntents.retrieve(
         existingPayment.providerRef
       );
+      // Ensure order reflects awaiting payment state
+      if (order.status === "PENDING") {
+        await prisma.order.update({
+          where: { id: order.id },
+          data: { status: "AWAITING_PAYMENT" },
+        });
+      }
       return NextResponse.json({
         orderId: order.id,
         clientSecret: pi.client_secret,
@@ -141,7 +161,11 @@ export const POST = withRequest(async function POST(req: NextRequest) {
             },
           });
         }
-        // Keep order as PENDING
+        // Move order to AWAITING_PAYMENT
+        await prisma.order.update({
+          where: { id: order.id },
+          data: { status: "AWAITING_PAYMENT" },
+        });
         return NextResponse.json({
           orderId: order.id,
           clientSecret: intent.client_secret,
@@ -189,7 +213,13 @@ export const POST = withRequest(async function POST(req: NextRequest) {
       rawPayload: JSON.stringify({}),
     },
   });
-  // Do not move order to AWAITING_PAYMENT; keep as PENDING until payment succeeds
+  // Move order to AWAITING_PAYMENT once intent is created
+  if (order.status === "PENDING") {
+    await prisma.order.update({
+      where: { id: order.id },
+      data: { status: "AWAITING_PAYMENT" },
+    });
+  }
   return NextResponse.json({
     orderId: order.id,
     clientSecret: intent.client_secret,

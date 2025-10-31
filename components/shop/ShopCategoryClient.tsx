@@ -97,12 +97,12 @@ export function ShopCategoryClient({
             >
               {/* Card Image */}
               {(card.imageUrl || card.image) && (
-                <div className="relative h-48 w-full overflow-hidden">
+                <div className="relative h-48 w-full bg-gray-800">
                   <Image
                     src={card.imageUrl || card.image}
                     alt={card.title || "Category image"}
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 </div>

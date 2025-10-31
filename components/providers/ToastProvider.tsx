@@ -72,25 +72,40 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             key={t.id}
             role="status"
             className={cn(
-              "w-full max-w-sm rounded-md border shadow-sm backdrop-blur bg-white/90 dark:bg-neutral-900/90 dark:border-neutral-700 px-4 py-3 pointer-events-auto flex flex-col gap-1",
-              t.type === "success" && "border-green-500/60",
-              t.type === "error" && "border-red-500/60"
+              "w-full max-w-xl rounded-md border shadow-lg backdrop-blur px-6 py-5 pointer-events-auto flex flex-col gap-2",
+              // Base theme (dark glass)
+              "bg-neutral-900/90 border-neutral-700",
+              // Accents per type
+              t.type === "success" && "border-green-400/50 bg-green-500/10",
+              t.type === "error" && "border-red-400/50 bg-red-500/10",
+              t.type === "info" && "border-white/20 bg-white/10"
             )}
           >
             <div className="flex items-start gap-3">
+              <span
+                className={cn(
+                  "mt-0.5 inline-flex h-6 w-6 items-center justify-center text-base",
+                  t.type === "success" && "text-green-300",
+                  t.type === "error" && "text-red-300",
+                  t.type === "info" && "text-white/70"
+                )}
+                aria-hidden
+              >
+                {t.type === "success" ? "✓" : t.type === "error" ? "!" : "i"}
+              </span>
               <div className="flex-1 min-w-0">
                 {t.title && (
-                  <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400 mb-0.5">
+                  <p className="text-xs font-carbon font-bold uppercase tracking-widest text-white/70 mb-1">
                     {t.title}
                   </p>
                 )}
-                <p className="text-sm leading-snug text-neutral-800 dark:text-neutral-100 break-words">
+                <p className="text-lg leading-snug text-neutral-100 break-words font-carbon">
                   {t.message}
                 </p>
               </div>
               <button
                 onClick={() => dismiss(t.id)}
-                className="text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 text-xs font-medium"
+                className="text-white/80 hover:text-white text-base font-bold"
                 aria-label="Dismiss notification"
               >
                 ✕

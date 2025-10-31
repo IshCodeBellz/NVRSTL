@@ -145,13 +145,40 @@ export function SearchInput({
 
   const currentPlaceholder = placeholder || defaultPlaceholders[variant];
 
+  // Load recent searches from localStorage
+  const loadRecentSearches = useCallback(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const stored = localStorage.getItem("recent-searches");
+      if (stored) {
+        const recent = JSON.parse(stored);
+        setRecentSearches(recent.slice(0, 5));
+      }
+    } catch {
+      // Handle error silently
+    }
+  }, []);
+
+  // Load trending searches
+  const loadTrendingSearches = useCallback(async () => {
+    try {
+      const res = await fetch("/api/search/trending");
+      if (res.ok) {
+        const data = await res.json();
+        setTrendingSearches(data.trending?.slice(0, 5) || []);
+      }
+    } catch {
+      // Handle error silently
+    }
+  }, []);
+
   // Load recent searches and trending on mount
   useEffect(() => {
     if (showRecentSearches || showTrendingSearches) {
       loadRecentSearches();
       loadTrendingSearches();
     }
-  }, [showRecentSearches, showTrendingSearches]);
+  }, [showRecentSearches, showTrendingSearches, loadRecentSearches, loadTrendingSearches]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -182,33 +209,6 @@ export function SearchInput({
       setQuery(controlledValue);
     }
   }, [controlledValue]);
-
-  // Load recent searches from localStorage
-  const loadRecentSearches = useCallback(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const stored = localStorage.getItem("recent-searches");
-      if (stored) {
-        const recent = JSON.parse(stored);
-        setRecentSearches(recent.slice(0, 5));
-      }
-    } catch {
-      // Handle error silently
-    }
-  }, []);
-
-  // Load trending searches
-  const loadTrendingSearches = useCallback(async () => {
-    try {
-      const res = await fetch("/api/search/trending");
-      if (res.ok) {
-        const data = await res.json();
-        setTrendingSearches(data.trending?.slice(0, 5) || []);
-      }
-    } catch {
-      // Handle error silently
-    }
-  }, []);
 
   // Save recent search
   const saveRecentSearch = useCallback((searchQuery: string) => {
@@ -359,6 +359,19 @@ export function SearchInput({
     [onSearch, router, showRecentSearches, saveRecentSearch]
   );
 
+  // Handle suggestion click
+  const handleSuggestionClick = useCallback(
+    (suggestion: SearchSuggestion) => {
+      if (suggestion.type === "product") {
+        router.push(`/product/${suggestion.id}`);
+      } else {
+        handleSearch(suggestion.text);
+      }
+      setIsOpen(false);
+    },
+    [router, handleSearch]
+  );
+
   // Handle keyboard navigation
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -411,20 +424,8 @@ export function SearchInput({
       suggestions,
       handleSearch,
       currentQuery,
+      handleSuggestionClick,
     ]
-  );
-
-  // Handle suggestion click
-  const handleSuggestionClick = useCallback(
-    (suggestion: SearchSuggestion) => {
-      if (suggestion.type === "product") {
-        router.push(`/product/${suggestion.id}`);
-      } else {
-        handleSearch(suggestion.text);
-      }
-      setIsOpen(false);
-    },
-    [router, handleSearch]
   );
 
   // Handle focus

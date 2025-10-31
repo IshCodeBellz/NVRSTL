@@ -7,6 +7,14 @@ import { ExtendedSession } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
+const toNum = (v: unknown) =>
+  v === undefined || v === null || v === ""
+    ? undefined
+    : typeof v === "string"
+    ? Number(v)
+    : (v as number);
+const toStrOrUndef = (v: unknown) => (v === "" ? undefined : (v as any));
+
 const createSchema = z.object({
   code: z
     .string()
@@ -14,12 +22,15 @@ const createSchema = z.object({
     .max(32)
     .transform((s) => s.toUpperCase()),
   kind: z.enum(["FIXED", "PERCENT"]),
-  valueCents: z.number().int().nonnegative().optional(),
-  percent: z.number().int().min(1).max(100).optional(),
-  minSubtotalCents: z.number().int().nonnegative().optional(),
-  usageLimit: z.number().int().min(1).optional(),
-  startsAt: z.string().datetime().optional(),
-  endsAt: z.string().datetime().optional(),
+  valueCents: z.preprocess(toNum, z.number().int().nonnegative()).optional(),
+  percent: z.preprocess(toNum, z.number().int().min(1).max(100)).optional(),
+  minSubtotalCents: z
+    .preprocess(toNum, z.number().int().nonnegative())
+    .optional(),
+  usageLimit: z.preprocess(toNum, z.number().int().min(1)).optional(),
+  // Accept relaxed datetime-local values (e.g., "2025-10-30T12:34") or ISO strings
+  startsAt: z.preprocess(toStrOrUndef, z.string()).optional(),
+  endsAt: z.preprocess(toStrOrUndef, z.string()).optional(),
 });
 
 export async function GET() {

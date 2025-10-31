@@ -111,8 +111,11 @@ export class MFAService {
     const verified = speakeasy.totp.verify({
       secret: mfaDevice.secret,
       encoding: "base32",
-      token,
-      window: 2, // Allow 2 steps before/after current time
+      token: String(token).trim(),
+      digits: 6,
+      step: 30,
+      // Allow a wider window in development to tolerate local clock drift
+      window: process.env.NODE_ENV === "development" ? 6 : 2,
     });
 
     console.log("Token verification result:", verified);
@@ -205,8 +208,10 @@ export class MFAService {
     const verified = speakeasy.totp.verify({
       secret: mfaDevice.secret,
       encoding: "base32",
-      token,
-      window: 2,
+      token: String(token).trim(),
+      digits: 6,
+      step: 30,
+      window: process.env.NODE_ENV === "development" ? 6 : 2,
     });
 
     if (!verified) {

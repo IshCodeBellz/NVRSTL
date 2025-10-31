@@ -34,20 +34,33 @@ export class EmailService {
   }
 
   async sendEmail(message: EmailMessage): Promise<void> {
-    const fromValue =
+    const rawFrom =
       process.env.EMAIL_FROM || process.env.SMTP_FROM || process.env.SMTP_USER;
+    const fromName = process.env.EMAIL_FROM_NAME || process.env.SMTP_FROM_NAME;
+    const fromValue =
+      fromName && rawFrom ? `${fromName} <${rawFrom}>` : rawFrom;
 
     // 0) Prefer MailerSend via unified mailer if configured
     try {
       if (process.env.MAILERSEND_API_KEY) {
         const mailer = getMailer();
         const to = Array.isArray(message.to) ? message.to[0] : message.to;
-        const attachments = message.attachments?.map((a) => ({
-          filename: a.filename || "attachment",
-          content: Buffer.isBuffer((a as any).content)
-            ? (a as any).content.toString("base64")
-            : Buffer.from(String((a as any).content || "")).toString("base64"),
-        }));
+        const attachments = message.attachments?.map((a) => {
+          const raw = (a as any).content;
+          const encoding = (a as any).encoding;
+          const base64 =
+            encoding === "base64"
+              ? typeof raw === "string"
+                ? raw
+                : Buffer.from(raw).toString("utf8")
+              : Buffer.isBuffer(raw)
+              ? raw.toString("base64")
+              : Buffer.from(String(raw || "")).toString("base64");
+          return {
+            filename: a.filename || "attachment",
+            content: base64,
+          };
+        });
         await mailer.send({
           to,
           subject: message.subject,
@@ -72,12 +85,22 @@ export class EmailService {
     // 2) Try Resend if configured
     if (this.resend) {
       try {
-        const attachments = message.attachments?.map((a) => ({
-          filename: a.filename || "attachment.csv",
-          content: Buffer.isBuffer((a as any).content)
-            ? (a as any).content.toString("base64")
-            : Buffer.from(String((a as any).content)).toString("base64"),
-        }));
+        const attachments = message.attachments?.map((a) => {
+          const raw = (a as any).content;
+          const encoding = (a as any).encoding;
+          const base64 =
+            encoding === "base64"
+              ? typeof raw === "string"
+                ? raw
+                : Buffer.from(raw).toString("utf8")
+              : Buffer.isBuffer(raw)
+              ? raw.toString("base64")
+              : Buffer.from(String(raw || "")).toString("base64");
+          return {
+            filename: a.filename || "attachment.csv",
+            content: base64,
+          };
+        });
         const options: any = {
           from: fromValue || "no-reply@example.com",
           to: Array.isArray(message.to) ? message.to : [message.to],

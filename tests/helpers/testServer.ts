@@ -90,7 +90,7 @@ export async function resetDb() {
   const prodPatterns = [
     "railway",
     "prod",
-    "nvrstl.com",
+    "nvrstl.co.uk",
     "hopper.proxy.rlwy.net",
   ];
   if (prodPatterns.some((p) => dbUrl.includes(p))) {

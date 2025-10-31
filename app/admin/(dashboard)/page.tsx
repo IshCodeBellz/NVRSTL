@@ -147,6 +147,7 @@ export default async function AdminHomePage() {
               <ActionLink href="/admin/cms" text="Content Management" />
               <ActionLink href="/admin/reviews" text="Review Moderation" />
               <ActionLink href="/admin/analytics" text="Search Analytics" />
+              <ActionLink href="/admin/discount-codes" text="Discount Codes" />
               <ActionLink
                 href="/admin/personalization"
                 text="Personalization"

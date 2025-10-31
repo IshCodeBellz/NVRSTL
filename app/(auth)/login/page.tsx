@@ -68,6 +68,22 @@ function LoginForm() {
             "Invalid email or password. Please check your credentials and try again."
           );
         } else {
+          // Some NextAuth adapters return generic CredentialsSignin. If this account
+          // has MFA enabled, redirect to MFA anyway.
+          try {
+            const s = await fetch(`/api/auth/mfa/status?email=${encodeURIComponent(email)}`);
+            if (s.ok) {
+              const d = await s.json();
+              if (d?.mfaEnabled) {
+                router.push(
+                  `/mfa-verify?email=${encodeURIComponent(email)}&callbackUrl=${encodeURIComponent(
+                    callbackUrl
+                  )}`
+                );
+                return;
+              }
+            }
+          } catch {}
           setError("Sign in failed. Please try again.");
         }
       } else if (res?.ok) {

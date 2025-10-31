@@ -52,13 +52,13 @@ export default function ContactPage() {
               </p>
               <div className="space-y-2">
                 <p className="text-white font-carbon uppercase tracking-wider">
-                  General: hello@nvrstl.com
+                  General: hello@nvrstl.co.uk
                 </p>
                 <p className="text-white font-carbon uppercase tracking-wider">
-                  Support: support@nvrstl.com
+                  Support: support@nvrstl.co.uk
                 </p>
                 <p className="text-white font-carbon uppercase tracking-wider">
-                  Press: press@nvrstl.com
+                  Press: press@nvrstl.co.uk
                 </p>
               </div>
             </div>

@@ -167,12 +167,12 @@ export function CategoryProductCard({
           {hasSizes && (
             <div
               data-size-popover
-              className="absolute top-8 right-0 z-30 hidden data-[open]:flex flex-col gap-1 bg-white shadow-lg border border-neutral-200 rounded p-2 min-w-[120px]"
+              className="absolute top-8 right-0 z-30 hidden data-[open]:flex flex-col gap-2 bg-neutral-900/95 shadow-xl border border-neutral-700 rounded-md p-3 min-w-[140px]"
             >
-              <div className="text-[10px] uppercase tracking-wide font-semibold text-neutral-500 pb-1 border-b mb-1">
+              <div className="text-[10px] font-carbon font-bold uppercase tracking-widest text-white/70 pb-2 border-b border-white/10">
                 Select size
               </div>
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-2">
                 {product.sizes?.map((s) => (
                   <button
                     key={s.label}
@@ -197,7 +197,7 @@ export function CategoryProductCard({
                         ) as HTMLElement) || null;
                       host?.removeAttribute("data-open");
                     }}
-                    className="px-2 py-1 text-[11px] rounded border border-neutral-300 hover:bg-neutral-100 active:bg-neutral-200"
+                    className="px-2.5 py-1.5 text-[11px] rounded border border-white/20 text-white/90 hover:bg-white/10 active:bg-white/15"
                   >
                     {s.label}
                   </button>
@@ -211,7 +211,7 @@ export function CategoryProductCard({
                     ) as HTMLElement) || null;
                   host?.removeAttribute("data-open");
                 }}
-                className="mt-2 text-[10px] text-neutral-500 hover:text-neutral-700"
+                className="mt-1.5 text-[11px] text-white/60 hover:text-white"
               >
                 Cancel
               </button>

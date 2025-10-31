@@ -89,10 +89,9 @@ export default function DiscountCodesClient({ initial }: Props) {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-xl font-semibold">Discount Codes</h1>
       <form
         id="create-form"
-        className="grid gap-2 md:grid-cols-8 text-xs border p-4 rounded items-end"
+        className="grid gap-2 md:grid-cols-8 text-xs border border-gray-200 bg-white p-4 rounded items-end"
         onSubmit={(e) => {
           e.preventDefault();
           const form = e.currentTarget as HTMLFormElement;
@@ -155,9 +154,9 @@ export default function DiscountCodesClient({ initial }: Props) {
           {creating ? "..." : "Create"}
         </button>
       </form>
-      <table className="w-full text-xs border">
+      <table className="w-full text-xs border border-gray-200 bg-white rounded">
         <thead>
-          <tr className="bg-neutral-100 text-left">
+          <tr className="bg-gray-50 text-left">
             <th className="p-2">Code</th>
             <th className="p-2">Kind</th>
             <th className="p-2">Value/Percent</th>

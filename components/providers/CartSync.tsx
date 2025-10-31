@@ -86,46 +86,20 @@ export function CartSync() {
           }
           if (identical) return; // nothing to sync/merge
 
-          // Merge strategy: start from server (authoritative), add any local-only lines.
-          // If a line exists in both, keep the larger quantity (avoid double adding).
-          const merged = new Map<string, number>();
-          for (const l of serverLines) {
-            merged.set(lineIdFor(l.productId, l.size), l.qty);
-          }
-          for (const i of items) {
-            const id = lineIdFor(i.productId, i.size, i.lineKey);
-            if (!merged.has(id)) {
-              merged.set(id, i.qty);
-            } else {
-              merged.set(
-                id,
-                Math.min(99, Math.max(merged.get(id) || 0, i.qty))
-              );
-            }
-          }
-          const linesPayload = Array.from(merged.entries()).map(([id, qty]) => {
-            const [productId, size] = id.split("__");
-            return { productId, size, qty };
-          });
+          // Prefer local items as source of truth to avoid surprise overwrites after session refresh.
+          const linesPayload = items.map((i) => ({
+            productId: i.productId,
+            size: i.size,
+            qty: i.qty,
+            customizations: (i as any).customizations || undefined,
+            customKey: (i as any).lineKey || undefined,
+          }));
           await fetch("/api/cart", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ lines: linesPayload }),
           });
-          clear();
-          for (const [id, qty] of merged.entries()) {
-            const [productId, size] = id.split("__");
-            addItem(
-              {
-                productId,
-                size,
-                name: "",
-                priceCents: 0,
-                image: "/placeholder.svg",
-              },
-              qty
-            );
-          }
+          // Keep local unchanged
         }
       } catch {
         // ignore errors

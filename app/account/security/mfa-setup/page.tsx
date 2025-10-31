@@ -2,7 +2,7 @@
 export const dynamic = "force-dynamic";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { QRCodeSVG } from "qrcode.react";
 
 export default function MFASetupPage() {
   const [step, setStep] = useState<"loading" | "setup" | "verify" | "complete">(
@@ -24,9 +24,9 @@ export default function MFASetupPage() {
         });
 
         if (res.ok) {
-          const data = await res.json();
-          setQrCode(data.qrCode);
-          setSecret(data.secret);
+          const json = await res.json();
+          setQrCode(json.data?.qrCodeUrl || "");
+          setSecret(json.data?.secret || "");
           setStep("setup");
         } else {
           setError("Failed to initialize MFA setup");
@@ -53,7 +53,7 @@ export default function MFASetupPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setBackupCodes(data.backupCodes || []);
+        setBackupCodes(data.data?.backupCodes || []);
         setStep("complete");
       } else {
         setError(
@@ -140,13 +140,7 @@ export default function MFASetupPage() {
                 <div className="flex-shrink-0">
                   {qrCode && (
                     <div className="p-4 bg-white border rounded-lg">
-                      <Image
-                        src={qrCode}
-                        alt="QR Code"
-                        width={192}
-                        height={192}
-                        className="w-48 h-48"
-                      />
+                      <QRCodeSVG value={qrCode} size={192} includeMargin />
                     </div>
                   )}
                 </div>

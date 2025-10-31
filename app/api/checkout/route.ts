@@ -51,6 +51,8 @@ const payloadSchema = z.object({
   email: z.string().email().optional(),
   discountCode: z.string().trim().toUpperCase().optional(),
   idempotencyKey: z.string().min(8).max(100).optional(),
+  // Whether to store addresses to the user's address book
+  saveAddresses: z.boolean().optional(),
   // Optional fallback: client can send current cart lines so server can rebuild if persistence lagged
   lines: z.array(lineSchema).max(200).optional(),
 });
@@ -205,6 +207,7 @@ export const POST = withRequest(async function POST(req: NextRequest) {
     email,
     discountCode,
     idempotencyKey,
+    saveAddresses,
   } = parsed.data;
 
   // Determine selected currency: prefer cookie set by client, else derive from destination country
@@ -340,20 +343,59 @@ export const POST = withRequest(async function POST(req: NextRequest) {
   let result;
   try {
     result = await prisma.$transaction(async (tx) => {
-      const shipping = await tx.address.create({
-        data: { ...shippingAddress, userId: uid },
+      // Attempt to reuse an identical saved address for this user
+      const existingShipping = await tx.address.findFirst({
+        where: {
+          userId: uid,
+          fullName: shippingAddress.fullName,
+          line1: shippingAddress.line1,
+          line2: shippingAddress.line2 || null,
+          city: shippingAddress.city,
+          region: shippingAddress.region || null,
+          postalCode: shippingAddress.postalCode,
+          country: shippingAddress.country,
+          phone: shippingAddress.phone || null,
+        },
       });
+      const shipping =
+        existingShipping ||
+        (await tx.address.create({
+          data: {
+            ...shippingAddress,
+            // Only save to address book if opted in
+            userId: saveAddresses ? uid : null,
+          },
+        }));
       let billing = shipping;
       if (billingAddress) {
-        billing = await tx.address.create({
-          data: { ...billingAddress, userId: uid },
+        const existingBilling = await tx.address.findFirst({
+          where: {
+            userId: uid,
+            fullName: billingAddress.fullName,
+            line1: billingAddress.line1,
+            line2: billingAddress.line2 || null,
+            city: billingAddress.city,
+            region: billingAddress.region || null,
+            postalCode: billingAddress.postalCode,
+            country: billingAddress.country,
+            phone: billingAddress.phone || null,
+          },
         });
+        billing =
+          existingBilling ||
+          (await tx.address.create({
+            data: {
+              ...billingAddress,
+              userId: saveAddresses ? uid : null,
+            },
+          }));
       }
 
       const order = await tx.order.create({
         data: {
           userId: uid,
-          status: "AWAITING_PAYMENT",
+          // Do not expose an 'awaiting payment' state to customers; mark as PENDING
+          status: "PENDING",
           checkoutIdempotencyKey: idempotencyKey,
           subtotalCents: subtotal,
           discountCents,
@@ -497,96 +539,7 @@ export const POST = withRequest(async function POST(req: NextRequest) {
     // Don't fail the order creation for event logging issues
   }
 
-  // Send rich order confirmation email (includes line items & addresses)
-  if (session && session.user?.email && !testUser) {
-    try {
-      const userId = session.user.id;
-      if (userId) {
-        const [user, full] = await Promise.all([
-          prisma.user.findUnique({ where: { id: userId } }),
-          prisma.order.findUnique({
-            where: { id: result.id },
-            include: {
-              items: {
-                include: {
-                  product: {
-                    include: {
-                      images: {
-                        orderBy: { position: "asc" },
-                      },
-                    },
-                  },
-                },
-              },
-              shippingAddress: true,
-              billingAddress: true,
-            },
-          }),
-        ]);
-        if (user && full) {
-          await sendRichOrderConfirmation(user, {
-            orderId: full.id,
-            currency: full.currency,
-            lines: full.items.map((i) => ({
-              name: i.nameSnapshot,
-              sku: i.sku,
-              size: i.size,
-              qty: i.qty,
-              unitPriceCents: i.unitPriceCents,
-              lineTotalCents: i.lineTotalCents,
-              imageUrl: i.product?.images?.length
-                ? i.product.images[0]?.url
-                : null,
-              customizations: (() => {
-                if (!i.customizations) return undefined;
-                try {
-                  return JSON.parse(i.customizations) as JerseyCustomization;
-                } catch {
-                  return undefined;
-                }
-              })(),
-            })),
-            subtotalCents: full.subtotalCents,
-            discountCents: full.discountCents,
-            taxCents: full.taxCents,
-            shippingCents: full.shippingCents,
-            totalCents: full.totalCents,
-            shipping: {
-              fullName: full.shippingAddress!.fullName,
-              line1: full.shippingAddress!.line1,
-              line2: full.shippingAddress!.line2 || undefined,
-              city: full.shippingAddress!.city,
-              region: full.shippingAddress!.region || undefined,
-              postalCode: full.shippingAddress!.postalCode,
-              country: full.shippingAddress!.country,
-              phone: full.shippingAddress!.phone || undefined,
-            },
-            billing: full.billingAddress
-              ? {
-                  fullName: full.billingAddress.fullName,
-                  line1: full.billingAddress.line1,
-                  line2: full.billingAddress.line2 || undefined,
-                  city: full.billingAddress.city,
-                  region: full.billingAddress.region || undefined,
-                  postalCode: full.billingAddress.postalCode,
-                  country: full.billingAddress.country,
-                  phone: full.billingAddress.phone || undefined,
-                }
-              : undefined,
-            estimatedDelivery: "3–5 business days",
-          });
-        } else if (user) {
-          // Fallback to legacy minimal email if relation load failed
-          await sendOrderConfirmation(user, result);
-        }
-      }
-    } catch (error) {
-      logError("order confirmation email failed", {
-        error: error instanceof Error ? error.message : String(error),
-        orderId: result.id,
-      });
-    }
-  }
+  // Do not send any confirmation email at checkout; only send after payment capture
   // TODO: invoke payment intent creation (Stripe) here and update order.status => AWAITING_PAYMENT
 
   return NextResponse.json({

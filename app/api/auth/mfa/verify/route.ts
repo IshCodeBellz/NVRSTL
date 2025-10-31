@@ -58,11 +58,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    let backupCodes: string[] | undefined;
+    if (action === "setup" && !result.backupCodeUsed) {
+      // return backup codes for display/download after enabling
+      const device = await (await import("@/lib/server/prisma")).prisma.mfaDevice.findFirst({
+        where: { userId: session.user.id, method: "TOTP", status: "ENABLED" },
+        select: { backupCodes: true },
+      });
+      if (device?.backupCodes) {
+        try {
+          backupCodes = JSON.parse(device.backupCodes);
+        } catch {}
+      }
+    }
+
     return NextResponse.json({
       success: true,
       data: {
         verified: true,
         backupCodeUsed: result.backupCodeUsed || false,
+        backupCodes,
         message:
           action === "setup"
             ? "MFA has been successfully enabled for your account"

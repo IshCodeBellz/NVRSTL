@@ -126,7 +126,8 @@ export async function sendDailyOrderShippingReport(date = new Date()) {
     attachments: [
       {
         filename: `orders-shipping-${dateStr}.csv`,
-        content: csv,
+        content: Buffer.from(csv, "utf8").toString("base64"),
+        encoding: "base64",
         contentType: "text/csv",
       },
     ],

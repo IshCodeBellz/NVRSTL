@@ -76,7 +76,9 @@ function checkMailerSendConfig() {
   // Check API Key
   if (mailersendApiKey) {
     console.log("✅ MAILERSEND_API_KEY: Configured");
-    console.log("   Key value is present and valid format (not shown for security).");
+    console.log(
+      "   Key value is present and valid format (not shown for security)."
+    );
   } else {
     console.log("❌ MAILERSEND_API_KEY: Not configured");
     console.log("   Set MAILERSEND_API_KEY environment variable");
@@ -89,7 +91,7 @@ function checkMailerSendConfig() {
     console.log(`✅ EMAIL_FROM: ${emailFrom}`);
   } else {
     console.log(
-      "⚠️  EMAIL_FROM: Not set (will use default: noreply@nvrstl.com)"
+      "⚠️  EMAIL_FROM: Not set (will use default: no-reply@nvrstl.co.uk)"
     );
   }
 

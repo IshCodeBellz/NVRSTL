@@ -68,6 +68,7 @@ export default function CheckoutClient() {
     isDefault: boolean;
   };
   const [addresses, setAddresses] = useState<AddressDTO[]>([]);
+  const [saveAddresses, setSaveAddresses] = useState<boolean>(true);
   const [selectedAddressId, setSelectedAddressId] = useState<
     string | "custom" | null
   >(null);
@@ -160,7 +161,8 @@ export default function CheckoutClient() {
           lastValidated.current = code.toUpperCase();
           setDiscountStatus({
             state: "valid",
-            kind: data.kind,
+            // normalise API kind ("FIXED"/"PERCENT") to lowercase for UI logic
+            kind: String(data.kind || "").toLowerCase(),
             valueCents: data.valueCents,
             percent: data.percent,
             minSubtotalCents: data.minSubtotalCents,
@@ -221,6 +223,7 @@ export default function CheckoutClient() {
           email,
           discountCode: codeToSend,
           idempotencyKey,
+          saveAddresses,
           // Provide lines as safety net if server cart lost (race / db reset)
           lines: items.map((i) => ({
             productId: i.productId,
@@ -334,6 +337,17 @@ export default function CheckoutClient() {
             <span>{formatPrice(primed.totalCents)}</span>
           </div>
         </div>
+
+        {/* Save address preference */}
+        <label className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
+          <input
+            type="checkbox"
+            checked={saveAddresses}
+            onChange={(e) => setSaveAddresses(e.target.checked)}
+            className="h-4 w-4 rounded border-neutral-400"
+          />
+          Save this address to my account
+        </label>
         <button
           className="btn-primary w-full mb-3"
           onClick={async () => {
@@ -559,6 +573,18 @@ export default function CheckoutClient() {
             setShipping((s) => ({ ...s, phone: e.target.value }))
           }
         />
+        {/* Save address preference */}
+        <div className="md:col-span-2 -mt-1">
+          <label className="inline-flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300 select-none">
+            <input
+              type="checkbox"
+              checked={saveAddresses}
+              onChange={(e) => setSaveAddresses(e.target.checked)}
+              className="h-4 w-4 rounded border-neutral-400"
+            />
+            Save this address to my account
+          </label>
+        </div>
         <div className="md:col-span-2 mt-4 font-medium text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
           <span>Discount code</span>
         </div>

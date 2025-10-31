@@ -13,6 +13,15 @@ export const dynamic = "force-dynamic";
 
 const schema = z.object({ orderId: z.string() });
 
+function getErrorMessage(error: unknown): string {
+  if (typeof error === "string") return error;
+  if (error && typeof error === "object") {
+    const maybe = error as { message?: string; raw?: { message?: string } };
+    return maybe.message || maybe.raw?.message || "Unknown error";
+  }
+  return "Unknown error";
+}
+
 export const POST = withRequest(async function POST(req: NextRequest) {
   let uid: string | undefined;
   const testUser =
@@ -35,8 +44,8 @@ export const POST = withRequest(async function POST(req: NextRequest) {
     where: { id: parsed.data.orderId, userId: uid },
   });
   if (!order) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  // Allow requesting intent when order is still PENDING or already moved to AWAITING_PAYMENT (idempotent retrieval)
-  if (order.status !== "PENDING" && order.status !== "AWAITING_PAYMENT") {
+  // Allow requesting intent only when the order is still PENDING
+  if (order.status !== "PENDING") {
     return NextResponse.json(
       { error: "invalid_status", status: order.status },
       { status: 400 }
@@ -73,13 +82,7 @@ export const POST = withRequest(async function POST(req: NextRequest) {
         rawPayload: JSON.stringify({ simulated: true }),
       },
     });
-    // Move order to AWAITING_PAYMENT if still pending
-    if (order.status === "PENDING") {
-      await prisma.order.update({
-        where: { id: order.id },
-        data: { status: "AWAITING_PAYMENT" },
-      });
-    }
+    // Keep order as PENDING in simulated mode as well
     return NextResponse.json({
       orderId: order.id,
       clientSecret: `${existing.providerRef}_secret`,
@@ -103,7 +106,7 @@ export const POST = withRequest(async function POST(req: NextRequest) {
         paymentIntentId: pi.id,
         reused: true,
       });
-    } catch (err: any) {
+    } catch {
       // existing placeholder (likely simulated) – create real intent then UPDATE record instead of creating duplicate
       try {
         const intent = await stripe.paymentIntents.create({
@@ -112,52 +115,44 @@ export const POST = withRequest(async function POST(req: NextRequest) {
           metadata: { orderId: order.id },
           automatic_payment_methods: { enabled: true },
         });
-      const stillExists = await prisma.paymentRecord.findUnique({
-        where: { id: existingPayment.id },
-      });
-      if (stillExists) {
-        await prisma.paymentRecord.update({
+        const stillExists = await prisma.paymentRecord.findUnique({
           where: { id: existingPayment.id },
-          data: {
-            providerRef: intent.id,
-            rawPayload: JSON.stringify({
-              upgradedFrom: existingPayment.providerRef,
-            }),
-          },
         });
-      } else {
-        await prisma.paymentRecord.create({
-          data: {
-            orderId: order.id,
-            provider: "STRIPE",
-            providerRef: intent.id,
-            amountCents: order.totalCents,
-            currency: order.currency,
-            status: "PAYMENT_PENDING",
-            rawPayload: JSON.stringify({ createdAfterMissing: true }),
-          },
+        if (stillExists) {
+          await prisma.paymentRecord.update({
+            where: { id: existingPayment.id },
+            data: {
+              providerRef: intent.id,
+              rawPayload: JSON.stringify({
+                upgradedFrom: existingPayment.providerRef,
+              }),
+            },
+          });
+        } else {
+          await prisma.paymentRecord.create({
+            data: {
+              orderId: order.id,
+              provider: "STRIPE",
+              providerRef: intent.id,
+              amountCents: order.totalCents,
+              currency: order.currency,
+              status: "PAYMENT_PENDING",
+              rawPayload: JSON.stringify({ createdAfterMissing: true }),
+            },
+          });
+        }
+        // Keep order as PENDING
+        return NextResponse.json({
+          orderId: order.id,
+          clientSecret: intent.client_secret,
+          paymentIntentId: intent.id,
+          upgraded: true,
         });
-      }
-      if (order.status === "PENDING") {
-        await prisma.order.update({
-          where: { id: order.id },
-          data: { status: "AWAITING_PAYMENT" },
-        });
-      }
-      return NextResponse.json({
-        orderId: order.id,
-        clientSecret: intent.client_secret,
-        paymentIntentId: intent.id,
-        upgraded: true,
-      });
-      } catch (createErr: any) {
+      } catch (createErr: unknown) {
         return NextResponse.json(
           {
             error: "stripe_error",
-            message:
-              createErr?.message ||
-              createErr?.raw?.message ||
-              "Failed to create payment intent",
+            message: getErrorMessage(createErr),
           },
           { status: 400 }
         );
@@ -173,12 +168,11 @@ export const POST = withRequest(async function POST(req: NextRequest) {
       metadata: { orderId: order.id },
       automatic_payment_methods: { enabled: true },
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
       {
         error: "stripe_error",
-        message:
-          err?.message || err?.raw?.message || "Failed to create payment intent",
+        message: getErrorMessage(err),
       },
       { status: 400 }
     );
@@ -195,10 +189,7 @@ export const POST = withRequest(async function POST(req: NextRequest) {
       rawPayload: JSON.stringify({}),
     },
   });
-  await prisma.order.update({
-    where: { id: order.id },
-    data: { status: "AWAITING_PAYMENT" },
-  });
+  // Do not move order to AWAITING_PAYMENT; keep as PENDING until payment succeeds
   return NextResponse.json({
     orderId: order.id,
     clientSecret: intent.client_secret,

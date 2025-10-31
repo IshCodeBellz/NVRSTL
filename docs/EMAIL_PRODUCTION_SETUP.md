@@ -28,7 +28,7 @@ MAILERSEND_API_KEY="mlsn.xxxxxxxxxxxxx"
 
 ```bash
 # Set in Railway environment variables
-EMAIL_FROM=NVRSTL <no-reply@nvrstl.com>
+EMAIL_FROM=NVRSTL <no-reply@nvrstl.co.uk>
 RESEND_API_KEY=yre_5X19u9fh_HvLJgzHZHskBKV2FGMKr6HtS
 ```
 
@@ -36,7 +36,7 @@ RESEND_API_KEY=yre_5X19u9fh_HvLJgzHZHskBKV2FGMKr6HtS
 
 ```bash
 # In Vercel dashboard or vercel.json
-EMAIL_FROM="NVRSTL <no-reply@nvrstl.com>"
+EMAIL_FROM="NVRSTL <no-reply@nvrstl.co.uk>"
 RESEND_API_KEY="yre_5X19u9fh_HvLJgzHZHskBKV2FGMKr6HtS"
 ```
 
@@ -44,7 +44,7 @@ RESEND_API_KEY="yre_5X19u9fh_HvLJgzHZHskBKV2FGMKr6HtS"
 
 ```bash
 # In Netlify environment variables
-EMAIL_FROM=NVRSTL <no-reply@nvrstl.com>
+EMAIL_FROM=NVRSTL <no-reply@nvrstl.co.uk>
 RESEND_API_KEY=yre_5X19u9fh_HvLJgzHZHskBKV2FGMKr6HtS
 ```
 
@@ -135,7 +135,7 @@ console.error("[MAIL:resend_error]", status, body);
 
 ### Domain Authentication
 
-- **SPF Record**: Added for nvrstl.com
+- **SPF Record**: Added for nvrstl.co.uk
 - **DKIM**: Configured for email authentication
 - **DMARC**: Set up for enhanced security
 

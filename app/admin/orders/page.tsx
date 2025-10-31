@@ -8,7 +8,6 @@ export const dynamic = "force-dynamic";
 
 const ALLOWED = [
   "PENDING",
-  "AWAITING_PAYMENT",
   "PAID",
   "FULFILLING",
   "SHIPPED",

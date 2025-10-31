@@ -140,13 +140,13 @@ export function DynamicCategories({
             className="group relative bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl"
             aria-label={`Shop ${cat.label}`}
           >
-            <div className="aspect-[4/5] relative overflow-hidden bg-gray-700">
+            <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 bg-gray-700">
               <Image
                 src={cat.img}
                 alt={cat.label}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
-                className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
+                className="object-contain object-center"
               />
             </div>
             <div className="p-4 md:p-6">

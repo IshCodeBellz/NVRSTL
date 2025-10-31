@@ -1,5 +1,6 @@
 // Simple email abstraction with MailerSend provider in production
 import type { Order, User } from "@prisma/client";
+import { emailService } from "@/lib/server/email";
 import { formatPriceCents } from "@/lib/money";
 import type { JerseyCustomization } from "@/lib/types";
 
@@ -133,7 +134,7 @@ export function getMailer(): Mailer {
   const isCiOrTest =
     process.env.CI === "true" || process.env.NODE_ENV === "test";
   if (!isCiOrTest && process.env.MAILERSEND_API_KEY) {
-    const fromEmail = process.env.EMAIL_FROM || "noreply@nvrstl.com";
+    const fromEmail = process.env.EMAIL_FROM || "no-reply@nvrstl.co.uk";
     const fromName = process.env.EMAIL_FROM_NAME || "NVRSTL";
     const driver = new MailerSendDriver(
       process.env.MAILERSEND_API_KEY,
@@ -438,10 +439,9 @@ export async function sendRichOrderConfirmation(
   user: User,
   payload: RichOrderEmailPayload
 ) {
-  const mailer = getMailer();
   const html = buildRichOrderConfirmationHtml(payload);
   const text = buildRichOrderConfirmationText(payload);
-  await mailer.send({
+  await emailService.sendEmail({
     to: user.email,
     subject: `Order #${payload.orderId} confirmation`,
     text,
@@ -480,9 +480,8 @@ export function buildEmailVerificationHtml(url: string) {
 }
 
 export async function sendOrderConfirmation(user: User, order: Order) {
-  const mailer = getMailer();
   const html = buildOrderConfirmationHtml(order);
-  await mailer.send({
+  await emailService.sendEmail({
     to: user.email,
     subject: `Order #${order.id} confirmation`,
     text: `We received your order totaling ${formatPriceCents(
@@ -496,9 +495,8 @@ export async function sendOrderConfirmation(user: User, order: Order) {
 }
 
 export async function sendPaymentReceipt(user: User, order: Order) {
-  const mailer = getMailer();
   const html = buildPaymentReceiptHtml(order);
-  await mailer.send({
+  await emailService.sendEmail({
     to: user.email,
     subject: `Payment received for order #${order.id}`,
     text: `Your payment for ${formatPriceCents(order.totalCents, {

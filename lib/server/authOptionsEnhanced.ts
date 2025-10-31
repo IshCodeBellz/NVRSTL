@@ -37,6 +37,37 @@ export const authOptionsEnhanced: NextAuthOptions = {
         );
         process.stdout.write("🔐 Enhanced Auth: Attempting login\n");
 
+        // Fast path: MFA-only sign in (second step). When the user comes from the MFA page
+        // we allow authenticating with email + mfaCode (no password) as the password was
+        // already required in the first step.
+        if (
+          credentials?.email &&
+          !credentials?.password &&
+          (credentials as any).mfaCode
+        ) {
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email.toLowerCase() },
+          });
+          if (!user || !user.mfaEnabled) {
+            throw new Error("invalid_credentials");
+          }
+          const { MFAService } = await import("@/lib/server/mfa");
+          const result = await MFAService.verifyMFA(
+            user.id,
+            String((credentials as any).mfaCode)
+          );
+          if (!result.success) {
+            throw new Error("invalid_mfa_code");
+          }
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name || user.email,
+            isAdmin: user.isAdmin,
+            emailVerified: !!user.emailVerified,
+          } as any;
+        }
+
         if (!credentials?.email || !credentials?.password) {
           console.log("❌ Enhanced Auth: Missing credentials");
           console.error("❌ Enhanced Auth: Missing credentials");
@@ -141,10 +172,27 @@ export const authOptionsEnhanced: NextAuthOptions = {
             return null;
           }
 
-          // Check MFA if enabled (placeholder for now due to Prisma sync issues)
-          // if (user.mfaEnabled && !credentials.mfaToken) {
-          //   throw new Error('MFA_REQUIRED');
-          // }
+          // Enforce MFA for admins (or any user with MFA enabled)
+          const mfaToken =
+            (credentials as any).mfaToken || (credentials as any).mfaCode;
+          if (user.mfaEnabled) {
+            if (!mfaToken) {
+              // Signal client to redirect to MFA verification step
+              throw new Error("mfa_required");
+            }
+            try {
+              const result = await (
+                await import("@/lib/server/mfa")
+              ).MFAService.verifyMFA(user.id, String(mfaToken));
+              if (!result.success) {
+                throw new Error("invalid_mfa_code");
+              }
+            } catch (err) {
+              const msg =
+                err instanceof Error ? err.message : "invalid_mfa_code";
+              throw new Error(msg);
+            }
+          }
 
           console.log(
             "✅ Enhanced Auth: Password valid, resetting failed attempts"

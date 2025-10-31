@@ -24,7 +24,21 @@ export async function PATCH(
     "startsAt",
     "endsAt",
   ]) {
-    if (key in data) updatable[key] = data[key];
+    if (!(key in data)) continue;
+    const v = (data as any)[key];
+    if (key === "startsAt" || key === "endsAt") {
+      updatable[key] = v ? new Date(v as string) : null;
+    } else if (
+      key === "valueCents" ||
+      key === "percent" ||
+      key === "usageLimit" ||
+      key === "minSubtotalCents"
+    ) {
+      updatable[key] =
+        v === undefined || v === null || v === "" ? null : Number(v);
+    } else {
+      updatable[key] = v;
+    }
   }
   try {
     const updated = await prisma.discountCode.update({

@@ -21,7 +21,7 @@
     "prisma:migrate:reset": "dotenv -e .env.local -- prisma migrate reset",
     "prisma:db:push": "dotenv -e .env.local -- prisma db push",
     "diagnose:schema": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/diagnose-schema.ts",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate || npx prisma generate",
     "deploy:setup": "prisma migrate deploy && prisma generate",
     "test": "NODE_ENV=test jest",
     "test:serial": "NODE_ENV=test JEST_SERIAL=1 jest",
@@ -67,6 +67,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.17.1",
+    "prisma": "^6.17.1",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-select": "^2.2.6",
     "@sentry/nextjs": "^10.22.0",

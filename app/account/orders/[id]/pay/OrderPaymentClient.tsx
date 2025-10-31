@@ -29,6 +29,14 @@ export default function OrderPaymentClient(props: OrderPaymentClientProps) {
   const [loading, setLoading] = useState(true);
   const [retry, setRetry] = useState(0);
 
+  const options = useMemo(
+    () => ({
+      clientSecret: clientSecret ?? undefined,
+      appearance: { theme: "stripe" as const },
+    }),
+    [clientSecret]
+  );
+
   useEffect(() => {
     let cancelled = false;
     async function primeIntent() {
@@ -102,11 +110,6 @@ export default function OrderPaymentClient(props: OrderPaymentClientProps) {
       </div>
     );
   }
-
-  const options = useMemo(
-    () => ({ clientSecret, appearance: { theme: "stripe" as const } }),
-    [clientSecret]
-  );
 
   return (
     <Elements stripe={stripePromise} options={options}>

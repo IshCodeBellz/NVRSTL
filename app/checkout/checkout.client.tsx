@@ -159,10 +159,15 @@ export default function CheckoutClient() {
           });
         } else {
           lastValidated.current = code.toUpperCase();
+          // normalise API kind ("FIXED"/"PERCENT") to lowercase for UI logic
+          const normalizedKind = String(data.kind || "").toLowerCase();
+          const kind: "fixed" | "percent" =
+            normalizedKind === "fixed" || normalizedKind === "percent"
+              ? normalizedKind
+              : "fixed"; // default fallback
           setDiscountStatus({
             state: "valid",
-            // normalise API kind ("FIXED"/"PERCENT") to lowercase for UI logic
-            kind: String(data.kind || "").toLowerCase(),
+            kind,
             valueCents: data.valueCents,
             percent: data.percent,
             minSubtotalCents: data.minSubtotalCents,

@@ -19,6 +19,7 @@ export interface OrderEventMetadata {
   paymentFailureReason?: string;
 
   // Order pricing fields
+  currency?: string;
   subtotalCents?: number;
   discountCents?: number;
   taxCents?: number;
@@ -42,6 +43,7 @@ export interface OrderEventMetadata {
     operation: "decrement" | "restore" | "adjust";
   }[];
   totalQuantity?: number;
+  restoreSucceeded?: boolean;
 
   // Status change specific
   previousStatus?: string;

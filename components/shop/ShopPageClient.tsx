@@ -30,29 +30,52 @@ function cleanImageUrl(url: string | null | undefined): string | null {
     return null;
   }
 
-  // Convert GitHub blob URLs to raw URLs
-  let finalUrl = normalizedUrl;
-  if (finalUrl.includes("github.com/") && finalUrl.includes("/blob/")) {
-    finalUrl = finalUrl
-      .replace("/blob/", "/")
-      .replace("github.com", "raw.githubusercontent.com");
-  }
-
-  // Filter out invalid GitHub URLs that aren't raw
-  if (
-    finalUrl.includes("github.com/") &&
-    !finalUrl.includes("raw.githubusercontent.com")
-  ) {
-    return null;
-  }
-
-  // Validate URL format
+  // Validate URL format first
+  let urlObj: URL;
   try {
-    new URL(finalUrl);
-    return finalUrl;
+    urlObj = new URL(normalizedUrl);
   } catch {
     return null;
   }
+
+  // Only allow HTTPS
+  if (urlObj.protocol !== "https:") {
+    return null;
+  }
+
+  // Convert GitHub blob URLs to raw URLs using proper hostname validation
+  const hostname = urlObj.hostname.toLowerCase();
+  if (hostname === "github.com" && urlObj.pathname.includes("/blob/")) {
+    urlObj.hostname = "raw.githubusercontent.com";
+    urlObj.pathname = urlObj.pathname.replace("/blob/", "/");
+    return urlObj.toString();
+  }
+
+  // Filter out invalid GitHub URLs that aren't raw (check hostname, not substring)
+  if (hostname === "github.com") {
+    return null; // Only allow raw.githubusercontent.com for GitHub URLs
+  }
+
+  // Only allow known safe image hosting domains
+  const allowedHosts = [
+    "raw.githubusercontent.com",
+    "picsum.photos",
+    "images.unsplash.com",
+    "cdn.jsdelivr.net",
+    "imgur.com",
+    "i.imgur.com",
+  ];
+
+  // Check if hostname matches an allowed host (exact match or subdomain)
+  const isAllowedHost = allowedHosts.some((allowedHost) => {
+    return hostname === allowedHost || hostname.endsWith(`.${allowedHost}`);
+  });
+
+  if (!isAllowedHost) {
+    return null;
+  }
+
+  return urlObj.toString();
 }
 
 // Check if a string is a valid image URL or just an emoji/icon
@@ -234,16 +257,27 @@ export function ShopPageClient({ fallbackContent }: ShopPageClientProps) {
                 className={`h-64 bg-gradient-to-br ${category.gradient} flex items-center justify-center relative overflow-hidden`}
               >
                 {category.imageUrl ? (
-                  <Image
-                    src={category.imageUrl}
-                    alt={category.title || "Category image"}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    unoptimized={category.imageUrl.includes(
-                      "raw.githubusercontent.com"
-                    )}
-                  />
+                  (() => {
+                    // Check hostname for unoptimized flag (security: use URL object, not substring)
+                    let needsUnoptimized = false;
+                    try {
+                      const imgUrl = new URL(category.imageUrl);
+                      needsUnoptimized =
+                        imgUrl.hostname === "raw.githubusercontent.com";
+                    } catch {
+                      // If URL parsing fails, default to optimized
+                    }
+                    return (
+                      <Image
+                        src={category.imageUrl}
+                        alt={category.title || "Category image"}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        unoptimized={needsUnoptimized}
+                      />
+                    );
+                  })()
                 ) : (
                   <span className="text-6xl relative z-10">
                     {category.icon}

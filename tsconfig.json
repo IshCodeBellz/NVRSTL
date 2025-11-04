@@ -12,7 +12,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "types": ["jest", "node"],
+    "types": ["node"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]

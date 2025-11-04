@@ -27,6 +27,8 @@ const nextConfig = {
       { protocol: "https", hostname: "images.asos-media.com" },
       { protocol: "https", hostname: "picsum.photos" },
       { protocol: "https", hostname: "static.nike.com" },
+      { protocol: "https", hostname: "raw.githubusercontent.com" },
+      { protocol: "https", hostname: "raw.githubusercontent.com" },
     ],
   },
   webpack: (config) => {

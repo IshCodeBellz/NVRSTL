@@ -4,6 +4,63 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
+// Clean and validate image URL - same logic as ShopCategoryClient
+function cleanImageUrl(url: string | null | undefined): string | null {
+  if (!url || typeof url !== "string") return null;
+
+  // Trim whitespace and normalize
+  const normalizedUrl = url.trim().replace(/\s+/g, "");
+  if (normalizedUrl === "") return null;
+
+  // Check for partial/malformed URLs
+  const invalidPatterns = ["hub.com", "ob/main", "Hero/Foot"];
+
+  const hasInvalidPattern = invalidPatterns.some((pattern) =>
+    normalizedUrl.includes(pattern)
+  );
+  const hasValidProtocol =
+    normalizedUrl.startsWith("http://") || normalizedUrl.startsWith("https://");
+
+  if (hasInvalidPattern && !hasValidProtocol) {
+    return null;
+  }
+
+  // Must start with http:// or https:// to be valid
+  if (!hasValidProtocol) {
+    return null;
+  }
+
+  // Convert GitHub blob URLs to raw URLs
+  let finalUrl = normalizedUrl;
+  if (finalUrl.includes("github.com/") && finalUrl.includes("/blob/")) {
+    finalUrl = finalUrl
+      .replace("/blob/", "/")
+      .replace("github.com", "raw.githubusercontent.com");
+  }
+
+  // Filter out invalid GitHub URLs that aren't raw
+  if (
+    finalUrl.includes("github.com/") &&
+    !finalUrl.includes("raw.githubusercontent.com")
+  ) {
+    return null;
+  }
+
+  // Validate URL format
+  try {
+    new URL(finalUrl);
+    return finalUrl;
+  } catch {
+    return null;
+  }
+}
+
+// Check if a string is a valid image URL or just an emoji/icon
+function isImageUrl(str: string | null | undefined): boolean {
+  if (!str) return false;
+  return cleanImageUrl(str) !== null;
+}
+
 interface ContentSection {
   id: string;
   type: string;
@@ -38,6 +95,7 @@ interface ShopPageClientProps {
       href: string;
       icon: string;
       gradient: string;
+      imageUrl?: string | null;
     }>;
   };
 }
@@ -137,7 +195,11 @@ export function ShopPageClient({ fallbackContent }: ShopPageClientProps) {
             title: section.title || "",
             description: section.content || "",
             href: section.buttonLink || "",
-            icon: section.imageUrl || "🏆",
+            imageUrl: section.imageUrl ? cleanImageUrl(section.imageUrl) : null,
+            icon:
+              section.imageUrl && !isImageUrl(section.imageUrl)
+                ? section.imageUrl
+                : "🏆",
             gradient: "from-gray-500 to-gray-700",
           })),
       }
@@ -169,9 +231,24 @@ export function ShopPageClient({ fallbackContent }: ShopPageClientProps) {
               className="bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col h-full border border-gray-700 hover:border-gray-600 transition-all duration-300"
             >
               <div
-                className={`h-64 bg-gradient-to-br ${category.gradient} flex items-center justify-center`}
+                className={`h-64 bg-gradient-to-br ${category.gradient} flex items-center justify-center relative overflow-hidden`}
               >
-                <span className="text-6xl">{category.icon}</span>
+                {category.imageUrl ? (
+                  <Image
+                    src={category.imageUrl}
+                    alt={category.title || "Category image"}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    unoptimized={category.imageUrl.includes(
+                      "raw.githubusercontent.com"
+                    )}
+                  />
+                ) : (
+                  <span className="text-6xl relative z-10">
+                    {category.icon}
+                  </span>
+                )}
               </div>
               <div className="p-6 flex flex-col flex-grow">
                 <h3 className="text-2xl font-bold mb-3 text-white font-carbon">

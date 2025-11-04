@@ -4,57 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-// Clean and validate image URL - same logic as ShopCategoryClient
-function cleanImageUrl(url: string | null | undefined): string | null {
-  if (!url || typeof url !== "string") return null;
-
-  // Trim whitespace and normalize
-  const normalizedUrl = url.trim().replace(/\s+/g, "");
-  if (normalizedUrl === "") return null;
-
-  // Check for partial/malformed URLs
-  const invalidPatterns = ["hub.com", "ob/main", "Hero/Foot"];
-
-  const hasInvalidPattern = invalidPatterns.some((pattern) =>
-    normalizedUrl.includes(pattern)
-  );
-  const hasValidProtocol =
-    normalizedUrl.startsWith("http://") || normalizedUrl.startsWith("https://");
-
-  if (hasInvalidPattern && !hasValidProtocol) {
-    return null;
-  }
-
-  // Must start with http:// or https:// to be valid
-  if (!hasValidProtocol) {
-    return null;
-  }
-
-  // Convert GitHub blob URLs to raw URLs
-  let finalUrl = normalizedUrl;
-  if (finalUrl.includes("github.com/") && finalUrl.includes("/blob/")) {
-    finalUrl = finalUrl
-      .replace("/blob/", "/")
-      .replace("github.com", "raw.githubusercontent.com");
-  }
-
-  // Filter out invalid GitHub URLs that aren't raw
-  if (
-    finalUrl.includes("github.com/") &&
-    !finalUrl.includes("raw.githubusercontent.com")
-  ) {
-    return null;
-  }
-
-  // Validate URL format
-  try {
-    new URL(finalUrl);
-    return finalUrl;
-  } catch {
-    return null;
-  }
-}
-
+// Clean and validate image URL - imported from shared utility
+import { cleanImageUrl } from "../../lib/imageUtils";
 // Check if a string is a valid image URL or just an emoji/icon
 function isImageUrl(str: string | null | undefined): boolean {
   if (!str) return false;

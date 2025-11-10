@@ -93,7 +93,7 @@
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.6.0",
     "react-is": "^19.2.0",
-    "recharts": "^3.2.1",
+    "recharts": "^3.4.1",
     "resend": "^6.1.2",
     "speakeasy": "^2.0.0",
     "stripe": "^19.1.0",

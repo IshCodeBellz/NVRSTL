@@ -66,7 +66,7 @@
     "docs:audit": "npx tsx scripts/scan-docs-placeholders.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.17.1",
+    "@prisma/client": "^6.19.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-select": "^2.2.6",
     "@sentry/nextjs": "^10.22.0",
